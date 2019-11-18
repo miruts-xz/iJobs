@@ -1,6 +1,11 @@
 package main
-import ("fmt")
+
+import (
+	"fmt"
+)
+
 func main() {
-  fmt.Println("Let's get started!!")
-  fmt.Println("Testing database")
+	fmt.Println("Let's get started!!")
+	fmt.Println("Testing database")
+	fmt.Println("Writeen by tse to test VCS on golang")
 }
