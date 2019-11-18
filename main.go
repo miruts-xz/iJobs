@@ -9,4 +9,5 @@ func main() {
 	fmt.Println("Testing database")
 	fmt.Println("Writeen by tse to test VCS on golang")
 	fmt.Println("Hello EArth")
+	fmt.Println("Dont panic")
 }
