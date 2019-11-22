@@ -1,6 +1,12 @@
 package main
-import ("fmt")
+
+import (
+	"github.com/miruts/iJobs/middleware"
+	"html/template"
+)
+
+var Tmpl = template.Must(template.ParseGlob("deliverable/template/*"))
+
 func main() {
-  fmt.Println("Let's get started!!")
-  fmt.Println("Testing database")
+	middleware.Run()
 }

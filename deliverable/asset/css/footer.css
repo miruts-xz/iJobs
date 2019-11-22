@@ -1,0 +1,9 @@
+footer {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+}
+footer {
+    background-color: #0f6674;
+    color: #005cbf;
+}
