@@ -1,12 +1,10 @@
 package mainRequests
 
 import (
-	"html/template"
+	"github.com/miruts/iJobs/middleware"
 	"net/http"
 )
 
-var Tmpl = template.Must(template.ParseGlob("deliverable/template/*"))
-
 func Index(w http.ResponseWriter, r *http.Request) {
-	_ = Tmpl.ExecuteTemplate(w, "index.layout", nil)
+	_ = middleware.Tmpl.ExecuteTemplate(w, "index.layout", nil)
 }

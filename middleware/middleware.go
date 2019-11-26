@@ -2,8 +2,11 @@ package middleware
 
 import (
 	"github.com/miruts/iJobs/handler/mainRequests"
+	"html/template"
 	"net/http"
 )
+
+var Tmpl = template.Must(template.ParseGlob("deliverable/template/*"))
 
 func Run() {
 	fs := http.FileServer(http.Dir("deliverable/asset"))
