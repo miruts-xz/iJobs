@@ -1,16 +1,21 @@
 package middleware
 
 import (
-	"github.com/miruts/iJobs/handler/mainRequests"
-	"html/template"
+	"github.com/miruts/iJobs/deliverable/http/apiRequest"
+	"github.com/miruts/iJobs/deliverable/http/mainRequest"
 	"net/http"
 )
 
-var Tmpl = template.Must(template.ParseGlob("deliverable/template/*"))
+const (
+	domain string = "localhost"
+	apisd  string = "api"
+	authsd string = "auth"
+)
 
 func Run() {
 	fs := http.FileServer(http.Dir("deliverable/asset"))
+	http.HandleFunc(apisd+"."+domain+"/users", apiRequest.GetUsers)
 	http.Handle("/deliverable/asset/", http.StripPrefix("/deliverable/asset/", fs))
-	http.HandleFunc("/", mainRequests.Index)
-	_ = http.ListenAndServe(":9090", nil)
+	http.HandleFunc("/", mainRequest.Index)
+	_ = http.ListenAndServe(":8080", nil)
 }

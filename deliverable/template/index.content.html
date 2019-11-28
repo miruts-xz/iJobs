@@ -1,6 +1,6 @@
 {{define "index.content"}}
     <div class="text-body" style="height: 500px">
-        <h1>Welcome to iJobs Online Job application platform</h1>
+        <h1>Welcome {{.Uname}} iJobs Online Job application platform</h1>
         <h2>things you can do with iJobs</h2>
         <ul>
             <li>Quickly get Jobs posted by companies</li>
@@ -8,5 +8,20 @@
             <li>Quickly get Jobs posted by companies</li>
             <li>Quickly get Jobs posted by companies</li>
         </ul>
+        <script>
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() {
+                if (this.readyState === 4 && this.status === 200) {
+                    console.log(this.responseText);
+                    document.getElementById("demo").innerHTML =
+                        this.responseText;
+                }
+            };
+            xhttp.open("GET", "http://api.localhost:8080/users");
+            xhttp.send();
+        </script>
+        <div id="demo" style="color: brown">
+
+        </div>
     </div>
 {{end}}
