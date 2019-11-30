@@ -11,9 +11,10 @@ import (
 
 var Tmpl = template.Must(template.ParseGlob("deliverable/template/*.html"))
 
-// Passing data to template using the rest api provided
+/**
+handler function for the root of the page
+*/
 func Index(w http.ResponseWriter, r *http.Request) {
-	fmt.Println(Tmpl)
 	resp, err := http.Get("http://api.localhost:8080/users")
 	if err != nil {
 		fmt.Printf("Error: %v", err)
