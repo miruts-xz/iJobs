@@ -23,7 +23,7 @@ func GetUsers(w http.ResponseWriter, r *http.Request) {
 		EmpStatus: entity.UNEMPLD,
 		Portfolio: nil,
 		CvUrl:     "",
-		Profile:   "/store/users/miruts/profile.pgn",
+		Profile:   "/drive/users/miruts/profile.pgn",
 		Address: entity.Address{
 			Ctr:     "Ethiopia",
 			Rgn:     "Addis Ababa",
