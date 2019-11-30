@@ -1,6 +1,25 @@
 package main
-import ("fmt")
+
+import (
+	"github.com/miruts/iJobs/deliverable/http/apiRequest"
+	"github.com/miruts/iJobs/deliverable/http/mainRequest"
+	"net/http"
+)
+
+const (
+	domain string = "localhost"
+	apisd  string = "api"
+	authsd string = "auth"
+)
+
+func init() {
+
+}
+
 func main() {
-  fmt.Println("Let's get started!!")
-  fmt.Println("Testing database")
+	fs := http.FileServer(http.Dir("deliverable/asset"))
+	http.HandleFunc(apisd+"."+domain+"/users", apiRequest.GetUsers)
+	http.Handle("/deliverable/asset/", http.StripPrefix("/deliverable/asset/", fs))
+	http.HandleFunc("/", mainRequest.Index)
+	_ = http.ListenAndServe(":8080", nil)
 }
