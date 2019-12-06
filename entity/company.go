@@ -1,7 +1,7 @@
 package entity
 
 type Company struct {
-	id                                                                              int64
-	Uname, CompanyName, Website, password, Email, Phone, Logo, Description, Details string
-	Address                                                                         Address
+	ID                                                                 int
+	CompanyName, password, Email, Phone, Logo, Short_desc, Detail_info string
+	Address                                                            Address
 }

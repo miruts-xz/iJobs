@@ -1,4 +1,4 @@
-package main
+package http
 
 import (
 	"github.com/miruts/iJobs/deliverable/http/apiRequest"
