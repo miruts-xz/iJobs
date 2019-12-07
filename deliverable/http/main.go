@@ -1,25 +1,37 @@
-package http
+package main
 
 import (
-	"github.com/miruts/iJobs/deliverable/http/apiRequest"
-	"github.com/miruts/iJobs/deliverable/http/mainRequest"
-	"net/http"
-)
-
-const (
-	domain string = "localhost"
-	apisd  string = "api"
-	authsd string = "auth"
+	"database/sql"
+	_ "database/sql"
+	"errors"
+	_ "fmt"
+	_ "github.com/lib/pq"
+	"html/template"
 )
 
 func init() {
 
 }
-
 func main() {
-	fs := http.FileServer(http.Dir("deliverable/asset"))
-	http.HandleFunc(apisd+"."+domain+"/users", apiRequest.GetUsers)
-	http.Handle("/deliverable/asset/", http.StripPrefix("/deliverable/asset/", fs))
-	http.HandleFunc("/", mainRequest.Index)
-	_ = http.ListenAndServe(":8080", nil)
+	/**
+	templates, global database connection and interfaces
+	*/
+	_ = template.Must(template.ParseGlob("/ui/template/*.html"))
+	// Company database connection
+	pqconncmp, errcmp := sql.Open("postgres", "user=company password=company database=ijobs sslmode=disable")
+	// Jobseeker database connection
+	pqconnjs, errjs := sql.Open("postgres", "user=jobseeker password=jobseeker database=ijbos sslmode=disable")
+	if errcmp != nil {
+		panic(errors.New("unable to connect with database with company account"))
+	}
+	if err := pqconncmp.Ping(); err != nil {
+		panic(err)
+	}
+	if errjs != nil {
+		panic(errors.New("unable to connect with database with jobseeker account"))
+	}
+	if err := pqconnjs.Ping(); err != nil {
+		panic(err)
+	}
+
 }
