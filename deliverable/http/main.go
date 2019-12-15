@@ -5,8 +5,9 @@ import (
 	_ "database/sql"
 	"errors"
 	_ "fmt"
-	_ "github.com/lib/pq"
 	"html/template"
+
+	_ "github.com/lib/pq"
 )
 
 func init() {
@@ -20,7 +21,11 @@ func main() {
 	// Company database connection
 	pqconncmp, errcmp := sql.Open("postgres", "user=company password=company database=ijobs sslmode=disable")
 	// Jobseeker database connection
-	pqconnjs, errjs := sql.Open("postgres", "user=jobseeker password=jobseeker database=ijbos sslmode=disable")
+	pqconnjs, errjs := sql.Open("postgres", "user=postgres password=akuadane database=ijobs sslmode=disable")
+
+	//Job repoHandler
+	//jobRepoHandler := repository.NewJobRepository(pqconnjs)
+
 	if errcmp != nil {
 		panic(errors.New("unable to connect with database with company account"))
 	}
