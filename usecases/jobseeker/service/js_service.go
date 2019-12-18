@@ -27,7 +27,8 @@ func (jss *JobseekerServiceImpl) DeleteJobSeeker(id int) error {
 func (jss *JobseekerServiceImpl) StoreJobSeeker(js entity.JobSeeker) error {
 	return jss.jsRepo.StoreJobSeeker(js)
 }
+
+// Suggestions returns suggested jobs given jobseeker id
 func (jss *JobseekerServiceImpl) Suggestions(id int) ([]entity.Job, error) {
-	//todo
 	return nil, nil
 }
