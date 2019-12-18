@@ -6,13 +6,17 @@ import (
 	"github.com/miruts/iJobs/entity"
 )
 
+// JobseekerRepositoryImpl implements JobseekerRepository interface
 type JobseekerRepositoryImpl struct {
 	conn *sql.DB
 }
 
+// NewJobseekerRepositoryImpl returns new JobseekerRepositoryImpl
 func NewJobseekerRepositoryImpl(jsr *sql.DB) *JobseekerRepositoryImpl {
 	return &JobseekerRepositoryImpl{conn: jsr}
 }
+
+// JobSeekers retrieves and returns all jobseekers
 func (jsr *JobseekerRepositoryImpl) JobSeekers() ([]entity.JobSeeker, error) {
 	query := "select * from jobseekers"
 	rows, err := jsr.conn.Query(query)
@@ -29,6 +33,8 @@ func (jsr *JobseekerRepositoryImpl) JobSeekers() ([]entity.JobSeeker, error) {
 	}
 	return jobSeekers, nil
 }
+
+// JobSeeker return a jobseeker with given id
 func (jsr *JobseekerRepositoryImpl) JobSeeker(id int) (entity.JobSeeker, error) {
 	query := "select * from jobseekers where id = $1"
 	var jobSeeker entity.JobSeeker
@@ -38,6 +44,8 @@ func (jsr *JobseekerRepositoryImpl) JobSeeker(id int) (entity.JobSeeker, error) 
 	}
 	return jobSeeker, nil
 }
+
+// UpdateJobSeeker updates a given jobseeker
 func (jsr *JobseekerRepositoryImpl) UpdateJobSeeker(js entity.JobSeeker) error {
 	query := "update jobseekers set id=$1, username=$2, fullname=$3, email=$4, phone=$5, password=$6, profile=$7, work_exp=$8, cv=$9, portfolio=$10, emp_status=$11, gender=$12, age=$13"
 	_, err := jsr.conn.Exec(query, js.ID, js.Username, js.Fullname, js.Email, js.Phone, js.Password, js.Profile, js.WorkExperience, js.CV, js.Portfolio, js.EmpStatus, js.Gender, js.Age)
@@ -46,6 +54,8 @@ func (jsr *JobseekerRepositoryImpl) UpdateJobSeeker(js entity.JobSeeker) error {
 	}
 	return nil
 }
+
+// DeleteJobSeeker deletes a jobseeker with a given id
 func (jsr *JobseekerRepositoryImpl) DeleteJobSeeker(id int) error {
 	query := "delete from jobseekers where id=$1"
 	_, err := jsr.conn.Exec(query, id)
@@ -54,6 +64,8 @@ func (jsr *JobseekerRepositoryImpl) DeleteJobSeeker(id int) error {
 	}
 	return nil
 }
+
+// StoreJobSeeker stores new jobseeker
 func (jsr *JobseekerRepositoryImpl) StoreJobSeeker(js entity.JobSeeker) error {
 	query := "insert into jobseekers (username, fullname, email, phone, password, profile, work_exp, cv, portfolio, emp_status, gender, age) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)"
 	_, err := jsr.conn.Exec(query, js.ID, js.Username, js.Fullname, js.Email, js.Phone, js.Password, js.Profile, js.WorkExperience, js.CV, js.Portfolio, js.EmpStatus, js.Gender, js.Age)
