@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"errors"
 
-	"github.com/akuadane/iJobs/entity"
+	"github.com/miruts/iJobs/entity"
 )
 
 type JobRepository struct {

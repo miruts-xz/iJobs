@@ -1,6 +1,6 @@
 package job
 
-import "github.com/akuadane/iJobs/entity"
+import "github.com/miruts/iJobs/entity"
 
 type JobRepository interface {
 	Jobs() ([]entity.Job, error)
