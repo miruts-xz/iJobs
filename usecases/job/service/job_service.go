@@ -1,8 +1,8 @@
 package service
 
 import (
-	"github.com/akuadane/iJobs/entity"
-	"github.com/akuadane/iJobs/usecases/job/repository"
+	"github.com/miruts/iJobs/entity"
+	"github.com/miruts/iJobs/usecases/job/repository"
 )
 
 type JobServices struct {
