@@ -8,4 +8,5 @@ type JobseekerRepository interface {
 	UpdateJobSeeker(js entity.JobSeeker) error
 	DeleteJobSeeker(id int) error
 	StoreJobSeeker(js entity.JobSeeker) error
+	JsCategories(id int) ([]entity.Category, error)
 }

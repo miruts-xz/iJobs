@@ -3,6 +3,7 @@ package repository
 import (
 	"database/sql"
 	"errors"
+	"fmt"
 	"github.com/miruts/iJobs/entity"
 )
 
@@ -63,6 +64,40 @@ func (jsr *JobseekerRepositoryImpl) DeleteJobSeeker(id int) error {
 		return errors.New("unable to delete jobseeker")
 	}
 	return nil
+}
+func (jsr *JobseekerRepositoryImpl) JsCategory(id int) (entity.Category, error) {
+	//query := "select"
+	return entity.Category{}, nil
+}
+func (jsr *JobseekerRepositoryImpl) JsCategories(id int) ([]entity.Category, error) {
+	query := "select cat_id from jobseeker_categories where js_id = $1"
+	rows, err := jsr.conn.Query(query, id)
+	if err != nil {
+		fmt.Printf("Error: %v", err)
+		return nil, err
+	}
+	var category entity.Category
+	var categories []entity.Category
+	categquery := "select * from job_categories where id = $1"
+	for rows.Next() {
+		var id int
+		if err := rows.Scan(&id); err != nil {
+			return categories, err
+		}
+		ctgrows, err := jsr.conn.Query(categquery, id)
+		if err != nil {
+			fmt.Printf("Error: %v", err)
+			return categories, err
+		}
+		for ctgrows.Next() {
+			if err := ctgrows.Scan(&category.ID, &category.Name, &category.Desc, &category.Image); err != nil {
+				return categories, nil
+			}
+			categories = append(categories, category)
+		}
+	}
+	return categories, nil
+
 }
 
 // StoreJobSeeker stores new jobseeker
