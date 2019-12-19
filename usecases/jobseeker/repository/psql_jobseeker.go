@@ -69,6 +69,8 @@ func (jsr *JobseekerRepositoryImpl) JsCategory(id int) (entity.Category, error) 
 	//query := "select"
 	return entity.Category{}, nil
 }
+
+// JsCategories return all interested job categories of jobseeker with a given jobseeker id
 func (jsr *JobseekerRepositoryImpl) JsCategories(id int) ([]entity.Category, error) {
 	query := "select cat_id from jobseeker_categories where js_id = $1"
 	rows, err := jsr.conn.Query(query, id)

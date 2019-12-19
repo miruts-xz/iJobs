@@ -2,6 +2,7 @@ package jobseeker
 
 import "github.com/miruts/iJobs/entity"
 
+// JobseekerRepository interface defines all jobseeker related data/database operations
 type JobseekerRepository interface {
 	JobSeekers() ([]entity.JobSeeker, error)
 	JobSeeker(id int) (entity.JobSeeker, error)
