@@ -15,7 +15,7 @@ const (
 
 type JobSeeker struct {
 	ID, Age, Phone, WorkExperience                              int64
-	Username, Email, Fullname, Password, Profile, Portfolio, CV string
+	Username, Fullname, Password, Email, Profile, Portfolio, CV string
 	Gender                                                      Gender
 	Categories                                                  []Category
 	EmpStatus                                                   EmpStatus
