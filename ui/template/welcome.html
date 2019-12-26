@@ -1,10 +1,119 @@
+{{ define "welcome.layout" }}
+{{ template "welcome.navbar" . }}
+{{ template "welcome.content" . }}
+{{ template "welcome.footer" . }}
+{{ end }}
+
+
+{{define "welcome.content"}}
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- css -->
+    <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/assets/css/customCss.css">
     <title>Welcome | iJobs Discover Jobs &amp; Join Favourite Companies</title>
 </head>
 <body>
+    <div class="jumbotron jumbotron-content-1">
+		<div class="container">
+			<div class="row">
+				<div class="col-xs-12">
+					<div class="jumbotron-overlay"></div>
+					<!-- <img src="../img/jobs.jpg"> -->
+					<h2 class="SignIn-up_text">SignIn/SignUp to search/post jobs</h2>
+					<a href="#" class="btn btn-primary sign_btn"> SignIn/Up</a>
+				</div>
+			</div>
+		</div>
+			
+	</div>
+
+	<div class="jumbotron jumbotron-content-2">
+		<div class="container">
+			<div class="row">
+				<div class="col-xs-12">
+					<div class="img col-md-4 float-right">
+						<img src="../img/jobs.jpg" class="img-fluid">
+					</div>
+					<h3 class="about-us-h"> ABOUT US</h3>
+		    		<p class="about-us-p text-justify">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Quis ipsum suspendisse ultrices gravida. Risus commodo viverra maecenas accumsan lacus vel facilisis. </p>
+				</div>	
+			</div>
+		</div>
+	</div>
+
+	<div class="jumbotron jumbotron-content-3">
+		<div class="container">
+			<div class="row">
+				<div class="col-xs-12">
+					<div id="members-carousel" class="carousel slide" data-interval="2000" data-ride="carousel">
+						<div class="carousel-inner">
+							<div class="carousel-item active">
+							<div class="members-desc">
+								<div class="img col-md-4 float-left">
+									<img src="../img/person.jpg" class="img-fluid rounded-circle">
+								</div>
+								<h3>Bethelhem Arega</h3>
+		    					<p class="members-p text-justify">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Quis ipsum suspendisse ultrices gravida. Risus commodo viverra maecenas accumsan lacus vel facilisis. </p>
+							</div>
+						</div>
+
+						<div class="carousel-item">
+							<div class="members-desc">
+								<div class="img col-md-4 float-left">
+									<img src="../img/jobs.jpg" class="img-fluid rounded-circle">
+								</div>
+								<h3>Miruts Hadush</h3>
+		    					<p class="members-p text-justify">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Quis ipsum suspendisse ultrices gravida. Risus commodo viverra maecenas accumsan lacus vel facilisis. </p>
+							</div>
+						</div>
+
+						<div class="carousel-item">
+							<div class="members-desc">
+								<div class="img col-md-4 float-left">
+									<img src="../img/person.jpg" class="img-fluid rounded-circle">
+								</div>
+								<h3>Bethelhem Arega</h3>
+		    					<p class="members-p text-justify">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Quis ipsum suspendisse ultrices gravida. Risus commodo viverra maecenas accumsan lacus vel facilisis. </p>
+							</div>
+						</div>
+
+						<div class="carousel-item">
+							<div class="members-desc">
+								<div class="img col-md-4 float-left">
+									<img src="../img/person.jpg" class="img-fluid rounded-circle">
+								</div>
+								<h3>Bethelhem Arega</h3>
+		    					<p class="members-p text-justify">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Quis ipsum suspendisse ultrices gravida. Risus commodo viverra maecenas accumsan lacus vel facilisis. </p>
+							</div>
+						</div>
+
+						<div class="carousel-item">
+							<div class="members-desc">
+								<div class="img col-md-4 float-left">
+									<img src="../img/person.jpg" class="img-fluid rounded-circle">
+								</div>
+								<h3>Bethelhem Arega</h3>
+		    					<p class="members-p text-justify">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Quis ipsum suspendisse ultrices gravida. Risus commodo viverra maecenas accumsan lacus vel facilisis. </p>
+							</div>
+						</div>
+						</div>
+						<a href="#members-carousel" class="carousel-control-prev" role="button" data-slide="prev">
+							<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+						</a>
+
+						<a href="#members-carousel" class="carousel-control-next" role="button" data-slide="next">
+							<span class="carousel-control-next-icon" aria-hidden="true"></span>
+						</a>	
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 
 </body>
 </html>
