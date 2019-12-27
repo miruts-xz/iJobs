@@ -21,10 +21,7 @@ func main() {
 	// Company database connection
 	pqconncmp, errcmp := sql.Open("postgres", "user=company password=company database=ijobs sslmode=disable")
 	// Jobseeker database connection
-	pqconnjs, errjs := sql.Open("postgres", "user=postgres password=akuadane database=ijobs sslmode=disable")
-
-	//Job repoHandler
-	//jobRepoHandler := repository.NewJobRepository(pqconnjs)
+	pqconnjs, errjs := sql.Open("postgres", "user=jobseeker password=jobseeker database=ijobs sslmode=disable")
 
 	if errcmp != nil {
 		panic(errors.New("unable to connect with database with company account"))

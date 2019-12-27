@@ -99,7 +99,6 @@ func (jsr *JobseekerRepositoryImpl) JsCategories(id int) ([]entity.Category, err
 		}
 	}
 	return categories, nil
-
 }
 
 // StoreJobSeeker stores new jobseeker
