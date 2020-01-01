@@ -8,8 +8,6 @@ import (
 	"github.com/miruts/iJobs/util"
 	"golang.org/x/crypto/bcrypt"
 	"html/template"
-	"io/ioutil"
-	"mime/multipart"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -90,7 +88,7 @@ func (jsh *JobseekerHandler) JobseekerRegister(w http.ResponseWriter, r *http.Re
 	}
 	if !hasvalue(wrkexp) || wrkexpint < 0 {
 	}
-	jobseeker.WorkExperience = int64(wrkexpint)
+	jobseeker.WorkExperience = wrkexpint
 
 	// todo process and store user entered portfolio
 	portf := r.FormValue("portf")

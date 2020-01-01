@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"fmt"
+	"github.com/miruts/iJobs/util"
 	"os"
 	"testing"
 )
@@ -19,7 +20,7 @@ func TestWriteProfileToLocal(t *testing.T) {
 		return
 	}
 	//expected := true
-	real := WriteProfileToLocal(file, "miruts.jpg", "miruts")
+	real := util.SaveFile(file, "miruts.jpg")
 	fmt.Print("data", real)
 }
 func TestWriteCvToLocal(t *testing.T) {
@@ -34,7 +35,7 @@ func TestWriteCvToLocal(t *testing.T) {
 		fmt.Printf("Error: %v", err)
 		return
 	}
-	real := WriteCvToLocal(file, "miruts.pdf", "miruts")
+	real := util.SaveFile(file, "miruts.pdf")
 	fmt.Print("data", real)
 }
 func TestNewJobseekerHandler(t *testing.T) {
