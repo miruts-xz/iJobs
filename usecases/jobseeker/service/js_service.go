@@ -63,3 +63,9 @@ func (jss *JobseekerServiceImpl) Suggestions(id int) ([]entity.Job, error) {
 	}
 	return alljobs, nil
 }
+func (jss *JobseekerServiceImpl) AddIntCategory(jsid, jcid int) error {
+
+}
+func (jss *JobseekerServiceImpl) RemoveIntCategory(jsid, jcid int) error {
+
+}

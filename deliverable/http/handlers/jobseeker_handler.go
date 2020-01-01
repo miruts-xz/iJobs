@@ -110,13 +110,13 @@ func (jsh *JobseekerHandler) JobseekerRegister(w http.ResponseWriter, r *http.Re
 	fmt.Println(path)
 	if err != nil {
 		fmt.Printf("Error: %v", err)
-		return false
+		return
 	}
 	path = filepath.Join(path, "ui", "assets", "jsdata", uname, "pp")
 	err = os.MkdirAll(path, 0644)
 	if err != nil {
 		fmt.Printf("Error: %v", err)
-		return false
+		return
 	}
 	path = filepath.Join(path, fh.Filename)
 	written := util.SaveFile(propic, path)
@@ -162,7 +162,7 @@ func (jsh *JobseekerHandler) JobseekerRegister(w http.ResponseWriter, r *http.Re
 	var jsid int64
 	for _, v := range js {
 		if v.Username == uname {
-			jsid = v.ID
+			jsid = int64(v.ID)
 			break
 		}
 	}
@@ -179,10 +179,6 @@ func (jsh *JobseekerHandler) JobseekerRegister(w http.ResponseWriter, r *http.Re
 			return
 		}
 	}
-}
-
-func WriteProfileToLocal(propic multipart.File, fh string, uname string) bool {
-
 }
 func hasvalue(value interface{}) bool {
 	if value != nil {

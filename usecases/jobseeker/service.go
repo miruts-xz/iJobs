@@ -10,4 +10,6 @@ type JobseekerService interface {
 	DeleteJobSeeker(id int) error
 	StoreJobSeeker(js entity.JobSeeker) error
 	Suggestions(id int) ([]entity.Job, error)
+	AddIntCategory(jsid, jcid int) error
+	RemoveIntCategory(jsid, jcid int) error
 }
