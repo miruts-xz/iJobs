@@ -121,7 +121,9 @@ func (jsh *JobseekerHandler) JobseekerRegister(w http.ResponseWriter, r *http.Re
 	if !written {
 
 	}
-
+	imageUri := filepath.Join("/assets", "jsdata", uname, "pp", fh.Filename)
+	fmt.Println(imageUri)
+	jobseeker.Profile = imageUri
 	// todo process and store user entered cv
 	cv, fh, err := r.FormFile("cv")
 	if err != nil {
@@ -146,7 +148,9 @@ func (jsh *JobseekerHandler) JobseekerRegister(w http.ResponseWriter, r *http.Re
 	if !cvWritten {
 
 	}
-
+	cvUri := filepath.Join("/assets", "jsdata", uname, "cv", fh.Filename)
+	fmt.Println(cvUri)
+	jobseeker.CV = cvUri
 	err = jsh.jsSrv.StoreJobSeeker(jobseeker)
 	if err != nil {
 		fmt.Printf("Error: %v", err)
