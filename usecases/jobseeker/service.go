@@ -13,3 +13,10 @@ type JobseekerService interface {
 	AddIntCategory(jsid, jcid int) error
 	RemoveIntCategory(jsid, jcid int) error
 }
+type AddressService interface {
+	Addresses() ([]entity.Address, error)
+	Address(id int) (entity.Address, error)
+	UpdateAddress(category *entity.Address) (*entity.Address, error)
+	DeleteAddress(id int) (entity.Address, error)
+	StoreAddress(category *entity.Address) (*entity.Address, error)
+}
