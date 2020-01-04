@@ -1,11 +1,11 @@
 package main
 
 import (
-	"database/sql"
 	_ "database/sql"
-	"errors"
+
 	_ "fmt"
 	"html/template"
+	"net/http"
 
 	_ "github.com/lib/pq"
 )
@@ -13,30 +13,31 @@ import (
 func init() {
 
 }
+
+var tmpl = template.Must(template.ParseGlob("ui/template/*"))
+
 func main() {
-	/**
-	templates, global database connection and interfaces
-	*/
-	_ = template.Must(template.ParseGlob("/ui/template/*.html"))
-	// Company database connection
-	pqconncmp, errcmp := sql.Open("postgres", "user=company password=company database=ijobs sslmode=disable")
-	// Jobseeker database connection
-	pqconnjs, errjs := sql.Open("postgres", "user=postgres password=akuadane database=ijobs sslmode=disable")
 
-	//Job repoHandler
-	//jobRepoHandler := repository.NewJobRepository(pqconnjs)
+	fs := http.FileServer(http.Dir("ui/asset"))
+	http.Handle("/asset/", http.StripPrefix("/asset/", fs))
 
-	if errcmp != nil {
-		panic(errors.New("unable to connect with database with company account"))
-	}
-	if err := pqconncmp.Ping(); err != nil {
-		panic(err)
-	}
-	if errjs != nil {
-		panic(errors.New("unable to connect with database with jobseeker account"))
-	}
-	if err := pqconnjs.Ping(); err != nil {
-		panic(err)
-	}
+	http.HandleFunc("/", Welcome)
+	http.HandleFunc("/jobseeker/home", jsHome)
+	http.HandleFunc("/jobseeker/appliedJobs", jsAppliedJobs)
+	//http.HandleFunc("/menu", menuHandler.Menu)
 
+	http.ListenAndServe(":8181", nil)
+
+}
+
+func Welcome(w http.ResponseWriter, r *http.Request) {
+	tmpl.ExecuteTemplate(w, "welcome.layout", nil)
+}
+
+func jsHome(w http.ResponseWriter, r *http.Request) {
+	tmpl.ExecuteTemplate(w, "jobseeker.home.layout", nil)
+}
+
+func jsAppliedJobs(w http.ResponseWriter, r *http.Request) {
+	tmpl.ExecuteTemplate(w, "jobseeker.appliedJobs.layout", nil)
 }

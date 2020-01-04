@@ -1,4 +1,4 @@
-{{define "jobseeker.layout"}}
+{{define "jobseeker.home.layout"}}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,7 +13,7 @@
 </head>
 <body>
     {{ template "jobseeker.navbar" . }}
-	{{ template "jobseeker.content" . }}
+	{{ template "jobseeker.home.content" . }}
     {{ template "footer" . }}
     <!-- js -->
     <script defer src="/libs/fontawesome/js/fontawesome.js"></script>
@@ -21,7 +21,7 @@
 </html>
 {{end}}
 
-{{define "jobseeker.content"}}
+{{define "jobseeker.home.content"}}
 <div class="jumbotron jumbotron-js-home-content-1">
     <div class="container">
         <div class="row justify-content-center">
