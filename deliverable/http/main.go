@@ -14,7 +14,7 @@ func init() {
 
 }
 
-var tmpl = template.Must(template.ParseGlob("ui/template/*"))
+var tmpl = template.Must(template.ParseGlob("ui/template/*.html"))
 
 func main() {
 
