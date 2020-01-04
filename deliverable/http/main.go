@@ -19,7 +19,7 @@ var tmpl = template.Must(template.ParseGlob("ui/template/*"))
 func main() {
 
 	fs := http.FileServer(http.Dir("ui/asset"))
-	http.Handle("/asset/", http.StripPrefix("/asset/", fs))
+	http.Handle("/assets/", http.StripPrefix("/assets/", fs))
 
 	http.HandleFunc("/", Welcome)
 	http.HandleFunc("/jobseeker/home", jsHome)
