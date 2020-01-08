@@ -14,7 +14,7 @@ type JobseekerServiceImpl struct {
 }
 
 // NewJobseekerServiceImpl returns new JobseekerServiceImpl
-func (jss *JobseekerServiceImpl) NewJobseekerServiceImpl(jsr jobseeker.JobseekerRepository, jobs job.JobService) *JobseekerServiceImpl {
+func NewJobseekerServiceImpl(jsr jobseeker.JobseekerRepository, jobs job.JobService) *JobseekerServiceImpl {
 	return &JobseekerServiceImpl{jsRepo: jsr, jobService: jobs}
 }
 
@@ -29,17 +29,17 @@ func (jss *JobseekerServiceImpl) JobSeeker(id int) (entity.JobSeeker, error) {
 }
 
 // UpdateJobSeeker updates a given jobseeker
-func (jss *JobseekerServiceImpl) UpdateJobSeeker(js entity.JobSeeker) error {
+func (jss *JobseekerServiceImpl) UpdateJobSeeker(js *entity.JobSeeker) (*entity.JobSeeker, error) {
 	return jss.jsRepo.UpdateJobSeeker(js)
 }
 
 // DeleteJobSeeker deletes jobseeker with a given id
-func (jss *JobseekerServiceImpl) DeleteJobSeeker(id int) error {
+func (jss *JobseekerServiceImpl) DeleteJobSeeker(id int) (entity.JobSeeker, error) {
 	return jss.jsRepo.DeleteJobSeeker(id)
 }
 
 // StoreJobSeeker stores new jobseeker
-func (jss *JobseekerServiceImpl) StoreJobSeeker(js entity.JobSeeker) error {
+func (jss *JobseekerServiceImpl) StoreJobSeeker(js *entity.JobSeeker) (*entity.JobSeeker, error) {
 	return jss.jsRepo.StoreJobSeeker(js)
 }
 
@@ -63,12 +63,12 @@ func (jss *JobseekerServiceImpl) Suggestions(id int) ([]entity.Job, error) {
 	}
 	return alljobs, nil
 }
-func (jsss *JobseekerServiceImpl) SetAddress(jsid, addid int) error {
-
+func (jss *JobseekerServiceImpl) SetAddress(jsid, addid int) error {
+	return nil
 }
 func (jss *JobseekerServiceImpl) AddIntCategory(jsid, jcid int) error {
-
+	return nil
 }
 func (jss *JobseekerServiceImpl) RemoveIntCategory(jsid, jcid int) error {
-
+	return nil
 }

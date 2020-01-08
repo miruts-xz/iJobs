@@ -1,5 +1,7 @@
 package entity
 
+import "time"
+
 type Region string
 type City string
 type SubCity string
@@ -30,11 +32,15 @@ const (
 	Bole        SubCity = "Bole"
 	Cherkos     SubCity = "Cherkos"
 	Yeka        SubCity = "Yeka"
-	AddisKetema         = "Addis Ketema"
+	AddisKetema SubCity = "Addis Ketema"
 )
 
 type Address struct {
-	Add_ID    int     `json:"add_id" gorm:"primary_key"`
+	ID        uint       `gorm:"primary_key" json:"id"`
+	CreatedAt time.Time  `json:"created_at"`
+	UpdatedAt time.Time  `json:"updated_at"`
+	DeletedAt *time.Time `sql:"index" json:"deleted_at"`
+
 	Region    Region  `json:"region"`
 	City      City    `json:"city"`
 	SubCity   SubCity `json:"sub_city"`

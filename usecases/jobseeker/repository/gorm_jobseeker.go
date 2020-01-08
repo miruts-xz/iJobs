@@ -20,7 +20,7 @@ func NewJobseekerGormRepositoryImpl(jsr *gorm.DB) *JobseekerGormRepositoryIMpl {
 func (jsr *JobseekerGormRepositoryIMpl) JobSeekers() ([]entity.JobSeeker, error) {
 	var jobseekers []entity.JobSeeker
 	errs := jsr.conn.Find(&jobseekers).GetErrors()
-	if errs != nil {
+	if len(errs) > 0 {
 		fmt.Printf("Error: %v", errs)
 		return jobseekers, errs[0]
 	}
