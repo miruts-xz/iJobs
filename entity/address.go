@@ -1,42 +1,38 @@
 package entity
 
-type Region string
-type City string
-type SubCity string
-
 const (
-	Tigray     Region = "Tigray"
-	Amhara     Region = "Amhara"
-	Oromia     Region = "Oromia"
-	Afar       Region = "Afar"
-	Somalia    Region = "Somalia"
-	Benshangul Region = "Benshangul Gumz"
-	Harare     Region = "Harare"
-	Sidama     Region = "Sidama"
-	Gambella   Region = "Gambella"
-	Snnpr      Region = "SNNPR"
+	Tigray     string = "Tigray"
+	Amhara     string = "Amhara"
+	Oromia     string = "Oromia"
+	Afar       string = "Afar"
+	Somalia    string = "Somalia"
+	Benshangul string = "Benshangul Gumz"
+	Harare     string = "Harare"
+	Sidama     string = "Sidama"
+	Gambella   string = "Gambella"
+	Snnpr      string = "SNNPR"
 )
 const (
-	Addis   City = "Addis Ababa"
-	Adamma  City = "Adamma"
-	Hawassa City = "Hawassa"
-	Mekele  City = "Mekele"
-	Gonder  City = "Gonder"
+	Addis   string = "Addis Ababa"
+	Adamma  string = "Adamma"
+	Hawassa string = "Hawassa"
+	Mekele  string = "Mekele"
+	Gonder  string = "Gonder"
 )
 const (
-	Gulele      SubCity = "Gullele"
-	Arada       SubCity = "Arada"
-	Akaki       SubCity = "Akaki Kality"
-	Bole        SubCity = "Bole"
-	Cherkos     SubCity = "Cherkos"
-	Yeka        SubCity = "Yeka"
-	AddisKetema         = "Addis Ketema"
+	Gulele      string = "Gullele"
+	Arada       string = "Arada"
+	Akaki       string = "Akaki Kality"
+	Bole        string = "Bole"
+	Cherkos     string = "Cherkos"
+	Yeka        string = "Yeka"
+	AddisKetema        = "Addis Ketema"
 )
 
 type Address struct {
-	Add_ID    int     `json:"add_id" gorm:"primary_key"`
-	Region    Region  `json:"region"`
-	City      City    `json:"city"`
-	SubCity   SubCity `json:"sub_city"`
-	LocalName string  `json:"local_name"`
+	Add_ID    int    `json:"add_id" gorm:"primary_key"`
+	Region    string `json:"region"`
+	City      string `json:"city"`
+	SubCity   string `json:"sub_city"`
+	LocalName string `json:"local_name"`
 }

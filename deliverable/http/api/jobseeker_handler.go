@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/julienschmidt/httprouter"
-	"github.com/miruts/iJobs/entity"
+	"github.com/miruts/iJobs/entity/gorm-entity"
 	"github.com/miruts/iJobs/usecases/jobseeker"
 	"net/http"
 	"strconv"
@@ -76,7 +76,7 @@ func (jsh *JobseekerHandler) UpdateJobseeker(w http.ResponseWriter, r *http.Requ
 		http.Error(w, http.StatusText(404), 404)
 		return
 	}
-	var jobseeker entity.JobSeeker
+	var jobseeker entity.Jobseeker
 	err = json.NewDecoder(r.Body).Decode(&jobseeker)
 	if err != nil {
 		fmt.Println(err)
@@ -138,7 +138,7 @@ func (jsh *JobseekerHandler) DeleteJobseeker(w http.ResponseWriter, r *http.Requ
 }
 func (jsh *JobseekerHandler) AddJobseeker(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	w.Header().Set("Content-Type", "application/json")
-	var jobseeker entity.JobSeeker
+	var jobseeker entity.Jobseeker
 	err := json.NewDecoder(r.Body).Decode(&jobseeker)
 	if err != nil {
 		fmt.Println(err)

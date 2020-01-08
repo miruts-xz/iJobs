@@ -1,8 +1,6 @@
 package entity
 
-import (
-	"time"
-)
+import "github.com/jinzhu/gorm"
 
 type Gender string
 type EmpStatus string
@@ -18,25 +16,22 @@ const (
 )
 
 type Jobseeker struct {
-	ID        uint       `gorm:"primary_key" json:"id"`
-	CreatedAt time.Time  `json:"created_at"`
-	UpdatedAt time.Time  `json:"updated_at"`
-	DeletedAt *time.Time `sql:"index" json:"deleted_at"`
+	gorm.Model
 
-	Applications []Application
-	Categories   []Category `json:"categories" gorm:"many2many:jobseeker_categories;"`
-	Address      Address
+	Address      []Address     `json:"address" gorm:"many2many:jobseeker_addresses"`
+	Applications []Application `json:"applications" gorm:"foreignkey:JobseekerID"`
+	Categories   []Category    `json:"categories" gorm:"many2many:jobseeker_categories"`
 
 	Age            uint      `json:"age"`
-	Phone          int       `json:"phone"`
+	Phone          string    `json:"phone" gorm:"unique;"`
 	WorkExperience int       `json:"work_experience"`
-	Username       string    `json:"username"`
+	Username       string    `json:"username" gorm:"unique;not null"`
 	Fullname       string    `json:"fullname"`
 	Password       string    `json:"password"`
 	Email          string    `json:"email" gorm:"unique"`
 	Profile        string    `json:"profile"`
 	Portfolio      string    `json:"portfolio"`
-	CV             string    `json:"cv"`
+	CV             string    `json:"cv" gorm:"not null;unique"`
 	Gender         Gender    `json:"gender"`
-	EmpStatus      EmpStatus `json:"emp_status"`
+	EmpStatus      EmpStatus `json:"emp_status" gorm:"not null"`
 }

@@ -3,7 +3,7 @@ package repository
 import (
 	"fmt"
 	"github.com/jinzhu/gorm"
-	"github.com/miruts/iJobs/entity"
+	"github.com/miruts/iJobs/entity/gorm-entity"
 )
 
 // JobseekerGormRepositoryIMpl implements JobseekerRepository interface
@@ -17,8 +17,8 @@ func NewJobseekerGormRepositoryImpl(jsr *gorm.DB) *JobseekerGormRepositoryIMpl {
 }
 
 // JobSeekers retrieves and returns all jobseekers
-func (jsr *JobseekerGormRepositoryIMpl) JobSeekers() ([]entity.JobSeeker, error) {
-	var jobseekers []entity.JobSeeker
+func (jsr *JobseekerGormRepositoryIMpl) JobSeekers() ([]entity.Jobseeker, error) {
+	var jobseekers []entity.Jobseeker
 	errs := jsr.conn.Find(&jobseekers).GetErrors()
 	if len(errs) > 0 {
 		fmt.Printf("Error: %v", errs)
@@ -28,8 +28,8 @@ func (jsr *JobseekerGormRepositoryIMpl) JobSeekers() ([]entity.JobSeeker, error)
 }
 
 // JobSeeker return a jobseeker with given id
-func (jsr *JobseekerGormRepositoryIMpl) JobSeeker(id int) (entity.JobSeeker, error) {
-	var jobseeker entity.JobSeeker
+func (jsr *JobseekerGormRepositoryIMpl) JobSeeker(id int) (entity.Jobseeker, error) {
+	var jobseeker entity.Jobseeker
 	errs := jsr.conn.First(&jobseeker, id).GetErrors()
 	if len(errs) > 0 {
 		return jobseeker, errs[0]
@@ -38,7 +38,7 @@ func (jsr *JobseekerGormRepositoryIMpl) JobSeeker(id int) (entity.JobSeeker, err
 }
 
 // UpdateJobSeeker updates a given jobseeker
-func (jsr *JobseekerGormRepositoryIMpl) UpdateJobSeeker(js *entity.JobSeeker) (*entity.JobSeeker, error) {
+func (jsr *JobseekerGormRepositoryIMpl) UpdateJobSeeker(js *entity.Jobseeker) (*entity.Jobseeker, error) {
 	jobseeker := js
 	errs := jsr.conn.Save(&jobseeker).GetErrors()
 	if len(errs) > 0 {
@@ -48,7 +48,7 @@ func (jsr *JobseekerGormRepositoryIMpl) UpdateJobSeeker(js *entity.JobSeeker) (*
 }
 
 // DeleteJobSeeker deletes a jobseeker with a given id
-func (jsr *JobseekerGormRepositoryIMpl) DeleteJobSeeker(id int) (entity.JobSeeker, error) {
+func (jsr *JobseekerGormRepositoryIMpl) DeleteJobSeeker(id int) (entity.Jobseeker, error) {
 	jobseeker, err := jsr.JobSeeker(id)
 	if err != nil {
 		return jobseeker, err
@@ -71,7 +71,7 @@ func (jsr *JobseekerGormRepositoryIMpl) JsCategories(id int) ([]entity.Category,
 }
 
 // StoreJobSeeker stores new jobseeker
-func (jsr *JobseekerGormRepositoryIMpl) StoreJobSeeker(js *entity.JobSeeker) (*entity.JobSeeker, error) {
+func (jsr *JobseekerGormRepositoryIMpl) StoreJobSeeker(js *entity.Jobseeker) (*entity.Jobseeker, error) {
 	jobseeker := js
 	errs := jsr.conn.Create(jobseeker).GetErrors()
 	if len(errs) > 0 {

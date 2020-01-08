@@ -3,7 +3,7 @@ package repository
 import (
 	"fmt"
 	"github.com/jinzhu/gorm"
-	"github.com/miruts/iJobs/entity"
+	"github.com/miruts/iJobs/entity/gorm-entity"
 )
 
 // JobseekerGormRepositoryIMpl implements JobseekerRepository interface

@@ -1,14 +1,11 @@
 package entity
 
-import "time"
+import "github.com/jinzhu/gorm"
 
 type Category struct {
-	ID        uint       `gorm:"primary_key" json:"id"`
-	CreatedAt time.Time  `json:"created_at"`
-	UpdatedAt time.Time  `json:"updated_at"`
-	DeletedAt *time.Time `sql:"index" json:"deleted_at"`
+	gorm.Model
 
-	Name  string `json:"name"`
-	Image string `json:"image"`
-	Desc  string `json:"desc"`
+	Name  string `json:"name" gorm:"type:varchar(255);not null"`
+	Image string `json:"image" gorm:"type:varchar(255)"`
+	Desc  string `json:"desc" gorm:"type:text"`
 }

@@ -2,7 +2,7 @@ package service
 
 import (
 	"fmt"
-	"github.com/miruts/iJobs/entity"
+	"github.com/miruts/iJobs/entity/gorm-entity"
 	"github.com/miruts/iJobs/usecases/job"
 	"github.com/miruts/iJobs/usecases/jobseeker"
 )
@@ -19,27 +19,27 @@ func NewJobseekerServiceImpl(jsr jobseeker.JobseekerRepository, jobs job.JobServ
 }
 
 // JobSeekers return all jobseekers
-func (jss *JobseekerServiceImpl) JobSeekers() ([]entity.JobSeeker, error) {
+func (jss *JobseekerServiceImpl) JobSeekers() ([]entity.Jobseeker, error) {
 	return jss.jsRepo.JobSeekers()
 }
 
 // JobSeeker return jobseeker with a given id
-func (jss *JobseekerServiceImpl) JobSeeker(id int) (entity.JobSeeker, error) {
+func (jss *JobseekerServiceImpl) JobSeeker(id int) (entity.Jobseeker, error) {
 	return jss.jsRepo.JobSeeker(id)
 }
 
 // UpdateJobSeeker updates a given jobseeker
-func (jss *JobseekerServiceImpl) UpdateJobSeeker(js *entity.JobSeeker) (*entity.JobSeeker, error) {
+func (jss *JobseekerServiceImpl) UpdateJobSeeker(js *entity.Jobseeker) (*entity.Jobseeker, error) {
 	return jss.jsRepo.UpdateJobSeeker(js)
 }
 
 // DeleteJobSeeker deletes jobseeker with a given id
-func (jss *JobseekerServiceImpl) DeleteJobSeeker(id int) (entity.JobSeeker, error) {
+func (jss *JobseekerServiceImpl) DeleteJobSeeker(id int) (entity.Jobseeker, error) {
 	return jss.jsRepo.DeleteJobSeeker(id)
 }
 
 // StoreJobSeeker stores new jobseeker
-func (jss *JobseekerServiceImpl) StoreJobSeeker(js *entity.JobSeeker) (*entity.JobSeeker, error) {
+func (jss *JobseekerServiceImpl) StoreJobSeeker(js *entity.Jobseeker) (*entity.Jobseeker, error) {
 	return jss.jsRepo.StoreJobSeeker(js)
 }
 

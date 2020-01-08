@@ -1,22 +1,21 @@
 package entity
 
 import (
+	"github.com/jinzhu/gorm"
 	"time"
 )
 
 type Job struct {
-	ID        uint       `gorm:"primary_key" json:"id"`
-	CreatedAt time.Time  `json:"created_at"`
-	UpdatedAt time.Time  `json:"updated_at"`
-	DeletedAt *time.Time `sql:"index" json:"deleted_at"`
+	gorm.Model
 
-	Company  Company
-	Category []Category `gorm:"many2many:job_categories"`
+	CompanyID    uint          `json:"company_id" gorm:"not null"`
+	Categories   []Category    `json:"categories" gorm:"many2many:job_categories"`
+	Applications []Application `json:"applications" gorm:"foreign_key:JobID"`
 
-	RequiredNum int       `json:"required_num"`
+	RequiredNum uint      `json:"required_num" gorm:"not null"`
 	Salary      float64   `json:"salary"`
-	Name        string    `json:"name"`
-	Description string    `json:"description"`
-	JobTime     string    `json:"job_time"`
-	Deadline    time.Time `json:"deadline"`
+	Name        string    `json:"name" gorm:"not null"`
+	Description string    `json:"description" gorm:"type:text"`
+	JobTime     string    `json:"job_time" gorm:"type:varchar(255);not null"`
+	Deadline    time.Time `json:"deadline" gorm:"not null"`
 }

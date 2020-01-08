@@ -1,8 +1,6 @@
 package entity
 
-import (
-	"time"
-)
+import "github.com/jinzhu/gorm"
 
 type Status string
 
@@ -20,14 +18,10 @@ const (
 )
 
 type Application struct {
-	ID        uint       `gorm:"primary_key" json:"id"`
-	CreatedAt time.Time  `json:"created_at"`
-	UpdatedAt time.Time  `json:"updated_at"`
-	DeletedAt *time.Time `sql:"index" json:"deleted_at"`
+	gorm.Model
 
-	Job       Job
-	JobSeeker Jobseeker
-
-	Response Status   `json:"response"`
-	Status   Response `json:"status"`
+	JobID       uint     `gorm:"not null"`
+	JobseekerID uint     `gorm:"not null"`
+	Response    Status   `json:"response" gorm:"varchar(255)"`
+	Status      Response `json:"status" gorm:"varchar(255)"`
 }
