@@ -36,5 +36,5 @@ type JobSeeker struct {
 	Gender         Gender     `json:"gender"`
 	Categories     []Category `json:"categories" gorm:"many2many:jobseeker_categories;"`
 	EmpStatus      EmpStatus  `json:"emp_status"`
-	Address        Address    `json:"address" gorm:"many2many:jobseeker_addresses"`
+	Address        Address    `json:"address" gorm:"many2many:jobseeker_addresses;"`
 }

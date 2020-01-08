@@ -3,7 +3,7 @@ package handlers
 import (
 	"fmt"
 	"github.com/julienschmidt/httprouter"
-	"github.com/miruts/iJobs/entity"
+	"github.com/miruts/iJobs/entity/gorm-entity"
 	"github.com/miruts/iJobs/usecases/job"
 	"github.com/miruts/iJobs/usecases/jobseeker"
 	"github.com/miruts/iJobs/util"
@@ -24,9 +24,9 @@ type JobseekerHandler struct {
 }
 type RegisterNeed struct {
 	Categories []entity.Category
-	Regions    []entity.Region
-	Cities     []entity.City
-	Subcities  []entity.SubCity
+	Regions    []string
+	Cities     []string
+	Subcities  []string
 }
 
 // NewJobseekerHandler creates new JobseekerHandler
@@ -63,9 +63,9 @@ func NewJobseekerHandler(tmpl *template.Template, jss jobseeker.JobseekerService
 func (jsh *JobseekerHandler) JobseekerRegister(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	if r.Method == "GET" {
 		jobCtgs, err := jsh.ctgSrv.Categories()
-		Regions := []entity.Region{entity.Tigray, entity.Amhara, entity.Sidama, entity.Afar, entity.Somalia, entity.Gambella, entity.Harare, entity.Snnpr, entity.Oromia, entity.Benshangul}
-		Cities := []entity.City{entity.Addis, entity.Mekele, entity.Hawassa, entity.Adamma, entity.Gonder}
-		SubCities := []entity.SubCity{entity.Gulele, entity.Arada, entity.Yeka, entity.Bole, entity.Cherkos, entity.AddisKetema}
+		Regions := []string{entity.Tigray, entity.Amhara, entity.Sidama, entity.Afar, entity.Somalia, entity.Gambella, entity.Harare, entity.Snnpr, entity.Oromia, entity.Benshangul}
+		Cities := []string{entity.Addis, entity.Mekele, entity.Hawassa, entity.Adamma, entity.Gonder}
+		SubCities := []string{entity.Gulele, entity.Arada, entity.Yeka, entity.Bole, entity.Cherkos, entity.AddisKetema}
 		var registerNeed RegisterNeed
 		registerNeed.Categories = jobCtgs
 		registerNeed.Regions = Regions
@@ -87,7 +87,7 @@ func (jsh *JobseekerHandler) JobseekerRegister(w http.ResponseWriter, r *http.Re
 			fmt.Printf("Error: %v", err)
 			return
 		}
-		jobseeker := entity.JobSeeker{}
+		jobseeker := entity.Jobseeker{}
 		uname := ps.ByName("uname")
 		if !hasvalue(uname) {
 			return
@@ -193,7 +193,7 @@ func (jsh *JobseekerHandler) JobseekerRegister(w http.ResponseWriter, r *http.Re
 		cvUri := filepath.Join("/assets", "jsdata", uname, "cv", fh.Filename)
 		fmt.Println(cvUri)
 		jobseeker.CV = cvUri
-		err = jsh.jsSrv.StoreJobSeeker(jobseeker)
+		_, err = jsh.jsSrv.StoreJobSeeker(&jobseeker)
 		if err != nil {
 			fmt.Printf("Error: %v", err)
 			return
@@ -239,7 +239,7 @@ func (jsh *JobseekerHandler) JobseekerRegister(w http.ResponseWriter, r *http.Re
 			fmt.Println(err)
 			return
 		}
-		err = jsh.jsSrv.SetAddress(int(jobseeker.ID), adr.Add_ID)
+		err = jsh.jsSrv.SetAddress(int(jobseeker.ID), int(adr.ID))
 		if err != nil {
 			fmt.Println(err)
 			return

@@ -1,14 +1,14 @@
 package jobseeker
 
-import "github.com/miruts/iJobs/entity"
+import "github.com/miruts/iJobs/entity/gorm-entity"
 
 // JobseekerRepository interface defines all jobseeker related data/database operations
 type JobseekerRepository interface {
-	JobSeekers() ([]entity.JobSeeker, error)
-	JobSeeker(id int) (entity.JobSeeker, error)
-	UpdateJobSeeker(js *entity.JobSeeker) (*entity.JobSeeker, error)
-	DeleteJobSeeker(id int) (entity.JobSeeker, error)
-	StoreJobSeeker(js *entity.JobSeeker) (*entity.JobSeeker, error)
+	JobSeekers() ([]entity.Jobseeker, error)
+	JobSeeker(id int) (entity.Jobseeker, error)
+	UpdateJobSeeker(js *entity.Jobseeker) (*entity.Jobseeker, error)
+	DeleteJobSeeker(id int) (entity.Jobseeker, error)
+	StoreJobSeeker(js *entity.Jobseeker) (*entity.Jobseeker, error)
 	JsCategories(id int) ([]entity.Category, error)
 	RemoveIntCategory(jsid, jcid int) error
 	AddIntCategory(jsid, jcid int) error
