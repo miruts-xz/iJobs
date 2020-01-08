@@ -97,3 +97,10 @@ func (jss *JobseekerGormRepositoryIMpl) RemoveIntCategory(jsid, jcid int) error 
 	}
 	return nil
 }
+func (jss *JobseekerGormRepositoryIMpl) SetAddress(jsid, addid int) error {
+	errs := jss.conn.Raw("insert into jobseeker_addresses (js_id, add_id) values(jsid, addid").GetErrors()
+	if len(errs) > 0 {
+		return errs[0]
+	}
+	return nil
+}

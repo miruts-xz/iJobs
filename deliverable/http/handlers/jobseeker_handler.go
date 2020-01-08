@@ -17,9 +17,10 @@ import (
 
 // JobseekerHandler handles jobseeker related http requests
 type JobseekerHandler struct {
-	tmpl   *template.Template
-	jsSrv  jobseeker.JobseekerService
-	ctgSrv job.CategoryService
+	tmpl    *template.Template
+	jsSrv   jobseeker.JobseekerService
+	ctgSrv  job.CategoryService
+	addrSrv jobseeker.AddressService
 }
 type RegisterNeed struct {
 	Categories []entity.Category
@@ -29,11 +30,12 @@ type RegisterNeed struct {
 }
 
 // NewJobseekerHandler creates new JobseekerHandler
-func NewJobseekerHandler(tmpl *template.Template, jss jobseeker.JobseekerService, jcs job.CategoryService) *JobseekerHandler {
+func NewJobseekerHandler(tmpl *template.Template, jss jobseeker.JobseekerService, jcs job.CategoryService, adds jobseeker.AddressService) *JobseekerHandler {
 	return &JobseekerHandler{
-		tmpl:   tmpl,
-		jsSrv:  jss,
-		ctgSrv: jcs,
+		tmpl:    tmpl,
+		jsSrv:   jss,
+		ctgSrv:  jcs,
+		addrSrv: adds,
 	}
 }
 
@@ -212,6 +214,7 @@ func (jsh *JobseekerHandler) JobseekerRegister(w http.ResponseWriter, r *http.Re
 		// todo process and store selected interested job categories
 		intjobcat := r.Form["intjobcat"]
 		if !hasvalue(intjobcat) {
+			return
 		}
 		for v := range intjobcat {
 			jcid := v
@@ -231,7 +234,16 @@ func (jsh *JobseekerHandler) JobseekerRegister(w http.ResponseWriter, r *http.Re
 		address.City = city
 		address.SubCity = subcity
 		address.LocalName = localname
-
+		adr, err := jsh.addrSrv.StoreAddress(&address)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		err = jsh.jsSrv.SetAddress(int(jobseeker.ID), adr.Add_ID)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
 	}
 }
 func hasvalue(value interface{}) bool {

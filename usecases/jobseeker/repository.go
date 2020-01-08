@@ -12,6 +12,7 @@ type JobseekerRepository interface {
 	JsCategories(id int) ([]entity.Category, error)
 	RemoveIntCategory(jsid, jcid int) error
 	AddIntCategory(jsid, jcid int) error
+	SetAddress(jsid, addid int) error
 }
 type AddressRepository interface {
 	Addresses() ([]entity.Address, error)

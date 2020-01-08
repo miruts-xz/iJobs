@@ -12,6 +12,7 @@ type JobseekerService interface {
 	Suggestions(id int) ([]entity.Job, error)
 	AddIntCategory(jsid, jcid int) error
 	RemoveIntCategory(jsid, jcid int) error
+	SetAddress(jsid, addid int) error
 }
 type AddressService interface {
 	Addresses() ([]entity.Address, error)
