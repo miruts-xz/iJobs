@@ -1,6 +1,6 @@
 package job
 
-import "github.com/miruts/iJobs/entity"
+import "github.com/miruts/iJobs/entity/gorm-entity"
 
 type JobRepository interface {
 	Jobs() ([]entity.Job, error)

@@ -1,5 +1,7 @@
 package entity
 
+import "github.com/jinzhu/gorm"
+
 const (
 	Tigray     string = "Tigray"
 	Amhara     string = "Amhara"
@@ -26,13 +28,14 @@ const (
 	Bole        string = "Bole"
 	Cherkos     string = "Cherkos"
 	Yeka        string = "Yeka"
-	AddisKetema        = "Addis Ketema"
+	AddisKetema string = "Addis Ketema"
 )
 
 type Address struct {
-	Add_ID    int    `json:"add_id" gorm:"primary_key"`
-	Region    string `json:"region"`
-	City      string `json:"city"`
-	SubCity   string `json:"sub_city"`
-	LocalName string `json:"local_name"`
+	gorm.Model
+
+	Region    string `json:"region" gorm:"type:varchar(255)"`
+	City      string `json:"city" gorm:"type:varchar(255)"`
+	SubCity   string `json:"sub_city" gorm:"type:varchar(255)"`
+	LocalName string `json:"local_name" gorm:"type:varchar(255);not null"`
 }
