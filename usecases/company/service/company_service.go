@@ -33,3 +33,6 @@ func (cs *CompanyServiceImpl) PostedJobs(cid int) ([]entity.Job, error) {
 func (cs *CompanyServiceImpl) CompanyByEmail(email string) (entity.Company, error) {
 	return cs.compRepo.CompanyByEmail(email)
 }
+func (cs *CompanyServiceImpl) CompanyAddress(id uint) (entity.Address, error) {
+	return cs.compRepo.CompanyAddress(id)
+}

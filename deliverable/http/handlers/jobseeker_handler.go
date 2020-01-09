@@ -285,7 +285,7 @@ func hasvalue(value interface{}) bool {
 	}
 	return false
 }
-func (jsh *JobseekerHandler) GetJobseekerHome(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+func (jsh *JobseekerHandler) JobseekerHome(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	session, err := util.Authenticate(jsh.sessSrv, r)
 	if err == nil {
 		if r.Method == "GET" {
@@ -337,7 +337,7 @@ func (jsh *JobseekerHandler) JobseekerAppliedJobs(w http.ResponseWriter, r *http
 	}
 }
 func (jsh *JobseekerHandler) JobseekerProfile(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	session, err := util.Authenticate(jsh.sessSrv, r)
+	_, err := util.Authenticate(jsh.sessSrv, r)
 	if err == nil {
 		if r.Method == "GET" {
 
