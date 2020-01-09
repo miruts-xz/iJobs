@@ -4,8 +4,10 @@ import (
 	"fmt"
 	"github.com/julienschmidt/httprouter"
 	"github.com/miruts/iJobs/entity"
+	"github.com/miruts/iJobs/usecases/application"
 	"github.com/miruts/iJobs/usecases/job"
 	"github.com/miruts/iJobs/usecases/jobseeker"
+	"github.com/miruts/iJobs/usecases/session"
 	"github.com/miruts/iJobs/util"
 	"golang.org/x/crypto/bcrypt"
 	"html/template"
@@ -21,6 +23,8 @@ type JobseekerHandler struct {
 	jsSrv   jobseeker.JobseekerService
 	ctgSrv  job.CategoryService
 	addrSrv jobseeker.AddressService
+	appSrv  application.IAppService
+	sessSrv session.SessionService
 }
 type RegisterNeed struct {
 	Categories []entity.Category
@@ -28,14 +32,29 @@ type RegisterNeed struct {
 	Cities     []string
 	Subcities  []string
 }
+type JobseekerHomeNeed struct {
+	Applications []entity.Application
+	Suggestions  []entity.Job
+	Categories   []entity.Category
+}
+type JobseekerAppliedNeed struct {
+	Applications []entity.Application
+	Categories   []entity.Category
+}
+type JobseekerProfileNeed struct {
+	Categories []entity.Category
+	jobseeker  entity.Jobseeker
+}
 
 // NewJobseekerHandler creates new JobseekerHandler
-func NewJobseekerHandler(tmpl *template.Template, jss jobseeker.JobseekerService, jcs job.CategoryService, adds jobseeker.AddressService) *JobseekerHandler {
+func NewJobseekerHandler(tmpl *template.Template, jss jobseeker.JobseekerService, jcs job.CategoryService, adds jobseeker.AddressService, apps application.IAppService, ss session.SessionService) *JobseekerHandler {
 	return &JobseekerHandler{
 		tmpl:    tmpl,
 		jsSrv:   jss,
 		ctgSrv:  jcs,
 		addrSrv: adds,
+		appSrv:  apps,
+		sessSrv: ss,
 	}
 }
 
@@ -251,4 +270,63 @@ func hasvalue(value interface{}) bool {
 		return true
 	}
 	return false
+}
+func (jsh *JobseekerHandler) GetJobseekerHome(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+	session, err := util.Authenticate(jsh.sessSrv, r)
+	if err == nil {
+		if r.Method == "GET" {
+			// Get http method
+			jsneeds := JobseekerHomeNeed{}
+
+			Ctgs, _ := jsh.ctgSrv.Categories()
+			Apps, _ := jsh.appSrv.UserApplication(int(session.UserID))
+			Suggs, _ := jsh.jsSrv.Suggestions(int(session.UserID))
+			jsneeds.Categories = Ctgs
+			jsneeds.Applications = Apps
+			jsneeds.Suggestions = Suggs
+			err := jsh.tmpl.ExecuteTemplate(w, "jobseeker.layout", jsneeds)
+			if err != nil {
+				fmt.Println(err)
+				return
+			}
+		} else {
+			// Other http methods
+
+		}
+	} else {
+		err := jsh.tmpl.ExecuteTemplate(w, "login.layout", nil)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+	}
+}
+func (jsh *JobseekerHandler) JobseekerAppliedJobs(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+	session, err := util.Authenticate(jsh.sessSrv, r)
+	if err == nil {
+		if r.Method == "GET" {
+			// Get http method
+			jobappneeds := JobseekerAppliedNeed{}
+			Appls, _ := jsh.appSrv.UserApplication(int(session.UserID))
+			Ctgs, _ := jsh.ctgSrv.Categories()
+			jobappneeds.Categories = Ctgs
+			jobappneeds.Applications = Appls
+			err := jsh.tmpl.ExecuteTemplate(w, "jobseeker.appliedjobs.layout", jobappneeds)
+			if err != nil {
+				fmt.Println(err)
+				return
+			}
+		} else {
+			// Other http methods
+
+		}
+	}
+}
+func (jsh *JobseekerHandler) JobseekerProfile(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+	session, err := util.Authenticate(jsh.sessSrv, r)
+	if err == nil {
+		if r.Method == "GET" {
+
+		}
+	}
 }

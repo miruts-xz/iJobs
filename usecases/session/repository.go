@@ -1,0 +1,14 @@
+package session
+
+import (
+	"github.com/miruts/iJobs/entity"
+)
+
+type SessionRepository interface {
+	Sessions() ([]entity.Session, error)
+	Session(id int) (entity.Session, error)
+	DeleteSession(id int) (entity.Session, error)
+	UpdateSession(sess *entity.Session) (*entity.Session, error)
+	StoreSession(sess *entity.Session) (*entity.Session, error)
+	SessionByValue(value string) (entity.Session, error)
+}
