@@ -3,7 +3,6 @@ package repository
 import (
 	"database/sql"
 	"errors"
-
 	"github.com/miruts/iJobs/entity"
 )
 
@@ -33,7 +32,7 @@ func (jobRepo *JobRepository) Jobs() ([]entity.Job, error) {
 	for records.Next() {
 		aJob := entity.Job{}
 		records.Scan(&aJob.ID, &aJob.Name, &aJob.CompanyID, &aJob.Salary,
-			&aJob.RequiredNum, &aJob.CategoryID, &aJob.Deadline, &aJob.Description, &aJob.JobTime)
+			&aJob.RequiredNum, &aJob.Categories, &aJob.Deadline, &aJob.Description, &aJob.JobTime)
 
 		jobs = append(jobs, aJob)
 	}
@@ -58,7 +57,7 @@ func (jobRepo *JobRepository) JobsOfCategory(cat_id int) ([]entity.Job, error) {
 	for records.Next() {
 		aJob := entity.Job{}
 		records.Scan(&aJob.ID, &aJob.Name, &aJob.CompanyID, &aJob.Salary,
-			&aJob.RequiredNum, &aJob.CategoryID, &aJob.Deadline, &aJob.Description, &aJob.JobTime)
+			&aJob.RequiredNum, &aJob.Categories, &aJob.Deadline, &aJob.Description, &aJob.JobTime)
 
 		jobs = append(jobs, aJob)
 	}
@@ -75,7 +74,7 @@ func (jobRepo *JobRepository) Job(id int) (entity.Job, error) {
 	aJob := entity.Job{}
 
 	err := record.Scan(&aJob.ID, &aJob.Name, &aJob.CompanyID, &aJob.Salary,
-		&aJob.RequiredNum, &aJob.CategoryID, &aJob.Deadline, &aJob.Description, &aJob.JobTime)
+		&aJob.RequiredNum, &aJob.Categories, &aJob.Deadline, &aJob.Description, &aJob.JobTime)
 
 	if err != nil {
 		return aJob, errors.New("Unable to retrieve job")
@@ -87,7 +86,7 @@ func (jobRepo *JobRepository) Job(id int) (entity.Job, error) {
 func (jobRepo *JobRepository) UpdateJob(job entity.Job) error {
 
 	query := "UPDATE jobs SET name=$1,salary=$2,required_num=$3,cat_id=$4,deadline=$5,description=$6,job_time=$7 WHERE id=$8"
-	_, err := jobRepo.conn.Exec(query, job.Name, job.Salary, job.RequiredNum, job.CategoryID, job.Deadline, job.Description, job.JobTime, job.ID)
+	_, err := jobRepo.conn.Exec(query, job.Name, job.Salary, job.RequiredNum, job.Categories, job.Deadline, job.Description, job.JobTime, job.ID)
 
 	if err != nil {
 		return errors.New("Unable to update job")
@@ -112,7 +111,7 @@ func (jobRepo *JobRepository) DeleteJob(id int) error {
 func (jobRepo *JobRepository) StoreJob(job entity.Job) error {
 
 	query := "INSERT INTO jobs (name,cm_id,salary,required_num,cat_id,deadline,description,job_time) values ($1,$2,$3,$4,$5,$6,$7,$8);"
-	_, err := jobRepo.conn.Exec(query, job.Name, job.CompanyID, job.Salary, job.RequiredNum, job.CategoryID, job.Deadline, job.Description, job.JobTime)
+	_, err := jobRepo.conn.Exec(query, job.Name, job.CompanyID, job.Salary, job.RequiredNum, job.Categories, job.Deadline, job.Description, job.JobTime)
 
 	if err != nil {
 		return errors.New("Unable to create job")

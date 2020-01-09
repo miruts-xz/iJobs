@@ -1,5 +1,6 @@
 body{
 	padding-top: 16px;
+	overflow-x: auto;
 }
 .navbar-brand{
 	margin-top: -4%;
@@ -27,7 +28,9 @@ body{
 	margin-right: 20px;
 }
 
-
+.card-title{
+	color: #3cb878;
+}
 
 
 
@@ -166,4 +169,116 @@ body{
 
 .jobs-card{
 	margin-top: 15%;
+}
+
+.catagories-card{
+	width: 250px; 
+	text-align: center;
+	margin-top: 15%;
+	background-color: #f7fbdd;
+}
+
+
+
+/*////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////signIn-Up Page///////////////////////////////////////////////////////*/
+
+.register{
+    margin-top: 2%;
+    padding: 2%;
+}
+
+.register-left{
+	position: relative;
+    text-align: center;
+    color: #fff;
+    background-image: url('../img/signPgImg.jpg');
+	background-size: contain;
+	background-repeat: no-repeat;
+}
+
+
+
+.register .nav-tabs{
+    margin-top: 3%;
+    border: none;
+    background: #c7ea22;
+    border-radius: 1.5rem;
+    width: 28%;
+    float: right;
+}
+.register .nav-tabs .nav-link{
+    padding: 2%;
+    height: 34px;
+    font-weight: 600;
+    color: #fff;
+    border-top-right-radius: 1.5rem;
+    border-bottom-right-radius: 1.5rem;
+}
+.register .nav-tabs .nav-link:hover{
+    border: none;
+}
+.register .nav-tabs .nav-link.active{
+    width: 100px;
+    color: #c7ea22;
+    border: 2px solid #c7ea22;
+    border-top-left-radius: 1.5rem;
+    border-bottom-left-radius: 1.5rem;
+}
+
+.register-heading{
+    text-align: center;
+    margin-top: 8%;
+    margin-bottom: -15%;
+    color: #495057;
+}
+.register .register-form{
+    padding: 10%;
+    margin-top: 10%;
+}
+.btnRegister{
+    float: right;
+    margin-top: 10%;
+    border: none;
+    border-radius: 1.5rem;
+    padding: 2%;
+    background: #c7ea22;
+    color: #fff;
+    font-weight: 600;
+    width: 50%;
+    cursor: pointer;
+}
+
+.login{
+	position: relative;
+    margin-top: 65%;
+}
+.form-label-group {
+  position: relative;
+  margin-bottom: 1rem;
+}
+.btn-login {
+  font-size: 0.9rem;
+  letter-spacing: 0.05rem;
+  padding: 0.75rem 1rem;
+  border-radius: 2rem;
+  width: 50%;
+  
+}
+
+/*////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////company home page///////////////////////////////////////////////////////////////*/
+
+.jumbotron-comp-home-content-1{
+	background-color: #3cb878;
+	opacity: .65;
+	height: 400px;
+	width: 100%;
+	margin-top: 1%;
+	align-content: center;
+}
+.jumbotron-comp-home-content-2{
+	background-color: #ffffff;
+	margin-bottom: 0;
+	padding: 0;
 }

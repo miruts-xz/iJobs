@@ -1,6 +1,8 @@
 package job
 
-import "github.com/miruts/iJobs/entity"
+import (
+	"github.com/miruts/iJobs/entity"
+)
 
 type JobService interface {
 	Jobs() ([]entity.Job, error)
