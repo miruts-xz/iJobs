@@ -1,5 +1,7 @@
 package entity
 
+import "github.com/jinzhu/gorm"
+
 type Status string
 
 const (
@@ -16,7 +18,10 @@ const (
 )
 
 type Application struct {
-	ID, JobID, JsID int
-	Response        Status
-	Status          Response
+	gorm.Model
+
+	JobID       uint     `gorm:"not null"`
+	JobseekerID uint     `gorm:"not null"`
+	Response    Status   `json:"response" gorm:"varchar(255)"`
+	Status      Response `json:"status" gorm:"varchar(255)"`
 }

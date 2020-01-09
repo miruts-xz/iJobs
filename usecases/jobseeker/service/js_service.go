@@ -2,7 +2,7 @@ package service
 
 import (
 	"fmt"
-	"github.com/miruts/iJobs/entity/gorm-entity"
+	"github.com/miruts/iJobs/entity"
 	"github.com/miruts/iJobs/usecases/job"
 	"github.com/miruts/iJobs/usecases/jobseeker"
 )

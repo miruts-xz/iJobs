@@ -1,8 +1,6 @@
 package entity
 
-import (
-	"time"
-)
+import "github.com/jinzhu/gorm"
 
 type Gender string
 type EmpStatus string
@@ -17,24 +15,23 @@ const (
 	OTHER  Gender = "other"
 )
 
-type JobSeeker struct {
-	ID        uint       `gorm:"primary_key" json:"id"`
-	CreatedAt time.Time  `json:"created_at"`
-	UpdatedAt time.Time  `json:"updated_at"`
-	DeletedAt *time.Time `sql:"index" json:"deleted_at"`
+type Jobseeker struct {
+	gorm.Model
 
-	Age            uint       `json:"age"`
-	Phone          int        `json:"phone"`
-	WorkExperience int        `json:"work_experience"`
-	Username       string     `json:"username"`
-	Fullname       string     `json:"fullname"`
-	Password       string     `json:"password"`
-	Email          string     `json:"email" gorm:"unique"`
-	Profile        string     `json:"profile"`
-	Portfolio      string     `json:"portfolio"`
-	CV             string     `json:"cv"`
-	Gender         Gender     `json:"gender"`
-	Categories     []Category `json:"categories" gorm:"many2many:jobseeker_categories;"`
-	EmpStatus      EmpStatus  `json:"emp_status"`
-	Address        Address    `json:"address" gorm:"many2many:jobseeker_addresses;"`
+	Address      []Address     `json:"address" gorm:"many2many:jobseeker_addresses"`
+	Applications []Application `json:"applications" gorm:"foreignkey:JobseekerID"`
+	Categories   []Category    `json:"categories" gorm:"many2many:jobseeker_categories"`
+
+	Age            uint      `json:"age"`
+	Phone          string    `json:"phone" gorm:"unique;"`
+	WorkExperience int       `json:"work_experience"`
+	Username       string    `json:"username" gorm:"unique;not null"`
+	Fullname       string    `json:"fullname"`
+	Password       string    `json:"password"`
+	Email          string    `json:"email" gorm:"unique"`
+	Profile        string    `json:"profile"`
+	Portfolio      string    `json:"portfolio"`
+	CV             string    `json:"cv" gorm:"not null;unique"`
+	Gender         Gender    `json:"gender"`
+	EmpStatus      EmpStatus `json:"emp_status" gorm:"not null"`
 }

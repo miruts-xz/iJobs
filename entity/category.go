@@ -1,8 +1,11 @@
 package entity
 
+import "github.com/jinzhu/gorm"
+
 type Category struct {
-	ID    int64  `json:"id" gorm:"primary_key;"`
-	Name  string `json:"name"`
-	Image string `json:"image"`
-	Desc  string `json:"desc"`
+	gorm.Model
+
+	Name  string `json:"name" gorm:"type:varchar(255);not null"`
+	Image string `json:"image" gorm:"type:varchar(255)"`
+	Desc  string `json:"desc" gorm:"type:text"`
 }
