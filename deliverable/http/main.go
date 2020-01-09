@@ -22,10 +22,11 @@ func main() {
 	http.Handle("/assets/", http.StripPrefix("/assets/", fs))
 
 	http.HandleFunc("/", Welcome)
+	http.HandleFunc("/signInUp", signInUp)
 	http.HandleFunc("/jobseeker/home", jsHome)
 	http.HandleFunc("/jobseeker/appliedJobs", jsAppliedJobs)
 	http.HandleFunc("/company/home", compHome)
-	//http.HandleFunc("/menu", menuHandler.Menu)
+	http.HandleFunc("/company/postjob", compPostJob)
 
 	http.ListenAndServe(":8181", nil)
 
@@ -33,6 +34,10 @@ func main() {
 
 func Welcome(w http.ResponseWriter, r *http.Request) {
 	tmpl.ExecuteTemplate(w, "welcome.layout", nil)
+}
+
+func signInUp(w http.ResponseWriter, r *http.Request) {
+	tmpl.ExecuteTemplate(w, "signInUp.layout", nil)
 }
 
 func jsHome(w http.ResponseWriter, r *http.Request) {
@@ -45,4 +50,7 @@ func jsAppliedJobs(w http.ResponseWriter, r *http.Request) {
 
 func compHome(w http.ResponseWriter, r *http.Request) {
 	tmpl.ExecuteTemplate(w, "company.home.layout", nil)
+}
+func compPostJob(w http.ResponseWriter, r *http.Request) {
+	tmpl.ExecuteTemplate(w, "company.postjob.layout", nil)
 }
