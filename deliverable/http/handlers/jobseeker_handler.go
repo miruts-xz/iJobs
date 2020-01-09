@@ -3,7 +3,7 @@ package handlers
 import (
 	"fmt"
 	"github.com/julienschmidt/httprouter"
-	"github.com/miruts/iJobs/entity/gorm-entity"
+	"github.com/miruts/iJobs/entity"
 	"github.com/miruts/iJobs/usecases/job"
 	"github.com/miruts/iJobs/usecases/jobseeker"
 	"github.com/miruts/iJobs/util"

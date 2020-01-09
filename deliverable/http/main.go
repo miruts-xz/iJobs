@@ -10,7 +10,7 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"github.com/julienschmidt/httprouter"
 	"github.com/miruts/iJobs/deliverable/http/api"
-	entity "github.com/miruts/iJobs/entity/gorm-entity"
+	entity2 "github.com/miruts/iJobs/entity"
 	jobrepo "github.com/miruts/iJobs/usecases/job/repository"
 	jobservice "github.com/miruts/iJobs/usecases/job/service"
 	"github.com/miruts/iJobs/usecases/jobseeker/repository"
@@ -41,30 +41,30 @@ func main() {
 		return
 	}
 	defer gormdb.Close()
-	js := entity.Jobseeker{}
-	Ctgs := entity.Category{
+	js := entity2.Jobseeker{}
+	Ctgs := entity2.Category{
 		Name:  "Software Development",
 		Image: "software.jpg",
 		Desc:  "Jobs related to Software design and development",
 	}
-	Addr := entity.Address{
+	Addr := entity2.Address{
 		Region:    "Oromia",
 		City:      "Mekelle",
 		SubCity:   "Somewhere",
 		LocalName: "localname",
 	}
-	js.Categories = []entity.Category{Ctgs}
-	js.Address = []entity.Address{Addr}
+	js.Categories = []entity2.Category{Ctgs}
+	js.Address = []entity2.Address{Addr}
 	js.Username = "akayou"
 	js.Fullname = "akayou adane"
-	js.Gender = entity.MALE
+	js.Gender = entity2.MALE
 	js.Profile = "akayou.png"
 	js.WorkExperience = 2
 	js.CV = "akayou.cv.pdf"
 	js.Portfolio = "www.github.com/akuadane"
 	js.Password = "akayou@password"
 	js.Email = "akayou.adane@aait.edu.et"
-	js.EmpStatus = entity.UNEMPLD
+	js.EmpStatus = entity2.UNEMPLD
 	js.Age = 21
 	js.Phone = "251454545454"
 	gormdb.Create(&js)

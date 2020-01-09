@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/julienschmidt/httprouter"
-	"github.com/miruts/iJobs/entity/gorm-entity"
+	"github.com/miruts/iJobs/entity"
 	"github.com/miruts/iJobs/usecases/jobseeker"
 	"net/http"
 	"strconv"

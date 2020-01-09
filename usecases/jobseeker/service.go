@@ -1,6 +1,8 @@
 package jobseeker
 
-import "github.com/miruts/iJobs/entity/gorm-entity"
+import (
+	"github.com/miruts/iJobs/entity"
+)
 
 // JobseekerService interface that defines jobseeker related services
 type JobseekerService interface {
