@@ -15,6 +15,7 @@ type JobseekerRepository interface {
 	RemoveIntCategory(jsid, jcid int) error
 	AddIntCategory(jsid, jcid int) error
 	SetAddress(jsid, addid int) error
+	JobseekerByEmail(email string) (entity.Jobseeker, error)
 }
 type AddressRepository interface {
 	Addresses() ([]entity.Address, error)

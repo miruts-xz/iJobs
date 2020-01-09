@@ -64,11 +64,14 @@ func (jss *JobseekerServiceImpl) Suggestions(id int) ([]entity.Job, error) {
 	return alljobs, nil
 }
 func (jss *JobseekerServiceImpl) SetAddress(jsid, addid int) error {
-	return nil
+	return jss.jsRepo.SetAddress(jsid, addid)
 }
 func (jss *JobseekerServiceImpl) AddIntCategory(jsid, jcid int) error {
-	return nil
+	return jss.jsRepo.AddIntCategory(jsid, jcid)
 }
 func (jss *JobseekerServiceImpl) RemoveIntCategory(jsid, jcid int) error {
-	return nil
+	return jss.RemoveIntCategory(jsid, jcid)
+}
+func (jss *JobseekerServiceImpl) JobseekerByEmail(email string) (entity.Jobseeker, error) {
+	return jss.jsRepo.JobseekerByEmail(email)
 }

@@ -19,7 +19,7 @@ func TestWriteProfileToLocal(t *testing.T) {
 		fmt.Printf("Error: %v", err)
 		return
 	}
-	//expected := true
+	//expected := trued
 	real := util.SaveFile(file, "miruts.jpg")
 	fmt.Print("data", real)
 }

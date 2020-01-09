@@ -104,3 +104,11 @@ func (jss *JobseekerGormRepositoryIMpl) SetAddress(jsid, addid int) error {
 	}
 	return nil
 }
+func (jss *JobseekerGormRepositoryIMpl) JobseekerByEmail(email string) (entity.Jobseeker, error) {
+	var jobseeker entity.Jobseeker
+	errs := jss.conn.Where("email = ?", email).First(&jobseeker).GetErrors()
+	if len(errs) > 0 {
+		return jobseeker, errs[0]
+	}
+	return jobseeker, nil
+}

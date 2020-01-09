@@ -48,7 +48,7 @@ func (jsr *JobseekerRepositoryImpl) JobSeeker(id int) (entity.Jobseeker, error) 
 
 // UpdateJobSeeker updates a given jobseeker
 func (jsr *JobseekerRepositoryImpl) UpdateJobSeeker(js *entity.Jobseeker) (*entity.Jobseeker, error) {
-	query := "update jobseekers set id=$1, username=$2, fullname=$3, email=$4, phone=$5, password=$6, profile=$7, work_exp=$8, cv=$9, portfolio=$10, emp_status=$11, gender=$12, age=$13"
+	query := "update jobseekers set id=$1, username=$2, fullname=$3, email=$4, phone=$5, password=$6, profile=$7, work_experience=$8, cv=$9, portfolio=$10, emp_status=$11, gender=$12, age=$13"
 	_, err := jsr.conn.Exec(query, js.ID, js.Username, js.Fullname, js.Email, js.Phone, js.Password, js.Profile, js.WorkExperience, js.CV, js.Portfolio, js.EmpStatus, js.Gender, js.Age)
 	if err != nil {
 		return js, errors.New("unable to update jobseeker")
@@ -72,7 +72,7 @@ func (jsr *JobseekerRepositoryImpl) DeleteJobSeeker(id int) (entity.Jobseeker, e
 
 // JsCategories return all interested job categories of jobseeker with a given jobseeker id
 func (jsr *JobseekerRepositoryImpl) JsCategories(id int) ([]entity.Category, error) {
-	query := "select cat_id from jobseeker_categories where js_id = $1"
+	query := "select category_id from jobseeker_categories where jobseeker_id = $1"
 	rows, err := jsr.conn.Query(query, id)
 	if err != nil {
 		fmt.Printf("Error: %v", err)
@@ -80,7 +80,7 @@ func (jsr *JobseekerRepositoryImpl) JsCategories(id int) ([]entity.Category, err
 	}
 	var category entity.Category
 	var categories []entity.Category
-	categquery := "select * from job_categories where id = $1"
+	categquery := "select * from jobseeker_categories where jobseeker_id = $1"
 	for rows.Next() {
 		var id int
 		if err := rows.Scan(&id); err != nil {
@@ -104,7 +104,7 @@ func (jsr *JobseekerRepositoryImpl) JsCategories(id int) ([]entity.Category, err
 
 // StoreJobSeeker stores new jobseeker
 func (jsr *JobseekerRepositoryImpl) StoreJobSeeker(js *entity.Jobseeker) (*entity.Jobseeker, error) {
-	query := "insert into jobseekers (username, fullname, email, phone, password, profile, work_exp, cv, portfolio, emp_status, gender, age) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)"
+	query := "insert into jobseekers (username, fullname, email, phone, password, profile, work_experience, cv, portfolio, emp_status, gender, age) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)"
 	_, err := jsr.conn.Exec(query, js.ID, js.Username, js.Fullname, js.Email, js.Phone, js.Password, js.Profile, js.WorkExperience, js.CV, js.Portfolio, js.EmpStatus, js.Gender, js.Age)
 	if err != nil {
 		return js, errors.New("unable to store jobseeker")
@@ -113,9 +113,9 @@ func (jsr *JobseekerRepositoryImpl) StoreJobSeeker(js *entity.Jobseeker) (*entit
 }
 
 // AddIntCategory adds new Interested category list given jobseeker and category id
-func (jss *JobseekerRepositoryImpl) AddIntCategory(jsid, jcid int) error {
-	query := "insert into jobseeker_categories (js_id, cat_id) values ($1, $2)"
-	_, err := jss.conn.Exec(query, jsid, jcid)
+func (jsr *JobseekerRepositoryImpl) AddIntCategory(jsid, jcid int) error {
+	query := "insert into jobseeker_categories (jobseeker_id, category_id) values ($1, $2)"
+	_, err := jsr.conn.Exec(query, jsid, jcid)
 	if err != nil {
 		fmt.Printf("Error: %v", err)
 		return err
@@ -124,12 +124,19 @@ func (jss *JobseekerRepositoryImpl) AddIntCategory(jsid, jcid int) error {
 }
 
 // RemoveIntCategory removes category from interested list of categories given category and jobseeker id
-func (jss *JobseekerRepositoryImpl) RemoveIntCategory(jsid, jcid int) error {
-	query := "delete from jobseeker_categories where js_id = $1 and cat_id = $2"
-	_, err := jss.conn.Exec(query, jsid, jcid)
+func (jsr *JobseekerRepositoryImpl) RemoveIntCategory(jsid, jcid int) error {
+	query := "delete from jobseeker_categories where jobseeker_id = $1 and category_id = $2"
+	_, err := jsr.conn.Exec(query, jsid, jcid)
 	if err != nil {
 		fmt.Printf("Error: %v", err)
 		return err
 	}
+	return nil
+}
+func (jsr *JobseekerRepositoryImpl) JobseekerByEmail(email string) (entity.Jobseeker, error) {
+	var jobseeker entity.Jobseeker
+	return jobseeker, nil
+}
+func (jsr *JobseekerRepositoryImpl) SetAddress(jsid, addid int) error {
 	return nil
 }

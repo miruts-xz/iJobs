@@ -28,7 +28,7 @@ type Jobseeker struct {
 	Username       string    `json:"username" gorm:"unique;not null"`
 	Fullname       string    `json:"fullname"`
 	Password       string    `json:"password"`
-	Email          string    `json:"email" gorm:"unique"`
+	Email          string    `json:"email" gorm:"not null;unique"`
 	Profile        string    `json:"profile"`
 	Portfolio      string    `json:"portfolio"`
 	CV             string    `json:"cv" gorm:"not null;unique"`

@@ -1,14 +1,15 @@
 package company
 
 import (
-	entity2 "github.com/miruts/iJobs/entity"
+	"github.com/miruts/iJobs/entity"
 )
 
 type CompanyRepository interface {
-	Companies() ([]entity2.Company, error)
-	Company(cid int) (entity2.Company, error)
-	UpdateCompany(cmp *entity2.Company) (*entity2.Company, error)
-	DeleteCompany(cid int) (entity2.Company, error)
-	StoreCompany(cmp *entity2.Company) (*entity2.Company, error)
-	PostedJobs(cid int) ([]entity2.Job, error)
+	Companies() ([]entity.Company, error)
+	Company(cid int) (entity.Company, error)
+	UpdateCompany(cmp *entity.Company) (*entity.Company, error)
+	DeleteCompany(cid int) (entity.Company, error)
+	StoreCompany(cmp *entity.Company) (*entity.Company, error)
+	PostedJobs(cid int) ([]entity.Job, error)
+	CompanyByEmail(email string) (entity.Company, error)
 }

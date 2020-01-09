@@ -5,37 +5,31 @@ import (
 	"github.com/miruts/iJobs/usecases/company"
 )
 
-// CompanyServiceImpl implements CompanyService interface
 type CompanyServiceImpl struct {
-	cpRepo company.CompanyRepository
+	compRepo company.CompanyRepository
 }
 
-// NewCompanyServiceImpl returns new CompanyServiceImpl
-func (cps *CompanyServiceImpl) NewCompanyServiceImpl(cpr company.CompanyRepository) *CompanyServiceImpl {
-	return &CompanyServiceImpl{cpRepo: cpr}
+func NewCompanyServiceImpl(cr company.CompanyRepository) *CompanyServiceImpl {
+	return &CompanyServiceImpl{compRepo: cr}
 }
-
-// Company return all companys
-func (cps *CompanyServiceImpl) Companys() ([]entity.Company, error) {
-	return cps.cpRepo.Companys()
+func (cs *CompanyServiceImpl) Companies() ([]entity.Company, error) {
+	return cs.compRepo.Companies()
 }
-
-// Company return company with a given id
-func (cps *CompanyServiceImpl) Company(id int) (entity.Company, error) {
-	return cps.cpRepo.Company(id)
+func (cs *CompanyServiceImpl) Company(cid int) (entity.Company, error) {
+	return cs.compRepo.Company(cid)
 }
-
-// UpdateCompany updates a given company
-func (cps *CompanyServiceImpl) UpdateCompany(cp entity.Company) error {
-	return cps.cpRepo.UpdateCompany(cp)
+func (cs *CompanyServiceImpl) UpdateCompany(cmp *entity.Company) (*entity.Company, error) {
+	return cs.compRepo.UpdateCompany(cmp)
 }
-
-// DeleteCompany deletes company with a given id
-func (cps *CompanyServiceImpl) DeleteCompany(id int) error {
-	return cps.cpRepo.DeleteCompany(id)
+func (cs *CompanyServiceImpl) DeleteCompany(cid int) (entity.Company, error) {
+	return cs.compRepo.DeleteCompany(cid)
 }
-
-// StoreCompany stores new Company
-func (cps *CompanyServiceImpl) StoreCompany(cp entity.Company) error {
-	return cps.cpRepo.StoreCompany(cp)
+func (cs *CompanyServiceImpl) StoreCompany(cmp *entity.Company) (*entity.Company, error) {
+	return cs.compRepo.StoreCompany(cmp)
+}
+func (cs *CompanyServiceImpl) PostedJobs(cid int) ([]entity.Job, error) {
+	return cs.compRepo.PostedJobs(cid)
+}
+func (cs *CompanyServiceImpl) CompanyByEmail(email string) (entity.Company, error) {
+	return cs.compRepo.CompanyByEmail(email)
 }
