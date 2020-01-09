@@ -1,4 +1,4 @@
-{{define "jobseeker.layout"}}
+{{define "jobseeker.home.layout"}}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,21 +7,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- css -->
-    <link rel="stylesheet" type="text/css" href="../css/bootstrap.min.css">
-	<link rel="stylesheet" type="text/css" href="../css/customCss.css">
-	<link rel="stylesheet" type="text/css" href="../libs/fontawesome/fontawesome.css">
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="/assets/css/customCss.css">
+	<link rel="stylesheet" type="text/css" href="/assets/css/fontawesome.css">
 </head>
 <body>
     {{ template "jobseeker.navbar" . }}
-	{{ template "jobseeker.content" . }}
+	{{ template "jobseeker.home.content" . }}
     {{ template "footer" . }}
     <!-- js -->
-    <script defer src="/libs/fontawesome/js/fontawesome.js"></script>
+    <script defer src="/assets/js/fontawesome.js"></script>
 </body>
 </html>
 {{end}}
 
-{{define "jobseeker.content"}}
+{{define "jobseeker.home.content"}}
 <div class="jumbotron jumbotron-js-home-content-1">
     <div class="container">
         <div class="row justify-content-center">
