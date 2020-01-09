@@ -3,8 +3,7 @@ package repository
 import (
 	"database/sql"
 	"errors"
-
-	"github.com/miruts/iJobs/entity/gorm-entity"
+	"github.com/miruts/iJobs/entity"
 )
 
 type JobRepository struct {
