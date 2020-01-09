@@ -10,7 +10,7 @@ type AddressServiceImpl struct {
 }
 
 // NewJobseekerServiceImpl returns new JobseekerServiceImpl
-func (jss *JobseekerServiceImpl) NewAddressServiceImpl(jsr jobseeker.AddressRepository) *AddressServiceImpl {
+func NewAddressServiceImpl(jsr jobseeker.AddressRepository) *AddressServiceImpl {
 	return &AddressServiceImpl{addRepo: jsr}
 }
 
