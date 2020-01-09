@@ -5,6 +5,7 @@ import (
 	"github.com/julienschmidt/httprouter"
 	"github.com/miruts/iJobs/entity"
 	"github.com/miruts/iJobs/usecases/application"
+	"github.com/miruts/iJobs/usecases/company"
 	"github.com/miruts/iJobs/usecases/job"
 	"github.com/miruts/iJobs/usecases/jobseeker"
 	"github.com/miruts/iJobs/usecases/session"
@@ -18,6 +19,13 @@ import (
 )
 
 // JobseekerHandler handles jobseeker related http requests
+var tmpl *template.Template
+var jsSrvc jobseeker.JobseekerService
+var appSrvc application.IAppService
+var ctgSrvc job.CategoryService
+var jobSrvc job.JobService
+var cmpSrvc company.CompanyService
+
 type JobseekerHandler struct {
 	tmpl    *template.Template
 	jsSrv   jobseeker.JobseekerService
@@ -47,9 +55,15 @@ type JobseekerProfileNeed struct {
 }
 
 // NewJobseekerHandler creates new JobseekerHandler
-func NewJobseekerHandler(tmpl *template.Template, jss jobseeker.JobseekerService, jcs job.CategoryService, adds jobseeker.AddressService, apps application.IAppService, ss session.SessionService) *JobseekerHandler {
+func NewJobseekerHandler(tmplt *template.Template, jss jobseeker.JobseekerService, jcs job.CategoryService, adds jobseeker.AddressService, apps application.IAppService, ss session.SessionService, jssr job.JobService, cmpsrv company.CompanyService) *JobseekerHandler {
+	tmpl = tmplt
+	appSrvc = apps
+	jsSrvc = jss
+	ctgSrvc = jcs
+	jobSrvc = jssr
+	cmpSrvc = cmpsrv
 	return &JobseekerHandler{
-		tmpl:    tmpl,
+		tmpl:    tmplt,
 		jsSrv:   jss,
 		ctgSrv:  jcs,
 		addrSrv: adds,
@@ -329,4 +343,38 @@ func (jsh *JobseekerHandler) JobseekerProfile(w http.ResponseWriter, r *http.Req
 
 		}
 	}
+}
+func AppGetJobsName(app entity.Application) (string, error) {
+	job, err := jobSrvc.Job(int(app.JobID))
+	if err != nil {
+		return job.Name, err
+	}
+	return job.Name, nil
+}
+func AppGetCmpName(app entity.Application) (string, error) {
+	job, err := jobSrvc.Job(int(app.JobID))
+	if err != nil {
+		return string(job.CompanyID), err
+	}
+	cmp, err := cmpSrvc.Company(int(job.CompanyID))
+	if err != nil {
+		return cmp.CompanyName, err
+	}
+	return cmp.CompanyName, nil
+}
+func AppGetLocation(app entity.Application) (entity.Address, error) {
+	var addr entity.Address
+	job, err := jobSrvc.Job(int(app.JobID))
+	if err != nil {
+		return addr, err
+	}
+	cmp, err := cmpSrvc.Company(int(job.CompanyID))
+	if err != nil {
+		return addr, err
+	}
+	addr, err = cmpSrvc.CompanyAddress(cmp.ID)
+	if err != nil {
+		return addr, err
+	}
+	return addr, nil
 }

@@ -74,3 +74,15 @@ func (cgr *CompanyGormRepositoryImpl) CompanyByEmail(email string) (entity.Compa
 	}
 	return company, nil
 }
+func (cgr *CompanyGormRepositoryImpl) CompanyAddress(id uint) (entity.Address, error) {
+	address := entity.Address{}
+	company, err := cgr.Company(int(id))
+	if err != nil {
+		return address, err
+	}
+	errs := cgr.conn.Model(&company).Related(&address).GetErrors()
+	if len(errs) > 0 {
+		return address, errs[0]
+	}
+	return address, nil
+}

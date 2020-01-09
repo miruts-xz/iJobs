@@ -12,4 +12,5 @@ type CompanyRepository interface {
 	StoreCompany(cmp *entity.Company) (*entity.Company, error)
 	PostedJobs(cid int) ([]entity.Job, error)
 	CompanyByEmail(email string) (entity.Company, error)
+	CompanyAddress(id uint) (entity.Address, error)
 }

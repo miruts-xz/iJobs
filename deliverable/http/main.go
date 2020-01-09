@@ -26,15 +26,16 @@ var errs error
 var tmpl *template.Template
 var pqconnjs, pqconncmp *sql.DB
 
+var funcMaps = template.FuncMap{"appGetJobName": handlers.AppGetJobsName, "appGetCmpName": handlers.AppGetCmpName, "appGetLoc": handlers.AppGetLocation}
+
 func init() {
 	// Template
-	tmpl = template.Must(template.ParseGlob("ui/template/*.html"))
+	tmpl = template.Must(template.ParseGlob("ui/template/*.html")).Funcs(funcMaps)
 	//Company database connection
 	pqconncmp, err = sql.Open("postgres", "user=company password=company database=ijobs sslmode=disable")
 
 	//Jobseeker database connection
 	pqconnjs, err = sql.Open("postgres", "user=jobseeker password=jobseeker database=ijobs sslmode=disable")
-
 }
 func CreateTables(db *gorm.DB) {
 	errs := db.CreateTable(&entity.Session{}, &entity.Address{}, &entity.Category{}, &entity.Application{}, &entity.Job{}, &entity.Company{}, entity.Jobseeker{}).GetErrors()
