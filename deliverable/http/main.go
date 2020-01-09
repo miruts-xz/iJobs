@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"github.com/jinzhu/gorm"
+	"github.com/miruts/iJobs/entity"
 	apprepo "github.com/miruts/iJobs/usecases/application/repository"
 	appsrv "github.com/miruts/iJobs/usecases/application/service"
 	cmprepo "github.com/miruts/iJobs/usecases/company/repository"
@@ -31,6 +32,13 @@ func init() {
 	pqconnjs, err = sql.Open("postgres", "user=jobseeker password=jobseeker database=ijobs sslmode=disable")
 
 }
+func CreateTables(db *gorm.DB) {
+	errs = db.CreateTable(&entity.Address{}, &entity.Category{}, &entity.Application{}, &entity.Job{}, &entity.Company{}, entity.Jobseeker{}).Error
+	if errs != nil {
+		fmt.Println(errs)
+		return
+	}
+}
 func main() {
 	// Gorm Database Connection
 	gormDB, err = gorm.Open("postgres", "user=postgres dbname=ijobs_gorm_db password=postgres sslmode=disable")
@@ -39,6 +47,10 @@ func main() {
 		return
 	}
 	defer gormDB.Close()
+
+	// Create Gorm Tables
+	// Run Once
+	CreateTables(gormDB)
 
 	// Data Repositories
 	applicationRepo := apprepo.NewAppGormRepo(gormDB)
