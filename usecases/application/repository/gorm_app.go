@@ -9,13 +9,11 @@ import (
 )
 
 type AppGormRepositoryImpl struct {
-	conn   *gorm.DB
-	jsSrv  jobseeker.JobseekerService
-	jobSrv job.JobService
+	conn *gorm.DB
 }
 
-func NewAppGormRepositoryImpl(conn *gorm.DB, jsSrv jobseeker.JobseekerService, jobSrv job.JobService) *AppGormRepositoryImpl {
-	return &AppGormRepositoryImpl{conn: conn, jsSrv: jsSrv, jobSrv: jobSrv}
+func NewAppGormRepositoryImpl(conn *gorm.DB) *AppGormRepositoryImpl {
+	return &AppGormRepositoryImpl{conn: conn}
 }
 
 func (agr *AppGormRepositoryImpl) Store(app *entity.Application) (*entity.Application, error) {
@@ -34,8 +32,8 @@ func (agr *AppGormRepositoryImpl) Application(id int) (entity.Application, error
 	}
 	return application, nil
 }
-func (agr *AppGormRepositoryImpl) UserApplication(jsId int) ([]entity.Application, error) {
-	jobseeker, err := agr.jsSrv.JobSeeker(jsId)
+func (agr *AppGormRepositoryImpl) UserApplication(jsSrv jobseeker.JobseekerService, jsId int) ([]entity.Application, error) {
+	jobseeker, err := jsSrv.JobSeeker(jsId)
 	var applications []entity.Application
 	if err != nil {
 		fmt.Println(err)
@@ -47,8 +45,8 @@ func (agr *AppGormRepositoryImpl) UserApplication(jsId int) ([]entity.Applicatio
 	}
 	return applications, nil
 }
-func (agr *AppGormRepositoryImpl) ApplicationsOnJob(jobId int) ([]entity.Application, error) {
-	job, err := agr.jobSrv.Job(jobId)
+func (agr *AppGormRepositoryImpl) ApplicationsOnJob(jobSrv job.JobService, jobId int) ([]entity.Application, error) {
+	job, err := jobSrv.Job(jobId)
 	var applications []entity.Application
 	if err != nil {
 		fmt.Println(err)

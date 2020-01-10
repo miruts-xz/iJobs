@@ -62,22 +62,22 @@ func main() {
 	//CreateTables(gormDB)
 
 	// Data Repositories
-	applicationRepo := apprepo.NewApplicationGormRepositoryImpl(gormDB)
+	applicationRepo := apprepo.NewAppGormRepositoryImpl(gormDB)
 	companyRepo := cmprepo.NewCompanyGormRepositoryImpl(gormDB)
 	jobRepo := jobrepo.NewJobGormRepositoryImpl(gormDB)
 	categoryRepo := jobrepo.NewCategoryGormRepositoryImpl(gormDB)
 	jobseekerRepo := jsrepo.NewJobseekerGormRepositoryImpl(gormDB)
 	addressRepo := jsrepo.NewAddressGormRepositoryImpl(gormDB)
 	sessionRepo := repository.NewSessionGormRepositoryImpl(gormDB)
+
 	// Services
-	applicationSrv := appsrv.NewAppservice(applicationRepo)
 	companySrv := cmpsrv.NewCompanyServiceImpl(companyRepo)
 	jobSrv := jobsrv.NewJobService(jobRepo)
 	categorySrv := jobsrv.NewCategoryServiceImpl(categoryRepo)
 	jobseekerSrv := jssrv.NewJobseekerServiceImpl(jobseekerRepo, jobSrv)
 	addressSrv := jssrv.NewAddressServiceImpl(addressRepo)
 	sessionSrv := service.NewSessionServiceImpl(sessionRepo)
-
+	applicationSrv := appsrv.NewAppService(applicationRepo, jobseekerSrv, jobSrv)
 	// Handlers
 	loginHandler := handlers.NewLoginHandler(tmpl, jobseekerSrv, companySrv, sessionSrv)
 	welcomeHandler := handlers.NewWelcomeHandler(tmpl, sessionSrv, jobseekerSrv, companySrv)
@@ -88,16 +88,20 @@ func main() {
 	//fs := http.FileServer(http.Dir("ui/asset"))
 	router := httprouter.New()
 
-	// path registration
-
+	// Welcome SignIn/Up path registration
 	router.GET("/", welcomeHandler.Welcome)
 	router.GET("/login", loginHandler.GetLogin)
 	router.POST("/login", loginHandler.PostLogin)
+
+	// Jobseeker path registration
 	router.GET("/jobseeker/home", jobseekerHandler.JobseekerHome)
 	router.POST("/jobseeker/home", jobseekerHandler.JobseekerHome)
 	router.GET("/jobseeker/profile", jobseekerHandler.JobseekerProfile)
 	router.GET("/jobseeker/appliedjobs", jobseekerHandler.JobseekerAppliedJobs)
+
+	// Static file registration
 	router.ServeFiles("/assets/*filepath", http.Dir("ui/asset"))
+	// Start Serving
 	err := http.ListenAndServe(":8080", router)
 	if err != nil {
 		fmt.Printf("server failed: %s", err)

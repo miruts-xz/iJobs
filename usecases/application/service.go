@@ -1,6 +1,8 @@
 package application
 
-import "github.com/miruts/iJobs/entity"
+import (
+	"github.com/miruts/iJobs/entity"
+)
 
 type IAppService interface {
 	Store(*entity.Application) (*entity.Application, error)
