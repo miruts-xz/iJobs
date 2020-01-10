@@ -32,15 +32,28 @@ Handles GET request to localhost/login
 */
 func (lh *LoginHandler) GetLogin(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	sess, err := util.Authenticate(lh.sessSrv, r)
-	if err != nil {
-		err := lh.tmpl.ExecuteTemplate(w, "login.layout", nil)
+	if err == nil {
+		err = util.DestroySession(&w, r)
+		if err != nil {
+			return
+		}
+		_, err = lh.sessSrv.DeleteSession(int(sess.ID))
+		if err != nil {
+			return
+		}
+		err := lh.tmpl.ExecuteTemplate(w, "signInUp.layout", nil)
 		if err != nil {
 			fmt.Printf("Login Templating error: %s", err)
 			return
 		}
 		return
+	} else {
+		err := lh.tmpl.ExecuteTemplate(w, "signInUp.layout", nil)
+		if err != nil {
+			fmt.Printf("Login Templating error: %s", err)
+			return
+		}
 	}
-	util.DetectUser(&w, r, sess, lh.jsSrv, lh.cmpSrv)
 }
 
 /**

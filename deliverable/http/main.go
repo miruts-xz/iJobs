@@ -95,6 +95,7 @@ func main() {
 	router.POST("/login", loginHandler.PostLogin)
 	router.GET("/jobseeker/home", jobseekerHandler.JobseekerHome)
 	router.POST("/jobseeker/home", jobseekerHandler.JobseekerHome)
+	router.GET("/jobseeker/profile", jobseekerHandler.JobseekerProfile)
 	router.ServeFiles("/assets/*filepath", http.Dir("ui/asset"))
 	err := http.ListenAndServe(":8080", router)
 	if err != nil {

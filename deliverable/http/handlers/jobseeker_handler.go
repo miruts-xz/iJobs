@@ -308,11 +308,7 @@ func (jsh *JobseekerHandler) JobseekerHome(w http.ResponseWriter, r *http.Reques
 
 		}
 	} else {
-		err := jsh.tmpl.ExecuteTemplate(w, "login.layout", nil)
-		if err != nil {
-			fmt.Println(err)
-			return
-		}
+		http.Redirect(w, r, "/login", http.StatusSeeOther)
 	}
 }
 func (jsh *JobseekerHandler) JobseekerAppliedJobs(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
@@ -340,8 +336,28 @@ func (jsh *JobseekerHandler) JobseekerProfile(w http.ResponseWriter, r *http.Req
 	_, err := util.Authenticate(jsh.sessSrv, r)
 	if err == nil {
 		if r.Method == "GET" {
-
+			session, err := util.Authenticate(jsh.sessSrv, r)
+			if err != nil {
+				return
+			}
+			jobseeker, err := jsh.jsSrv.JobSeeker(int(session.UserID))
+			if err != nil {
+				return
+			}
+			Ctgs, err := jsh.ctgSrv.Categories()
+			if err != nil {
+				return
+			}
+			jspneeds := JobseekerProfileNeed{}
+			jspneeds.Categories = Ctgs
+			jspneeds.jobseeker = jobseeker
+			err = jsh.tmpl.ExecuteTemplate(w, "jobseeker.profile.layout", jspneeds)
+			if err != nil {
+				return
+			}
 		}
+	} else {
+		http.Redirect(w, r, "/login", http.StatusSeeOther)
 	}
 }
 func AppGetJobsName(app entity.Application) (string, error) {

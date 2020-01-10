@@ -72,6 +72,15 @@ func DetectUser(w *http.ResponseWriter, r *http.Request, sess entity.Session, js
 		// Its company
 		http.Redirect(*w, r, "/company/home", http.StatusSeeOther)
 	} else {
-		fmt.Printf("sess error")
+		fmt.Printf("session error")
 	}
+}
+func DestroySession(w *http.ResponseWriter, r *http.Request) error {
+	cookie, err := r.Cookie("_cookie")
+	if err != nil {
+		return err
+	}
+	cookie.MaxAge = -1
+	http.SetCookie(*w, cookie)
+	return nil
 }
