@@ -9,5 +9,5 @@ type SessionService interface {
 	UpdateSession(sess *entity.Session) (*entity.Session, error)
 	StoreSession(sess *entity.Session) (*entity.Session, error)
 	SessionByValue(value string) (entity.Session, error)
-	Check(sess *entity.Session) (entity.Session, error)
+	Check(sess *entity.Session) (bool, entity.Session, error)
 }

@@ -286,8 +286,8 @@ func hasvalue(value interface{}) bool {
 	return false
 }
 func (jsh *JobseekerHandler) JobseekerHome(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	session, err := util.Authenticate(jsh.sessSrv, r)
-	if err == nil {
+	ok, session := util.Authenticate(jsh.sessSrv, r)
+	if ok == true {
 		if r.Method == "GET" {
 			// Get http method
 			jsneeds := JobseekerHomeNeed{}
@@ -304,16 +304,20 @@ func (jsh *JobseekerHandler) JobseekerHome(w http.ResponseWriter, r *http.Reques
 				return
 			}
 		} else {
-			// Other http methods
 
 		}
 	} else {
+		err := util.DestroySession(&w, r)
+		fmt.Println("Destroying Session")
+		if err != nil {
+			fmt.Println(err)
+		}
 		http.Redirect(w, r, "/login", http.StatusSeeOther)
 	}
 }
 func (jsh *JobseekerHandler) JobseekerAppliedJobs(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	session, err := util.Authenticate(jsh.sessSrv, r)
-	if err == nil {
+	ok, session := util.Authenticate(jsh.sessSrv, r)
+	if ok {
 		if r.Method == "GET" {
 			// Get http method
 			jobappneeds := JobseekerAppliedNeed{}
@@ -330,16 +334,19 @@ func (jsh *JobseekerHandler) JobseekerAppliedJobs(w http.ResponseWriter, r *http
 			// Other http methods
 
 		}
+	} else {
+		err := util.DestroySession(&w, r)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		http.Redirect(w, r, "/login", http.StatusSeeOther)
 	}
 }
 func (jsh *JobseekerHandler) JobseekerProfile(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	_, err := util.Authenticate(jsh.sessSrv, r)
-	if err == nil {
+	ok, session := util.Authenticate(jsh.sessSrv, r)
+	if ok {
 		if r.Method == "GET" {
-			session, err := util.Authenticate(jsh.sessSrv, r)
-			if err != nil {
-				return
-			}
 			jobseeker, err := jsh.jsSrv.JobSeeker(int(session.UserID))
 			if err != nil {
 				return
@@ -357,6 +364,11 @@ func (jsh *JobseekerHandler) JobseekerProfile(w http.ResponseWriter, r *http.Req
 			}
 		}
 	} else {
+		err := util.DestroySession(&w, r)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
 		http.Redirect(w, r, "/login", http.StatusSeeOther)
 	}
 }

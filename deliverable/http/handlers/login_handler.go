@@ -31,9 +31,9 @@ func NewLoginHandler(tmpl *template.Template, jsSrv jobseeker.JobseekerService, 
 Handles GET request to localhost/login
 */
 func (lh *LoginHandler) GetLogin(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	sess, err := util.Authenticate(lh.sessSrv, r)
-	if err == nil {
-		err = util.DestroySession(&w, r)
+	ok, sess := util.Authenticate(lh.sessSrv, r)
+	if ok {
+		err := util.DestroySession(&w, r)
 		if err != nil {
 			return
 		}
@@ -41,7 +41,7 @@ func (lh *LoginHandler) GetLogin(w http.ResponseWriter, r *http.Request, ps http
 		if err != nil {
 			return
 		}
-		err := lh.tmpl.ExecuteTemplate(w, "signInUp.layout", nil)
+		err = lh.tmpl.ExecuteTemplate(w, "signInUp.layout", nil)
 		if err != nil {
 			fmt.Printf("Login Templating error: %s", err)
 			return

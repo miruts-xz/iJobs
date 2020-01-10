@@ -10,6 +10,7 @@ import (
 	"io/ioutil"
 	"mime/multipart"
 	"net/http"
+	"time"
 )
 
 // SaveFile saves multipart file on the given path
@@ -28,18 +29,18 @@ func SaveFile(file multipart.File, path string) bool {
 	return true
 }
 
-func Authenticate(sessSrv session.SessionService, r *http.Request) (sess entity.Session, err error) {
+func Authenticate(sessSrv session.SessionService, r *http.Request) (ok bool, sess entity.Session) {
 	cookie, err := r.Cookie("_cookie")
 	if err == nil {
 		sess = entity.Session{Uuid: cookie.Value}
-		session, err := sessSrv.Check(&sess)
-		if err != nil {
+		ok, session, err := sessSrv.Check(&sess)
+		if err != nil || !ok {
 			fmt.Println(err)
-			return session, err
+			return ok, session
 		}
-		return session, nil
+		return ok, session
 	}
-	return sess, err
+	return false, sess
 }
 func CreateSession(w *http.ResponseWriter, sess *entity.Session) error {
 	if sess != nil {
@@ -59,7 +60,7 @@ func ClearExpiredSessions(sess session.SessionService) {
 		return
 	}
 	for _, s := range sessions {
-		_, _ = sess.Check(&s)
+		_, _, _ = sess.Check(&s)
 	}
 }
 func DetectUser(w *http.ResponseWriter, r *http.Request, sess entity.Session, jsSrv jobseeker.JobseekerService, cmpSrv company.CompanyService) {
@@ -80,7 +81,7 @@ func DestroySession(w *http.ResponseWriter, r *http.Request) error {
 	if err != nil {
 		return err
 	}
-	cookie.MaxAge = -1
+	cookie.Expires = time.Now()
 	http.SetCookie(*w, cookie)
 	return nil
 }

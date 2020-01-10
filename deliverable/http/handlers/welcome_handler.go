@@ -31,8 +31,8 @@ func (wh *WelcomeHandler) Welcome(w http.ResponseWriter, r *http.Request, ps htt
 		wh.tmpl.ExecuteTemplate(w, "error.layout", http.StatusSeeOther)
 		return
 	}
-	session, err := util.Authenticate(wh.sessSrv, r)
-	if err != nil {
+	ok, session := util.Authenticate(wh.sessSrv, r)
+	if !ok {
 		err := wh.tmpl.ExecuteTemplate(w, "welcome.layout", nil)
 		if err != nil {
 			fmt.Printf("Login Templating error: %s", err)
