@@ -17,7 +17,7 @@
     {{ template "footer" . }}
     <!-- js -->
     <script src="assets/js/jquery-3.4.1.min.js"></script>
-	<script src="assets//js/bootstrap.min.js"></script>
+	<script src="assets/js/bootstrap.min.js"></script>
     <script defer src="/assets/js/fontawesome.js"></script>
 </body>
 </html>
@@ -82,9 +82,26 @@
                                         <input type="text" name="phone" minlength="10" maxlength="10" name="txtEmpPhone" class="form-control" placeholder="Your Phone *" value="" />
                                     </div>
                                     <div class="form-group">
-                                        <img id="preview" src="" alt="" width="50px" height="50px">
-                                        <label for="propic" class="col-sm-2 col-form-label">Upload Profile Picture </label>
-                                          <input type="file" class="form-control-file" name="propic" id="propic">
+                                        <script>
+                                            function readURL(input) {
+                                                if (input.files && input.files[0]) {
+                                                    var reader = new FileReader();
+
+                                                    reader.onload = function(e) {
+                                                        $('#preview').attr('src', e.target.result);
+                                                        $("#propiclabel").hide();
+                                                    };
+
+                                                    reader.readAsDataURL(input.files[0]);
+                                                }
+                                            }
+                                        </script>
+                                        <form>
+                                            <label for="propic" id="propiclabel" class="col-sm-2 col-form-label">Upload Profile Picture </label>
+                                            <img id="preview" src="#" alt="" width="100px" height="100px"/>
+                                            <input type="file" onchange="readURL(this)" class="form-control-file" name="propic" id="propic"/>
+
+                                        </form>
                                     </div>
                                     <div class="form-group">
                                         <div class="maxl">
