@@ -60,6 +60,7 @@
                             <h3 class="register-heading">Apply as a Job-Seeker</h3>
                             <div class="row register-form">
                                   <div class="col-md-6">
+                                      <form>
                                     <div class="form-group">
                                         <input type="text" name="fname" class="form-control" placeholder="First Name *" value="" />
                                     </div>
@@ -67,10 +68,10 @@
                                         <input type="text" name="lname" class="form-control" placeholder="Last Name *" value="" />
                                     </div>
                                     <div class="form-group">
-                                        <input type="text" name="uname" class="form-control" placeholder="Username *" value="" />
+                                        <input type="text" name="uname" class="form-control" placeholder="Username *" value="" required/>
                                     </div>
                                     <div class="form-group">
-                                        <input type="email" class="form-control" placeholder="Your Email *" value="" />
+                                        <input type="email" class="form-control" placeholder="Your Email *" value="" required/>
                                     </div>
                                     <div class="form-group">
                                         <input type="password" class="form-control"  placeholder="Password *" value="" />
@@ -98,10 +99,11 @@
                                             </label>
                                         </div>
                                     </div>
+                                </form>
                                 </div>
 
                                 <div class="col-md-6">
-                               
+                                    <form>
                                     <div class="form-group">
                                         <label for="region">Region</label>
                                         <select class="form-control" name="region" id="region">
@@ -152,16 +154,17 @@
                                     </div>
                                     <div class="form-group">
                                         <label for="empstatus">Employment Status</label>
-                                        <select class="form-control" id="empstatus" name="empstatus">
+                                        <select class="form-control" id="empstatus" name="empstatus" required>
                                             <option>Employed</option>
                                             <option>Unemployed</option>
                                         </select>
                                     </div>
                                     <div class="form-group">
                                         <label for="cv" class="col-sm-2 col-form-label">Upload CV </label>
-                                          <input type="file" class="form-control-file" name="cv" id="cv">
+                                          <input type="file" class="form-control-file" name="cv" id="cv" required>
                                     </div>
                                     <input type="submit" class="btnRegister"  value="Register"/>
+                                </form>
                                 </div>
 
                            </div>
@@ -171,25 +174,26 @@
                             <h3  class="register-heading">Apply as a Hirer</h3>
                             <div class="row register-form">
                                 <div class="col-md-6">
-                                    
+                                    <form>
                                     <div class="form-group">
-                                        <input type="text" name="name" class="form-control" placeholder="Name *" value="" />
+                                        <input type="text" name="name" class="form-control" placeholder="Name *" value="" required/>
                                     </div>
                                     <div class="form-group">
-                                        <input type="password" name="pswd" class="form-control"  placeholder="Password *" value="" />
+                                        <input type="password" name="pswd" class="form-control"  placeholder="Password *" value="" required/>
                                     </div>
                                     <div class="form-group">
-                                        <input type="password" name="pswd" class="form-control"  placeholder="Confirm Password *" value="" />
+                                        <input type="password" name="pswd" class="form-control"  placeholder="Confirm Password *" value="" required/>
                                     </div>
                                     <div class="form-group">
                                         <label for="logo" class="col-sm-2 col-form-label">Upload Logo </label>
                                           <input type="file" class="form-control-file" name="logo" id="logo">
                                     </div>
-
+                                </form>
                                 </div>
                                 <div class="col-md-6">
+                                    <form>
                                     <div class="form-group">
-                                        <input type="email" name="email" class="form-control" placeholder="Your Email *" value="" />
+                                        <input type="email" name="email" class="form-control" placeholder="Your Email *" value="" required/>
                                     </div>
                                     <div class="form-group">
                                         <input type="text" name="phone" minlength="10" maxlength="10" name="txtEmpPhone" class="form-control" placeholder="Your Phone *" value="" />
@@ -200,6 +204,7 @@
                                     <div class="form-group">
                                         <textarea name="shortdesc" class="form-control span6" rows="2" placeholder="Short description about company"></textarea> 
                                     </div>
+                                </form>
                                 </div>                                     
                                  
                                     <input type="submit" class="btnRegister"  value="Register"/>
