@@ -15,7 +15,7 @@ type ApplicationApiHandler struct {
 	appService service.AppService
 }
 
-func NewJobApiHandler(appSrv service.AppService) *ApplicationApiHandler {
+func NewAppApiHandler(appSrv service.AppService) *ApplicationApiHandler {
 	return &ApplicationApiHandler{appService: appSrv}
 }
 
@@ -24,24 +24,64 @@ func (appHandler *ApplicationApiHandler) ApplicationsOnJob(w http.ResponseWriter
 	w.Header().Set("Content-Type", "application/json")
 	id := ps.ByName("id")
 	idint, err := strconv.Atoi(id)
-	apps, err := appHandler.appService.ApplicationsOnJob(idint)
 	if err != nil {
 		fmt.Println(err)
 		http.Error(w, http.StatusText(404), 404)
 		return
 	}
-	response, err := json.Marshal(apps)
+	app, err := appHandler.appService.ApplicationsOnJob(idint)
+	if err != nil {
+		fmt.Println(err)
+		http.Error(w, http.StatusText(404), 404)
+		return
+	}
+	response, err := json.Marshal(job)
 	if err != nil {
 		fmt.Println(err)
 		http.Error(w, http.StatusText(404), 404)
 		return
 	}
 	_, err = w.Write(response)
+	if err != nil {
+		fmt.Println(err)
+		http.Error(w, http.StatusText(404), 404)
+		return
+	}
+
+}
+func (appHandler *ApplicationApiHandler) Application(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+
+	w.Header().Set("Content-Type", "application/json")
+	id := ps.ByName("id")
+	idint, err := strconv.Atoi(id)
+	if err != nil {
+		fmt.Println(err)
+		http.Error(w, http.StatusText(404), 404)
+		return
+	}
+	app, err := appHandler.appService.Application(idint)
+	if err != nil {
+		fmt.Println(err)
+		http.Error(w, http.StatusText(404), 404)
+		return
+	}
+	response, err := json.Marshal(job)
+	if err != nil {
+		fmt.Println(err)
+		http.Error(w, http.StatusText(404), 404)
+		return
+	}
+	_, err = w.Write(response)
+	if err != nil {
+		fmt.Println(err)
+		http.Error(w, http.StatusText(404), 404)
+		return
+	}
 
 }
 
-func (appHandler *ApplicationApiHandler) ApplicationsOnJob(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-
+func (appHandler *ApplicationApiHandler) ApplicationsOfJs(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+	
 	w.Header().Set("Content-Type", "application/json")
 	id := ps.ByName("id")
 	idint, err := strconv.Atoi(id)
@@ -71,89 +111,22 @@ func (appHandler *ApplicationApiHandler) ApplicationsOnJob(w http.ResponseWriter
 
 }
 
-func (jobHander *JobApiHandler) UpdateJob(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+func (appHandler *ApplicationApiHandler) AddApplication(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	w.Header().Set("Content-Type", "application/json")
-	id := ps.ByName("id")
-	idint, err := strconv.Atoi(id)
+	var app entity.Application
+	err := json.NewDecoder(r.Body).Decode(&app)
 	if err != nil {
 		fmt.Println(err)
 		http.Error(w, http.StatusText(404), 404)
 		return
 	}
-	_, err = jobHander.jobService.Job(idint)
+	err = appHandler.appService.Store(app)
 	if err != nil {
 		fmt.Println(err)
 		http.Error(w, http.StatusText(404), 404)
 		return
 	}
-	job := entity.Job{}
-	err = json.NewDecoder(r.Body).Decode(&job)
-	if err != nil {
-		fmt.Println(err)
-		http.Error(w, http.StatusText(404), 404)
-		return
-	}
-	err = jobHander.jobService.UpdateJob(job)
-	if err != nil {
-		fmt.Println(err)
-		http.Error(w, http.StatusText(404), 404)
-		return
-	}
-	response, err := json.Marshal(job)
-	if err != nil {
-		fmt.Println(err)
-		http.Error(w, http.StatusText(404), 404)
-		return
-	}
-	_, err = w.Write(response)
-	if err != nil {
-		fmt.Println(err)
-		http.Error(w, http.StatusText(404), 404)
-		return
-	}
-}
-
-func (jobHander *JobApiHandler) DeleteJob(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	w.Header().Set("Content-Type", "application/json")
-	id := ps.ByName("id")
-	idint, err := strconv.Atoi(id)
-	if err != nil {
-		fmt.Println(err)
-		http.Error(w, http.StatusText(404), 404)
-		return
-	}
-	_, err = jobHander.jobService.Job(idint)
-	if err != nil {
-		fmt.Println(err)
-		http.Error(w, http.StatusText(404), 404)
-		return
-	}
-	err = jobHander.jobService.DeleteJob(idint)
-	if err != nil {
-		fmt.Println(err)
-		http.Error(w, http.StatusText(404), 404)
-		return
-	}
-	w.WriteHeader(http.StatusNoContent)
-	return
-}
-
-func (jobHander *JobApiHandler) AddJob(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	w.Header().Set("Content-Type", "application/json")
-	var job entity.Job
-	err := json.NewDecoder(r.Body).Decode(&job)
-	if err != nil {
-		fmt.Println(err)
-		http.Error(w, http.StatusText(404), 404)
-		return
-	}
-	err = jobHander.jobService.StoreJob(job)
-	if err != nil {
-		fmt.Println(err)
-		http.Error(w, http.StatusText(404), 404)
-		return
-	}
-	response, err := json.Marshal(job)
+	response, err := json.Marshal(app)
 	if err != nil {
 		fmt.Println(err)
 		http.Error(w, http.StatusText(404), 404)
