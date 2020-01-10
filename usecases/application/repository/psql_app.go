@@ -28,6 +28,28 @@ func (appRepo *AppRepository) Store(app entity.Application) error {
 
 }
 
+func (appRepo *AppRepository) Application(appId int) ([]entity.Application, error) {
+
+	query := "SELECT * FROM applications WHERE id=$1"
+	records, err := appRepo.conn.Query(query, appId)
+
+	if err != nil {
+		return nil, errors.New("Unable to fetch application")
+	}
+
+	apps := []entity.Application{}
+
+	for records.Next() {
+		app := entity.Application{}
+
+		records.Scan(&app.ID, &app.JobID, &app.JobseekerID, &app.Status, &app.Response)
+
+		apps = append(apps, app)
+	}
+	return apps, nil
+
+}
+
 func (appRepo *AppRepository) UserApplication(JsId int) ([]entity.Application, error) {
 
 	query := "SELECT * FROM applications WHERE js_id=$1"

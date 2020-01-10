@@ -14,18 +14,24 @@ func NewAppservice(appRepo application.IAppRepository) *AppService {
 }
 
 func (appService *AppService) Store(app entity.Application) error {
-	//return appService.appRepo.Store(app)
-	return nil
+	return appService.appRepo.Store(app)
+
 }
+
+func (appService *AppService) Application(appId int) ([]entity.Application, error) {
+	return appService.appRepo.Application(appId)
+
+}
+
 func (appService *AppService) UserApplication(JsId int) ([]entity.Application, error) {
-	//return appService.appRepo.UserApplication(JsId)
-	return nil, nil
+	return appService.appRepo.UserApplication(JsId)
+
 }
 func (appService *AppService) ApplicationsOnJob(jobId int) ([]entity.Application, error) {
-	//return appService.appRepo.ApplicationsOnJob(jobId)
-	return nil, nil
+	return appService.appRepo.ApplicationsOnJob(jobId)
+
 }
 func (appService *AppService) DeleteApplication(id int) error {
-	//return appService.DeleteApplication(id)
-	return nil
+	return appService.DeleteApplication(id)
+
 }
