@@ -5,6 +5,7 @@ import (
 	"github.com/julienschmidt/httprouter"
 	"github.com/miruts/iJobs/entity"
 	"github.com/miruts/iJobs/usecases/company"
+	"github.com/miruts/iJobs/usecases/job"
 	"github.com/miruts/iJobs/usecases/jobseeker"
 	"github.com/miruts/iJobs/usecases/session"
 	"github.com/miruts/iJobs/util"
@@ -20,11 +21,12 @@ type LoginHandler struct {
 	jsSrv   jobseeker.JobseekerService
 	cmpSrv  company.CompanyService
 	sessSrv session.SessionService
+	ctgSrv  job.CategoryService
 }
 
 // NewLoginHandler creates new LoginHandler
-func NewLoginHandler(tmpl *template.Template, jsSrv jobseeker.JobseekerService, cmpSrv company.CompanyService, ss session.SessionService) *LoginHandler {
-	return &LoginHandler{tmpl: tmpl, jsSrv: jsSrv, cmpSrv: cmpSrv, sessSrv: ss}
+func NewLoginHandler(tmpl *template.Template, jsSrv jobseeker.JobseekerService, cmpSrv company.CompanyService, sessSrv session.SessionService, ctgSrv job.CategoryService) *LoginHandler {
+	return &LoginHandler{tmpl: tmpl, jsSrv: jsSrv, cmpSrv: cmpSrv, sessSrv: sessSrv, ctgSrv: ctgSrv}
 }
 
 /**
@@ -41,16 +43,41 @@ func (lh *LoginHandler) GetLogin(w http.ResponseWriter, r *http.Request, ps http
 		if err != nil {
 			return
 		}
-		err = lh.tmpl.ExecuteTemplate(w, "signInUp.layout", nil)
+		jobCtgs, err := lh.ctgSrv.Categories()
+		Regions := []string{entity.Tigray, entity.Amhara, entity.Sidama, entity.Afar, entity.Somalia, entity.Gambella, entity.Harare, entity.Snnpr, entity.Oromia, entity.Benshangul}
+		Cities := []string{entity.Addis, entity.Mekele, entity.Hawassa, entity.Adamma, entity.Gonder}
+		SubCities := []string{entity.Gulele, entity.Arada, entity.Yeka, entity.Bole, entity.Cherkos, entity.AddisKetema}
+		var registerNeed RegisterNeed
+		registerNeed.Categories = jobCtgs
+		registerNeed.Regions = Regions
+		registerNeed.Cities = Cities
+		registerNeed.Subcities = SubCities
 		if err != nil {
-			fmt.Printf("Login Templating error: %s", err)
+			fmt.Println(err)
 			return
 		}
-		return
-	} else {
-		err := lh.tmpl.ExecuteTemplate(w, "signInUp.layout", nil)
+		err = lh.tmpl.ExecuteTemplate(w, "signInUp.layout", registerNeed)
 		if err != nil {
-			fmt.Printf("Login Templating error: %s", err)
+			fmt.Println(err)
+			return
+		}
+	} else {
+		jobCtgs, err := lh.ctgSrv.Categories()
+		Regions := []string{entity.Tigray, entity.Amhara, entity.Sidama, entity.Afar, entity.Somalia, entity.Gambella, entity.Harare, entity.Snnpr, entity.Oromia, entity.Benshangul}
+		Cities := []string{entity.Addis, entity.Mekele, entity.Hawassa, entity.Adamma, entity.Gonder}
+		SubCities := []string{entity.Gulele, entity.Arada, entity.Yeka, entity.Bole, entity.Cherkos, entity.AddisKetema}
+		var registerNeed RegisterNeed
+		registerNeed.Categories = jobCtgs
+		registerNeed.Regions = Regions
+		registerNeed.Cities = Cities
+		registerNeed.Subcities = SubCities
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		err = lh.tmpl.ExecuteTemplate(w, "signInUp.layout", registerNeed)
+		if err != nil {
+			fmt.Println(err)
 			return
 		}
 	}

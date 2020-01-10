@@ -10,7 +10,6 @@ import (
 	"io/ioutil"
 	"mime/multipart"
 	"net/http"
-	"time"
 )
 
 // SaveFile saves multipart file on the given path
@@ -81,7 +80,7 @@ func DestroySession(w *http.ResponseWriter, r *http.Request) error {
 	if err != nil {
 		return err
 	}
-	cookie.Expires = time.Now()
+	cookie.MaxAge = -1
 	http.SetCookie(*w, cookie)
 	return nil
 }

@@ -37,7 +37,7 @@ func (ss *SessionServiceImpl) Check(sess *entity.Session) (bool, entity.Session,
 	session, err := ss.SessionByValue(sess.Uuid)
 	if err != nil {
 		return false, session, errors.New("session not found")
-	} else if time.Now().Sub(session.CreatedAt) < 30*time.Second {
+	} else if time.Now().Sub(session.CreatedAt) < 6*time.Hour {
 		session.CreatedAt = time.Now()
 		session, err := ss.UpdateSession(&session)
 		if err != nil {

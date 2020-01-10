@@ -103,40 +103,43 @@
                                 <div class="col-md-6">
                                
                                     <div class="form-group">
-                                        <select name="region" id="region">
+                                        <label for="region">Region</label>
+                                        <select class="form-control" name="region" id="region">
                                             {{if .Regions}}
                                                 {{range .Regions}}
                                                     <option value="{{.}}">{{.}}</option>
                                                 {{end}}
                                             {{end}}
                                         </select>
-                                        <input type="text" name="region" class="form-control" placeholder="Region *" value="" />
+
                                     </div>
                                     <div class="form-group">
-                                        <select name="city" id="city">
+                                        <label for="city">City</label>
+                                        <select class="form-control" name="city" id="city">
                                             {{if .Cities}}
                                                 {{range .Cities}}
                                                     <option value="{{.}}">{{.}}</option>
                                                 {{end}}
                                             {{end}}
                                         </select>
-                                        <input type="text" name="city" class="form-control" placeholder="City *" value="" />
                                     </div>
                                     <div class="form-group">
-                                        <select name="subcity" id="subcity">
+                                        <label for="subcity">Sub City</label>
+                                        <select class="form-control" name="subcity" id="subcity">
                                             {{if .Subcities}}
                                                 {{range .Subcities}}
                                                     <option value="{{.}}">{{.}}</option>
                                                 {{end}}
                                             {{end}}
                                         </select>
-                                        <input type="text" name="subcity" class="form-control" placeholder="Sub City *" value="" />
+
                                     </div>
                                     <div class="form-group">
-                                        <input type="text" name="localname" class="form-control" placeholder="Local Name *" value="" />
+                                        <input type="text" id="localname" name="localname" class="form-control" placeholder="Local Name *" value="" />
                                     </div>
                                     <div class="form-group">
-                                        <select name="intjobcat" class="form-control" multiple>
+                                        <label for="intjobcat">Interested Categories</label>
+                                        <select class="form-control" id="intjobcat" name="intjobcat" class="form-control" multiple>
                                             {{ if .Categories}}
                                                 {{range .Categories}}
                                                     <option value="{{.Name}}">{{.Name}}</option>
@@ -148,7 +151,8 @@
                                         <input type="text" name="wrkexp" class="form-control" placeholder="Work experience *" value="" />
                                     </div>
                                     <div class="form-group">
-                                        <select class="form-control" name="empstatus">
+                                        <label for="empstatus">Employment Status</label>
+                                        <select class="form-control" id="empstatus" name="empstatus">
                                             <option>Employed</option>
                                             <option>Unemployed</option>
                                         </select>

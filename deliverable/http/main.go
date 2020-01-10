@@ -79,7 +79,7 @@ func main() {
 	sessionSrv := service.NewSessionServiceImpl(sessionRepo)
 	applicationSrv := appsrv.NewAppService(applicationRepo, jobseekerSrv, jobSrv)
 	// Handlers
-	loginHandler := handlers.NewLoginHandler(tmpl, jobseekerSrv, companySrv, sessionSrv)
+	loginHandler := handlers.NewLoginHandler(tmpl, jobseekerSrv, companySrv, sessionSrv, categorySrv)
 	welcomeHandler := handlers.NewWelcomeHandler(tmpl, sessionSrv, jobseekerSrv, companySrv)
 	jobseekerHandler := handlers.NewJobseekerHandler(tmpl, jobseekerSrv, categorySrv, addressSrv, applicationSrv, sessionSrv, jobSrv, companySrv)
 	//go util.ClearExpiredSessions(sessionSrv)
@@ -92,6 +92,7 @@ func main() {
 	router.GET("/", welcomeHandler.Welcome)
 	router.GET("/login", loginHandler.GetLogin)
 	router.POST("/login", loginHandler.PostLogin)
+	router.GET("/signup/jobseeker", jobseekerHandler.JobseekerRegister)
 
 	// Jobseeker path registration
 	router.GET("/jobseeker/home", jobseekerHandler.JobseekerHome)
