@@ -105,7 +105,7 @@ func (jsr *JobseekerRepositoryImpl) JsCategories(id int) ([]entity.Category, err
 // StoreJobSeeker stores new jobseeker
 func (jsr *JobseekerRepositoryImpl) StoreJobSeeker(js *entity.Jobseeker) (*entity.Jobseeker, error) {
 	query := "insert into jobseekers (username, fullname, email, phone, password, profile, work_experience, cv, portfolio, emp_status, gender, age) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)"
-	_, err := jsr.conn.Exec(query, js.ID, js.Username, js.Fullname, js.Email, js.Phone, js.Password, js.Profile, js.WorkExperience, js.CV, js.Portfolio, js.EmpStatus, js.Gender, js.Age)
+	_, err := jsr.conn.Exec(query, js.Username, js.Fullname, js.Email, js.Phone, js.Password, js.Profile, js.WorkExperience, js.CV, js.Portfolio, js.EmpStatus, js.Gender, js.Age)
 	if err != nil {
 		return js, errors.New("unable to store jobseeker")
 	}

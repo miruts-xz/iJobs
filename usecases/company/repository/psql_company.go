@@ -3,6 +3,7 @@ package repository
 import (
 	"database/sql"
 	"errors"
+	"fmt"
 	"github.com/miruts/iJobs/entity"
 )
 
@@ -17,7 +18,7 @@ func NewCompanyRepositoryImpl(cpr *sql.DB) *CompanyRepositoryImpl {
 }
 
 // Companys retrieves and returns all companys
-func (cpr *CompanyRepositoryImpl) Companys() ([]entity.Company, error) {
+func (cpr *CompanyRepositoryImpl) Companies() ([]entity.Company, error) {
 	query := "select * from companies"
 	rows, err := cpr.conn.Query(query)
 	if err != nil {
@@ -46,31 +47,48 @@ func (cpr *CompanyRepositoryImpl) Company(id int) (entity.Company, error) {
 }
 
 // UpdateCompany updates a given company
-func (cpr *CompanyRepositoryImpl) UpdateCompany(cp entity.Company) error {
+func (cpr *CompanyRepositoryImpl) UpdateCompany(cp *entity.Company) (*entity.Company, error) {
 	query := "update companies set id=$1, company_name=$2, password=$3, email=$4, phone=$5, logo=$7, short_desc=$9, detail_info=$10"
 	_, err := cpr.conn.Exec(query, cp.ID, cp.CompanyName, cp.Password, cp.Email, cp.Phone, cp.Logo, cp.ShortDesc, cp.DetailInfo, cp.Address)
 	if err != nil {
-		return errors.New("unable to update company")
+		return cp, errors.New("unable to update company")
 	}
-	return nil
+	return cp, nil
 }
 
 // DeleteCompany deletes a company with a given id
-func (cpr *CompanyRepositoryImpl) DeleteCompany(id int) error {
-	query := "delete from companies where id=$1"
-	_, err := cpr.conn.Exec(query, id)
+func (cpr *CompanyRepositoryImpl) DeleteCompany(id int) (entity.Company, error) {
+	company, err := cpr.Company(id)
 	if err != nil {
-		return errors.New("unable to delete company")
+		fmt.Println(err)
+		return company, err
 	}
-	return nil
+	query := "delete from companies where id=$1"
+	_, err = cpr.conn.Exec(query, id)
+	if err != nil {
+		return company, errors.New("unable to delete company")
+	}
+	return company, nil
 }
 
 // StoreCompany stores new company
-func (cpr *CompanyRepositoryImpl) StoreCompany(cp entity.Company) error {
+func (cpr *CompanyRepositoryImpl) StoreCompany(cp *entity.Company) (*entity.Company, error) {
 	query := "insert into companies (ID, company_name, Password, Email, Phone, Logo, Short_desc, Detail_info) values ($1, $2, $3, $4, $5, $6, $7, $8)"
 	_, err := cpr.conn.Exec(query, cp.ID, cp.CompanyName, cp.Password, cp.Email, cp.Phone, cp.Logo, cp.ShortDesc, cp.DetailInfo)
 	if err != nil {
-		return errors.New("unable to store company")
+		return cp, errors.New("unable to store company")
 	}
-	return nil
+	return cp, nil
+}
+func (cpr *CompanyRepositoryImpl) PostedJobs(cid int) ([]entity.Job, error) {
+	var jobs []entity.Job
+	return jobs, errors.New("un implemented method error")
+}
+func (cpr *CompanyRepositoryImpl) CompanyByEmail(email string) (entity.Company, error) {
+	var company entity.Company
+	return company, errors.New("un implemented method error")
+}
+func (cpr *CompanyRepositoryImpl) CompanyAddress(id uint) (entity.Address, error) {
+	var address entity.Address
+	return address, errors.New("un implemented method error")
 }

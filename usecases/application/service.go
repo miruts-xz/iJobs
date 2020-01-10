@@ -3,8 +3,9 @@ package application
 import "github.com/miruts/iJobs/entity"
 
 type IAppService interface {
-	Store(entity.Application) error
-	UserApplication(JsId int) ([]entity.Application, error)
+	Store(*entity.Application) (*entity.Application, error)
+	Application(id int) (entity.Application, error)
+	UserApplication(jsId int) ([]entity.Application, error)
 	ApplicationsOnJob(jobId int) ([]entity.Application, error)
-	DeleteApplication(id int) error
+	DeleteApplication(id int) (entity.Application, error)
 }

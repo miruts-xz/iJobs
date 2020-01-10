@@ -325,7 +325,7 @@ func (jsh *JobseekerHandler) JobseekerAppliedJobs(w http.ResponseWriter, r *http
 			Ctgs, _ := jsh.ctgSrv.Categories()
 			jobappneeds.Categories = Ctgs
 			jobappneeds.Applications = Appls
-			err := jsh.tmpl.ExecuteTemplate(w, "jobseeker.appliedjobs.layout", jobappneeds)
+			err := jsh.tmpl.ExecuteTemplate(w, "jobseeker.appliedJobs.layout", jobappneeds)
 			if err != nil {
 				fmt.Println(err)
 				return

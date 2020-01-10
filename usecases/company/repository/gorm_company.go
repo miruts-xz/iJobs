@@ -13,74 +13,74 @@ type CompanyGormRepositoryImpl struct {
 func NewCompanyGormRepositoryImpl(db *gorm.DB) *CompanyGormRepositoryImpl {
 	return &CompanyGormRepositoryImpl{conn: db}
 }
-func (cgr *CompanyGormRepositoryImpl) Companies() ([]entity.Company, error) {
+func (cpr *CompanyGormRepositoryImpl) Companies() ([]entity.Company, error) {
 	var companies []entity.Company
-	errs := cgr.conn.Find(&companies).GetErrors()
+	errs := cpr.conn.Find(&companies).GetErrors()
 	if len(errs) > 0 {
 		return companies, errs[0]
 	}
 	return companies, nil
 }
-func (cgr *CompanyGormRepositoryImpl) Company(cid int) (entity.Company, error) {
+func (cpr *CompanyGormRepositoryImpl) Company(cid int) (entity.Company, error) {
 	var company entity.Company
-	errs := cgr.conn.First(&company, cid).GetErrors()
+	errs := cpr.conn.First(&company, cid).GetErrors()
 	if len(errs) > 0 {
 		return company, errs[0]
 	}
 	return company, nil
 }
-func (cgr *CompanyGormRepositoryImpl) UpdateCompany(cmp *entity.Company) (*entity.Company, error) {
+func (cpr *CompanyGormRepositoryImpl) UpdateCompany(cmp *entity.Company) (*entity.Company, error) {
 	company := cmp
-	errs := cgr.conn.Save(&company).GetErrors()
+	errs := cpr.conn.Save(&company).GetErrors()
 	if len(errs) > 0 {
 		return company, errs[0]
 	}
 	return company, nil
 }
-func (cgr *CompanyGormRepositoryImpl) DeleteCompany(cid int) (entity.Company, error) {
+func (cpr *CompanyGormRepositoryImpl) DeleteCompany(cid int) (entity.Company, error) {
 	var company entity.Company
-	errs := cgr.conn.First(&company, cid).GetErrors()
+	errs := cpr.conn.First(&company, cid).GetErrors()
 	if len(errs) > 0 {
 		return company, errs[0]
 	}
 	return company, nil
 }
-func (cgr *CompanyGormRepositoryImpl) StoreCompany(cmp *entity.Company) (*entity.Company, error) {
+func (cpr *CompanyGormRepositoryImpl) StoreCompany(cmp *entity.Company) (*entity.Company, error) {
 	company := cmp
-	errs := cgr.conn.Create(&company).GetErrors()
+	errs := cpr.conn.Create(&company).GetErrors()
 	if len(errs) > 0 {
 		return company, errs[0]
 	}
 	return company, nil
 }
-func (cgr *CompanyGormRepositoryImpl) PostedJobs(cid int) ([]entity.Job, error) {
-	company, err := cgr.Company(cid)
+func (cpr *CompanyGormRepositoryImpl) PostedJobs(cid int) ([]entity.Job, error) {
+	company, err := cpr.Company(cid)
 	if err != nil {
 		fmt.Println(err)
 		return nil, err
 	}
 	var jobs []entity.Job
-	errs := cgr.conn.Model(&company).Related(&jobs).GetErrors()
+	errs := cpr.conn.Model(&company).Related(&jobs).GetErrors()
 	if len(errs) > 0 {
 		return jobs, errs[0]
 	}
 	return jobs, nil
 }
-func (cgr *CompanyGormRepositoryImpl) CompanyByEmail(email string) (entity.Company, error) {
+func (cpr *CompanyGormRepositoryImpl) CompanyByEmail(email string) (entity.Company, error) {
 	var company entity.Company
-	errs := cgr.conn.Where("email = ?", email).First(&company).GetErrors()
+	errs := cpr.conn.Where("email = ?", email).First(&company).GetErrors()
 	if len(errs) > 0 {
 		return company, errs[0]
 	}
 	return company, nil
 }
-func (cgr *CompanyGormRepositoryImpl) CompanyAddress(id uint) (entity.Address, error) {
+func (cpr *CompanyGormRepositoryImpl) CompanyAddress(id uint) (entity.Address, error) {
 	address := entity.Address{}
-	company, err := cgr.Company(int(id))
+	company, err := cpr.Company(int(id))
 	if err != nil {
 		return address, err
 	}
-	errs := cgr.conn.Model(&company).Related(&address).GetErrors()
+	errs := cpr.conn.Model(&company).Related(&address).GetErrors()
 	if len(errs) > 0 {
 		return address, errs[0]
 	}
