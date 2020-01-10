@@ -25,14 +25,14 @@ import (
 var gormDB *gorm.DB
 var err error
 var errs error
-var tmpl *template.Template
+var tmpl = template.Must(template.New("index").Funcs(funcMaps).ParseGlob("ui/template/*.html"))
 var pqconnjs, pqconncmp *sql.DB
 
 var funcMaps = template.FuncMap{"appGetJobName": handlers.AppGetJobsName, "appGetCmpName": handlers.AppGetCmpName, "appGetLoc": handlers.AppGetLocation}
 
 func init() {
 	// Template
-	tmpl = template.Must(template.ParseGlob("ui/template/*.html")).Funcs(funcMaps)
+
 	//Company database connection
 	pqconncmp, err = sql.Open("postgres", "user=company password=company database=ijobs sslmode=disable")
 	defer pqconncmp.Close()

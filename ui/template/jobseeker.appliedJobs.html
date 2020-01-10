@@ -22,7 +22,6 @@
 {{end}}
 
 {{define "jobseeker.appliedJobs.content"}}
-
 <div class="container-fluid " style="margin-left: 5%;">
     <div class="row no-gutters">
         <div class="d-none d-md-flex col-md-4 col-lg-6">
@@ -59,7 +58,7 @@
                             </div>
                             <div class="col-md-10">
                                 <div class="card-body">
-                                    <h5 class="card-title" style="margin-bottom: -1%;">{{ . |appGetJobName}}</h5>
+                                    <h5 class="card-title" style="margin-bottom: -1%">{{. | appGetJobName}}</h5>
                                     <div style="display: inline-flex;">
                                         <h6 class="card-subitle text-muted" style="margin-right: 100px;">{{. | appGetCmpName}}</h6>
                                         <p class="card-text" style="margin-right: 10px;"><small class="text-muted">.Status</small></p>
@@ -71,7 +70,6 @@
                     </div>
                 {{end}}
             {{end}}
-        {{end}}
         <div class="card mb-3" style="max-width: 540px;">
               <div class="row no-gutters">
                     <div class="col-md-2">
@@ -152,6 +150,5 @@
 </div>
 </div>
 
-</div>	
-
+</div>
 {{end}}
