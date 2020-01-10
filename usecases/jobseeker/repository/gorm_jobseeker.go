@@ -62,8 +62,12 @@ func (jsr *JobseekerGormRepositoryIMpl) DeleteJobSeeker(id int) (entity.Jobseeke
 
 // JsCategories return all interested job categories of jobseeker with a given jobseeker id
 func (jsr *JobseekerGormRepositoryIMpl) JsCategories(id int) ([]entity.Category, error) {
+	jobseeker, err := jsr.JobSeeker(id)
 	var categories []entity.Category
-	errs := jsr.conn.Where("id in (?)", jsr.conn.Table("jobseeker_categories").Select("cat_id").Where("js_id = ?", id)).Find(&categories).GetErrors()
+	if err != nil {
+		return categories, err
+	}
+	errs := jsr.conn.Model(&jobseeker).Related(&categories, "Categories").GetErrors()
 	if len(errs) > 0 {
 		return categories, errs[0]
 	}

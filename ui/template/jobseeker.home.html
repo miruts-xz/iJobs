@@ -1,4 +1,4 @@
-{{define "jobseeker.home.layout"}}
+{{define "jobseeker.layout"}}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -44,12 +44,21 @@
                                     {{end}}
                                 {{end}}
                             </select>
+<<<<<<< HEAD
                     </div>
                     <button class="btn btn-primary" type="submit">Find</button>
                 </form>
             </div>
         </div>
     </div>
+=======
+                        </div>
+                        <button class="btn btn-primary" type="submit">Find</button>
+                    </form>	
+                </div>
+            </div>
+    </div>			
+>>>>>>> 2bec1c6315dea3b463223c2eb93f9e292a661cc3
 </div>
 
 
@@ -59,6 +68,7 @@
             <div class="col-md-6 js-jobs-responded">
                 <h3>Recently Responded Jobs</h3>
                 <div class="card">
+<<<<<<< HEAD
                     {{ $cats := .Categories }} {{if .Applications}} {{range .Applications}}
                     <div class="card-body">
                         <h5 class="card-title">Job name</h5>
@@ -68,6 +78,20 @@
                         <a href="/jobseeker/appliedjobs/{{$cats.Name}}/{{.ID}}" class="btn btn-primary">View Response</a>
                     </div>
                     {{end}} {{end}} {{end}}
+=======
+                    {{ $cats := .Categories }}
+                        {{if .Applications}}
+                            {{range .Applications}}
+                                <div class="card-body">
+                                    <h5 class="card-title">Job name</h5>
+                                    <h6 class="card-subtitle mb-2 text-muted">{{ . | appGetJobName }}</h6>
+                                    <h6 class="card-subtitle mb-2 text-muted">{{ . | appGetLoc }}</h6>
+                                    <p class="card-text">{{.Status}}</p>
+                                    <a href="/jobseeker/appliedjobs/{{$cats.Name}}/{{.ID}}" class="btn btn-primary">View Response</a>
+                                </div>
+                            {{end}}
+                        {{end}}
+>>>>>>> 2bec1c6315dea3b463223c2eb93f9e292a661cc3
                     <div class="card-body">
                         <h5 class="card-title">Job name</h5>
                         <h6 class="card-subtitle mb-2 text-muted">Company name</h6>

@@ -19,9 +19,13 @@
     <script defer src="/assets/js/fontawesome.js"></script>
 </body>
 
+<<<<<<< HEAD
 </html>
 {{end}} {{define "jobseeker.appliedJobs.content"}}
 
+=======
+{{define "jobseeker.appliedJobs.content"}}
+>>>>>>> 2bec1c6315dea3b463223c2eb93f9e292a661cc3
 <div class="container-fluid " style="margin-left: 5%;">
     <div class="row no-gutters">
         <div class="d-none d-md-flex col-md-4 col-lg-6">
@@ -60,6 +64,7 @@
                 <div class="container">
                     <div class="row-fluid no-gutters">
 
+<<<<<<< HEAD
                         {{$cats := .Categories}} {{if .Applications}} {{range .Applications}}
                         <div class="card mb-3 " style="max-width: 540px;">
                             <div class="row no-gutters">
@@ -74,10 +79,28 @@
                                             <p class="card-text" style="margin-right: 10px;"><small class="text-muted">.Status</small></p>
                                             <p class="card-text" style="margin-right: 10px;"><small class="text-muted">.Response</small></p>
                                         </div>
+=======
+        {{$cats := .Categories}}
+            {{if .Applications}}
+                {{range .Applications}}
+                    <div class="card mb-3 " style="max-width: 540px;">
+                        <div class="row no-gutters">
+                            <div class="col-md-2">
+                                <img src="/assets/img/catimg/{{$cats.Name}}.png" class="card-img" alt="comp-logo" max-width="50" height="50" style="margin-top: 20%;">
+                            </div>
+                            <div class="col-md-10">
+                                <div class="card-body">
+                                    <h5 class="card-title" style="margin-bottom: -1%">{{. | appGetJobName}}</h5>
+                                    <div style="display: inline-flex;">
+                                        <h6 class="card-subitle text-muted" style="margin-right: 100px;">{{. | appGetCmpName}}</h6>
+                                        <p class="card-text" style="margin-right: 10px;"><small class="text-muted">.Status</small></p>
+                                        <p class="card-text" style="margin-right: 10px;"><small class="text-muted">.Response</small></p>
+>>>>>>> 2bec1c6315dea3b463223c2eb93f9e292a661cc3
                                     </div>
                                 </div>
                             </div>
                         </div>
+<<<<<<< HEAD
                         {{end}} {{end}} {{end}}
                         <div class="card mb-3" style="max-width: 540px;">
                             <div class="row no-gutters">
@@ -95,6 +118,23 @@
                                     </div>
                                 </div>
                             </div>
+=======
+                    </div>
+                {{end}}
+            {{end}}
+        <div class="card mb-3" style="max-width: 540px;">
+              <div class="row no-gutters">
+                    <div class="col-md-2">
+                      <img src="/assets/img/j.jpg" class="card-img" alt="comp-logo" max-width="50" height="50" style="margin-top: 20%;">
+                 </div>
+                <div class="col-md-10">
+                      <div class="card-body">
+                        <h5 class="card-title" style="margin-bottom: -1%;">Web Developer</h5>
+                        <div style="display: inline-flex;">
+                            <h6 class="card-subitle text-muted" style="margin-right: 100px;">Company name</h6>
+                            <p class="card-text" style="margin-right: 10px;"><small class="text-muted">Status</small></p>
+                            <p class="card-text" style="margin-right: 10px;"><small class="text-muted">Response</small></p>
+>>>>>>> 2bec1c6315dea3b463223c2eb93f9e292a661cc3
                         </div>
 
                         <div class="card mb-3" style="max-width: 540px;">
@@ -160,5 +200,8 @@
     </div>
 
 </div>
+<<<<<<< HEAD
 
+=======
+>>>>>>> 2bec1c6315dea3b463223c2eb93f9e292a661cc3
 {{end}}

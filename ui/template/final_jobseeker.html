@@ -1,0 +1,82 @@
+{{ define "jobseeker.profile.layout" }}
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Home | iJobs What Job is all about</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- css -->
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="/assets/css/customCss.css">
+    <link rel="stylesheet" type="text/css" href="/assets/css/fontawesome.css">
+  </head>
+  <body>
+    {{ template "jobseeker.navbar" . }}
+    {{ template "jobseeker.profile.content" . }}
+    {{ template "footer" . }}
+  <!-- js -->
+    <script defer src="/assets/js/fontawesome.js"></script>
+    <script src="/assets/js/bootstrap.bundle.min.js"></script>
+    <script src="/assets/js/jquery-3.2.1.slim.min.js"></script>
+  </body>
+  </html>
+{{end}}
+
+
+{{define "jobseeker.profile.content"}}
+    <hr>
+  <div class ="container">
+
+    <div class="m-5 row">
+      <div class="col-sm-6 ">
+        <img src="/assets/img/Avatar.ico">
+      </div>
+      <div class="col-sm-6 ">
+        <h1>Abigya Abayneh</h1>
+        <h2>Abig</h2>
+        <button type="button" class="btn btn-success float-right" >Edit profile</button>
+
+      </div>
+    </div>
+  </div>
+  <div class="container-fluid">
+    <div class="row">
+
+      <div class="col-sm-3 ">
+        <hr>
+
+        <h6>Work experiance : </h6>
+        <h6>Employment status</h6>
+        <h6>portfolio:</h6>
+        <h6>cv :</h6>
+      </div>
+      <div class="col-sm-3 ">
+        <hr>
+        <h6>3  </h6>
+        <h6>Unemployment  </h6>
+        <h6>link</h6>
+        <h6>abig.pdf</h6>
+
+      </div>
+      <div class="col-sm-3">
+        <hr>
+        <h6>phone</h6>
+        <h6>Address</h6>
+        <h6>Email</h6>
+        <hr>
+        <h6>Gender :</h6>
+        <h6>Age:</h6>
+      </div>
+      <div class="col-sm-3">
+        <hr>
+        <h6>0911880989</h6>
+        <h6>Addis Ababa</h6>
+        <h6>abigiabayneh@gmail.com</h6>
+        <hr>
+        <h6>Female</h6>
+        <h6>20</h6>
+      </div>
+    </div>
+  </div>
+{{end}}

@@ -26,7 +26,7 @@ import (
 var gormDB *gorm.DB
 var err error
 var errs error
-var tmpl *template.Template
+var tmpl = template.Must(template.New("index").Funcs(funcMaps).ParseGlob("../../ui/template/*.html"))
 var pqconnjs, pqconncmp *sql.DB
 
 var funcMaps = template.FuncMap{"appGetJobName": handlers.AppGetJobsName, "appGetCmpName": handlers.AppGetCmpName, "appGetLoc": handlers.AppGetLocation}
@@ -96,6 +96,7 @@ func main() {
 	router.POST("/login", loginHandler.PostLogin)
 	router.GET("/jobseeker/home", jobseekerHandler.JobseekerHome)
 	router.POST("/jobseeker/home", jobseekerHandler.JobseekerHome)
+	router.GET("/jobseeker/profile", jobseekerHandler.JobseekerProfile)
 	router.ServeFiles("/assets/*filepath", http.Dir("ui/asset"))
 	err := http.ListenAndServe(":8080", router)
 	if err != nil {

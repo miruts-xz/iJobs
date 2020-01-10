@@ -46,7 +46,6 @@ func (appRepo *AppRepository) UserApplication(JsId int) ([]entity.Application, e
 
 		apps = append(apps, app)
 	}
-
 	return apps, nil
 
 }
@@ -65,7 +64,6 @@ func (appRepo *AppRepository) ApplicationsOnJob(jobId int) ([]entity.Application
 		app := entity.Application{}
 
 		records.Scan(&app.ID, &app.JobID, &app.JobseekerID, &app.Status, &app.Response)
-
 		apps = append(apps, app)
 	}
 

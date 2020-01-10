@@ -286,8 +286,8 @@ func hasvalue(value interface{}) bool {
 	return false
 }
 func (jsh *JobseekerHandler) JobseekerHome(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	session, err := util.Authenticate(jsh.sessSrv, r)
-	if err == nil {
+	ok, session := util.Authenticate(jsh.sessSrv, r)
+	if ok == true {
 		if r.Method == "GET" {
 			// Get http method
 			jsneeds := JobseekerHomeNeed{}
@@ -304,20 +304,20 @@ func (jsh *JobseekerHandler) JobseekerHome(w http.ResponseWriter, r *http.Reques
 				return
 			}
 		} else {
-			// Other http methods
 
 		}
 	} else {
-		err := jsh.tmpl.ExecuteTemplate(w, "login.layout", nil)
+		err := util.DestroySession(&w, r)
+		fmt.Println("Destroying Session")
 		if err != nil {
 			fmt.Println(err)
-			return
 		}
+		http.Redirect(w, r, "/login", http.StatusSeeOther)
 	}
 }
 func (jsh *JobseekerHandler) JobseekerAppliedJobs(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	session, err := util.Authenticate(jsh.sessSrv, r)
-	if err == nil {
+	ok, session := util.Authenticate(jsh.sessSrv, r)
+	if ok {
 		if r.Method == "GET" {
 			// Get http method
 			jobappneeds := JobseekerAppliedNeed{}
@@ -334,14 +334,42 @@ func (jsh *JobseekerHandler) JobseekerAppliedJobs(w http.ResponseWriter, r *http
 			// Other http methods
 
 		}
+	} else {
+		err := util.DestroySession(&w, r)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		http.Redirect(w, r, "/login", http.StatusSeeOther)
 	}
 }
 func (jsh *JobseekerHandler) JobseekerProfile(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	_, err := util.Authenticate(jsh.sessSrv, r)
-	if err == nil {
+	ok, session := util.Authenticate(jsh.sessSrv, r)
+	if ok {
 		if r.Method == "GET" {
-
+			jobseeker, err := jsh.jsSrv.JobSeeker(int(session.UserID))
+			if err != nil {
+				return
+			}
+			Ctgs, err := jsh.ctgSrv.Categories()
+			if err != nil {
+				return
+			}
+			jspneeds := JobseekerProfileNeed{}
+			jspneeds.Categories = Ctgs
+			jspneeds.jobseeker = jobseeker
+			err = jsh.tmpl.ExecuteTemplate(w, "jobseeker.profile.layout", jspneeds)
+			if err != nil {
+				return
+			}
 		}
+	} else {
+		err := util.DestroySession(&w, r)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		http.Redirect(w, r, "/login", http.StatusSeeOther)
 	}
 }
 func AppGetJobsName(app entity.Application) (string, error) {

@@ -33,23 +33,23 @@ func (ss *SessionServiceImpl) SessionByValue(value string) (entity.Session, erro
 func (ss *SessionServiceImpl) UpdateSession(sess *entity.Session) (*entity.Session, error) {
 	return ss.sessRepo.UpdateSession(sess)
 }
-func (ss *SessionServiceImpl) Check(sess *entity.Session) (entity.Session, error) {
+func (ss *SessionServiceImpl) Check(sess *entity.Session) (bool, entity.Session, error) {
 	session, err := ss.SessionByValue(sess.Uuid)
 	if err != nil {
-		return session, errors.New("session not found")
-	} else if time.Now().Sub(session.UpdatedAt) < 360*time.Second {
-		session.UpdatedAt = time.Now()
+		return false, session, errors.New("session not found")
+	} else if time.Now().Sub(session.CreatedAt) < 30*time.Second {
+		session.CreatedAt = time.Now()
 		session, err := ss.UpdateSession(&session)
 		if err != nil {
 			fmt.Println("Storing session error")
-			return *session, err
+			return false, *session, err
 		}
-		return *session, nil
+		return true, *session, nil
 	} else {
 		_, err := ss.DeleteSession(int(session.ID))
 		if err != nil {
-			return session, errors.New("invalid session")
+			return false, session, errors.New("invalid session")
 		}
-		return session, nil
+		return false, session, nil
 	}
 }
