@@ -1,10 +1,17 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{{define "company.navbar"}}
+    <header class="border-bottom">
+        <div class="container">
+            <div class="row">
+                <nav class="col-xs-12">
+                    <ul class="nav nav-pills">
 
-</body>
-</html>
+                        <a class="navbar-brand" href="/welcome"> <img src="../img/j.jpg" alt="logo" width="50" height="50"> </a>
+                        <li class="nav-item"><a class="nav-link active" href="/company/home">Home</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#">Profile</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/company/Jobs">Jobs</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+{{end}}

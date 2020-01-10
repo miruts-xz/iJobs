@@ -1,22 +1,27 @@
 package entity
 
-type Response string
-
-const (
-	ACCEPTED Response = "accepted"
-	REJECTED Response = "rejected"
-	FURTHER  Response = "further"
-)
+import "github.com/jinzhu/gorm"
 
 type Status string
 
 const (
+	ACCEPTED Status = "accepted"
+	REJECTED Status = "rejected"
+	FURTHER  Status = "further"
+)
+
+type Response string
+
+const (
 	REVIEWED   Status = "reviewed"
-	UNREVIEWED Status = "unreviewed"
+	UNREVIEWED string = "unreviewed"
 )
 
 type Application struct {
-	ID, JobID, JsID int
-	Response        string // will be changed to type Response type after testing
-	Status          string // will be changed to type Stattus type after testing
+	gorm.Model
+
+	JobID       uint     `gorm:"not null"`
+	JobseekerID uint     `gorm:"not null"`
+	Response    Status   `json:"response" gorm:"varchar(255)"`
+	Status      Response `json:"status" gorm:"varchar(255)"`
 }

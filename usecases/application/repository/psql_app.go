@@ -18,7 +18,7 @@ func NewAppRepo(conn *sql.DB) *AppRepository {
 func (appRepo *AppRepository) Store(app entity.Application) error {
 
 	query := "INSERT INTO applications (id,job_id,js_id,status,response) values ($1,$2,$3,$4);"
-	_, err := appRepo.conn.Exec(query, app.ID, app.JobID, app.JsID, app.Status, app.Response)
+	_, err := appRepo.conn.Exec(query, app.ID, app.JobID, app.JobseekerID, app.Status, app.Response)
 
 	if err != nil {
 		return errors.New("Unable to insert application")
@@ -42,11 +42,11 @@ func (appRepo *AppRepository) UserApplication(JsId int) ([]entity.Application, e
 	for records.Next() {
 		app := entity.Application{}
 
-		records.Scan(&app.ID, &app.JobID, &app.JsID, &app.Status, &app.Response)
+		records.Scan(&app.ID, &app.JobID, &app.JobseekerID, &app.Status, &app.Response)
 
 		apps = append(apps, app)
 	}
-	e
+
 	return apps, nil
 
 }
@@ -64,7 +64,7 @@ func (appRepo *AppRepository) ApplicationsOnJob(jobId int) ([]entity.Application
 	for records.Next() {
 		app := entity.Application{}
 
-		records.Scan(&app.ID, &app.JobID, &app.JsID, &app.Status, &app.Response)
+		records.Scan(&app.ID, &app.JobID, &app.JobseekerID, &app.Status, &app.Response)
 
 		apps = append(apps, app)
 	}

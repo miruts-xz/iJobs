@@ -1,0 +1,284 @@
+body{
+	padding-top: 16px;
+	overflow-x: auto;
+}
+.navbar-brand{
+	margin-top: -4%;
+}
+.nav-pills .nav-link.active, .nav-pills .show> .nav-link{
+	background-color: #f7fbdd;
+	color: black;
+	padding-top: 5px;
+	padding-bottom: 5px;
+}
+.nav-item{
+	margin-right: 15px;
+}
+.carousel-control-prev-icon {
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23000' viewBox='0 0 8 8'%3E%3Cpath d='M5.25 0l-4 4 4 4 1.5-1.5-2.5-2.5 2.5-2.5-1.5-1.5z'/%3E%3C/svg%3E");
+    height: 50%;
+    width: 50%;
+}
+.carousel-control-next-icon {
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23000' viewBox='0 0 8 8'%3E%3Cpath d='M2.75 0l-1.5 1.5 2.5 2.5-2.5 2.5 1.5 1.5 4-4-4-4z'/%3E%3C/svg%3E");
+    height: 50%;
+    width: 50%;
+}
+.form-group{
+	margin-right: 20px;
+}
+
+.card-title{
+	color: #3cb878;
+}
+
+
+
+.jumbotron-overlay{
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: #3cb878;
+	opacity: .65;
+}
+
+.jumbotron-content-1{
+	position: relative;
+	background-image: url('../img/jobs.jpg');
+	background-size: cover;
+	background-repeat: no-repeat;
+	height: 500px;
+	width: 100%;
+	margin-top: 1%;
+}
+
+.SignIn-up_text{
+	position: absolute;
+	top: 30%;
+	left: 30%;
+	color: white;
+	letter-spacing: 4px;
+}
+
+.sign_btn{
+	position: absolute;
+	top: 45%;
+	left: 68%;
+	text-decoration: none;
+}
+
+.btn-primary, .btn-primary:hover, .btn-primary:active, .btn-primary:visited, .btn-primary:focus{
+	background-color: #c7ea22;
+	border-radius: 10px;
+}
+
+.about-us-p, .about-us-h{
+	margin-left: 10%;
+	width: 45%;
+}
+
+.jumbotron-content-3{
+	background-color: white;
+	padding-bottom: 0;
+	padding-top: 0;
+}
+
+.members-desc{
+	margin-left: 20%;
+}
+.members-p{
+	width: 80%;
+	padding-top: 1%;
+}
+
+.jumbotron-content-4{
+	background-color: #3cb878;
+	margin-bottom: 0;
+	padding-bottom: 0;
+}
+.contact-us-h{
+	width: 100%;
+}
+.contact-us-p{
+	margin-left: 10%;
+	width: 25%;
+}
+.footer-div{
+	margin-top: -17%;
+	margin-right: 20%;
+}
+
+.copyright{
+	background-color: #252525;
+	color: white;
+}
+
+/*/////////////////////////////Jobseeker home page///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+
+.jumbotron-js-home-content-1{
+	background-color: #3cb878;
+	opacity: .65;
+	height: 400px;
+	width: 100%;
+	margin-top: 1%;
+}
+
+.search-job-h3{
+	color: white;
+	letter-spacing: 4px;
+	padding-top: 5%;
+}
+
+.find-form{
+	margin-top: 15px;
+	margin-left: 25px;
+}
+.jumbotron-js-home-content-2{
+	background-color: #ffffff;
+	margin-bottom: 0;
+	padding: 0;
+}
+
+.jumbotron-js-home-content-3{
+	background-color: #3cb878;
+	opacity: .65;
+	height: 200px;
+	width: 100%;
+	margin-bottom: 0;
+	padding-bottom: 0;
+}
+.js-footer-div{
+	margin-top: -2%;
+	color: black;
+}
+.js-footer-contact-div{
+	margin-top: -10%;
+	margin-right: 20%;
+}
+
+
+
+
+/*///////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////JS-Applied jobs page///////////////////////////////////////////////////*/
+
+.jobs-card{
+	margin-top: 15%;
+}
+
+.catagories-card{
+	width: 250px; 
+	text-align: center;
+	margin-top: 15%;
+	background-color: #f7fbdd;
+}
+
+
+
+/*////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////signIn-Up Page///////////////////////////////////////////////////////*/
+
+.register{
+    margin-top: 2%;
+    padding: 2%;
+}
+
+.register-left{
+	position: relative;
+    text-align: center;
+    color: #fff;
+    background-image: url('../img/signPgImg.jpg');
+	background-size: contain;
+	background-repeat: no-repeat;
+}
+
+
+
+.register .nav-tabs{
+    margin-top: 3%;
+    border: none;
+    background: #c7ea22;
+    border-radius: 1.5rem;
+    width: 28%;
+    float: right;
+}
+.register .nav-tabs .nav-link{
+    padding: 2%;
+    height: 34px;
+    font-weight: 600;
+    color: #fff;
+    border-top-right-radius: 1.5rem;
+    border-bottom-right-radius: 1.5rem;
+}
+.register .nav-tabs .nav-link:hover{
+    border: none;
+}
+.register .nav-tabs .nav-link.active{
+    width: 100px;
+    color: #c7ea22;
+    border: 2px solid #c7ea22;
+    border-top-left-radius: 1.5rem;
+    border-bottom-left-radius: 1.5rem;
+}
+
+.register-heading{
+    text-align: center;
+    margin-top: 8%;
+    margin-bottom: -15%;
+    color: #495057;
+}
+.register .register-form{
+    padding: 10%;
+    margin-top: 10%;
+}
+.btnRegister{
+    float: right;
+    margin-top: 10%;
+    border: none;
+    border-radius: 1.5rem;
+    padding: 2%;
+    background: #c7ea22;
+    color: #fff;
+    font-weight: 600;
+    width: 50%;
+    cursor: pointer;
+}
+
+.login{
+	position: relative;
+    margin-top: 65%;
+}
+.form-label-group {
+  position: relative;
+  margin-bottom: 1rem;
+}
+.btn-login {
+  font-size: 0.9rem;
+  letter-spacing: 0.05rem;
+  padding: 0.75rem 1rem;
+  border-radius: 2rem;
+  width: 50%;
+  
+}
+
+/*////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////company home page///////////////////////////////////////////////////////////////*/
+
+.jumbotron-comp-home-content-1{
+	background-color: #3cb878;
+	opacity: .65;
+	height: 400px;
+	width: 100%;
+	margin-top: 1%;
+	align-content: center;
+}
+.jumbotron-comp-home-content-2{
+	background-color: #ffffff;
+	margin-bottom: 0;
+	padding: 0;
+}
