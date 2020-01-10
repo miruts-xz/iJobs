@@ -8,7 +8,7 @@ import (
 	"github.com/julienschmidt/httprouter"
 	"github.com/miruts/iJobs/deliverable/http/handlers"
 	"github.com/miruts/iJobs/entity"
-	apprepo "github.com/miruts/iJobs/usecases/application"
+	apprepo "github.com/miruts/iJobs/usecases/application/repository"
 	appsrv "github.com/miruts/iJobs/usecases/application/service"
 	cmprepo "github.com/miruts/iJobs/usecases/company/repository"
 	cmpsrv "github.com/miruts/iJobs/usecases/company/service"
@@ -62,9 +62,9 @@ func main() {
 	//CreateTables(gormDB)
 
 	// Data Repositories
-	applicationRepo := apprepo.NewAppGormRepo(gormDB)
+	applicationRepo := apprepo.NewApplicationGormRepositoryImpl(gormDB)
 	companyRepo := cmprepo.NewCompanyGormRepositoryImpl(gormDB)
-	jobRepo := jobrepo.NewJobGormRepository(gormDB)
+	jobRepo := jobrepo.NewJobGormRepositoryImpl(gormDB)
 	categoryRepo := jobrepo.NewCategoryGormRepositoryImpl(gormDB)
 	jobseekerRepo := jsrepo.NewJobseekerGormRepositoryImpl(gormDB)
 	addressRepo := jsrepo.NewAddressGormRepositoryImpl(gormDB)
