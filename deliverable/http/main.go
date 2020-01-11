@@ -89,6 +89,7 @@ func main() {
 
 	//RESTApi Handlers
 	apiJobHandler := apijobhandler.NewJobApiHandler(jobSrv)
+	apiJobSkHandler := apijobhandler.NewJobseekerHandler(jobseekerSrv)
 
 	//File Server
 	//fs := http.FileServer(http.Dir("ui/asset"))
@@ -117,6 +118,12 @@ func main() {
 	router.DELETE("/api/job/:id", apiJobHandler.DeleteJob)
 
 	//JobSeeker Api Handler
+
+	router.GET("/api/jobseeker", apiJobSkHandler.Jobseeker)
+	router.GET("/api/jobseeker/:id", apiJobSkHandler.Jobseekers)
+	router.POST("api/jobseeker/", apiJobSkHandler.AddJobseeker)
+	router.PUT("/api/jobseeker/:id", apiJobSkHandler.UpdateJobseeker)
+	router.DELETE("/api/jobseeker/:id", apiJobSkHandler.DeleteJobseeker)
 
 	// Static file registration
 	router.ServeFiles("/assets/*filepath", http.Dir("../../ui/asset"))
