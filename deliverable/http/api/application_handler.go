@@ -6,9 +6,10 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/akuadane/iJobs/usecases/application/service"
 	"github.com/julienschmidt/httprouter"
+
 	"github.com/miruts/iJobs/entity"
+	"github.com/miruts/iJobs/usecases/application/service"
 )
 
 type ApplicationApiHandler struct {
@@ -35,7 +36,7 @@ func (appHandler *ApplicationApiHandler) ApplicationsOnJob(w http.ResponseWriter
 		http.Error(w, http.StatusText(404), 404)
 		return
 	}
-	response, err := json.Marshal(job)
+	response, err := json.Marshal(app)
 	if err != nil {
 		fmt.Println(err)
 		http.Error(w, http.StatusText(404), 404)
@@ -65,7 +66,7 @@ func (appHandler *ApplicationApiHandler) Application(w http.ResponseWriter, r *h
 		http.Error(w, http.StatusText(404), 404)
 		return
 	}
-	response, err := json.Marshal(job)
+	response, err := json.Marshal(app)
 	if err != nil {
 		fmt.Println(err)
 		http.Error(w, http.StatusText(404), 404)
@@ -81,7 +82,7 @@ func (appHandler *ApplicationApiHandler) Application(w http.ResponseWriter, r *h
 }
 
 func (appHandler *ApplicationApiHandler) ApplicationsOfJs(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	
+
 	w.Header().Set("Content-Type", "application/json")
 	id := ps.ByName("id")
 	idint, err := strconv.Atoi(id)
@@ -90,13 +91,13 @@ func (appHandler *ApplicationApiHandler) ApplicationsOfJs(w http.ResponseWriter,
 		http.Error(w, http.StatusText(404), 404)
 		return
 	}
-	app, err := jobHander.jobService.Job(idint)
+	app, err := appHandler.appService.UserApplication(idint)
 	if err != nil {
 		fmt.Println(err)
 		http.Error(w, http.StatusText(404), 404)
 		return
 	}
-	response, err := json.Marshal(job)
+	response, err := json.Marshal(app)
 	if err != nil {
 		fmt.Println(err)
 		http.Error(w, http.StatusText(404), 404)
@@ -120,7 +121,7 @@ func (appHandler *ApplicationApiHandler) AddApplication(w http.ResponseWriter, r
 		http.Error(w, http.StatusText(404), 404)
 		return
 	}
-	err = appHandler.appService.Store(app)
+	err = appHandler.appService.Store(&app)
 	if err != nil {
 		fmt.Println(err)
 		http.Error(w, http.StatusText(404), 404)

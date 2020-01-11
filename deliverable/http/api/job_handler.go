@@ -91,7 +91,7 @@ func (jobHander *JobApiHandler) UpdateJob(w http.ResponseWriter, r *http.Request
 		http.Error(w, http.StatusText(404), 404)
 		return
 	}
-	err = jobHander.jobService.UpdateJob(job)
+	//err = jobHander.jobService.UpdateJob(&job)
 	if err != nil {
 		fmt.Println(err)
 		http.Error(w, http.StatusText(404), 404)
@@ -145,7 +145,7 @@ func (jobHander *JobApiHandler) AddJob(w http.ResponseWriter, r *http.Request, p
 		http.Error(w, http.StatusText(404), 404)
 		return
 	}
-	err = jobHander.jobService.StoreJob(job)
+	//err = jobHander.jobService.StoreJob(job)
 	if err != nil {
 		fmt.Println(err)
 		http.Error(w, http.StatusText(404), 404)
