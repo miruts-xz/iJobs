@@ -105,7 +105,8 @@ func main() {
 	router.GET("/jobseeker/:username", jobseekerHandler.JobseekerHome)
 	router.POST("/jobseeker/:username", jobseekerHandler.JobseekerHome)
 	router.GET("/jobseeker/:username/profile", jobseekerHandler.JobseekerProfile)
-	router.GET("/jobseeker/:username/profile/edit", jobseekerHandler.JobseekerProfile)
+	router.GET("/jobseeker/:username/profile/edit", jobseekerHandler.ProfileEdit)
+	router.POST("/jobseeker/:username/profile/edit", jobseekerHandler.ProfileEdit)
 	router.GET("/jobseeker/:username/appliedjobs", jobseekerHandler.JobseekerAppliedJobs)
 	router.GET("/jobseeker/:username/appliedjobs/:id", jobseekerHandler.JobseekerAppliedJobs)
 

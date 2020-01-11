@@ -16,6 +16,7 @@ import (
 	"os"
 	"path/filepath"
 	"strconv"
+	"strings"
 )
 
 // JobseekerHandler handles jobseeker related http requests
@@ -59,6 +60,15 @@ type JobseekerAppliedNeed struct {
 type JobseekerProfileNeed struct {
 	Categories []entity.Category
 	Jobseeker  entity.Jobseeker
+}
+type JobseekerProfileEditNeed struct {
+	Jobseeker  entity.Jobseeker
+	Categories []entity.Category
+	Regions    []string
+	Cities     []string
+	SubCities  []string
+	FName      string
+	LName      string
 }
 
 // NewJobseekerHandler creates new JobseekerHandler
@@ -383,6 +393,242 @@ func (jsh *JobseekerHandler) JobseekerProfile(w http.ResponseWriter, r *http.Req
 				fmt.Println(err)
 				return
 			}
+		}
+	} else {
+		err := util.DestroySession(&w, r)
+		if err != nil {
+			fmt.Println(err)
+		}
+		http.Redirect(w, r, "/login", http.StatusSeeOther)
+	}
+}
+func (jsh *JobseekerHandler) ProfileEdit(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+	ok, session := util.Authenticate(jsh.sessSrv, r)
+	if ok {
+		jobseekerOrg, err := jsh.jsSrv.JobSeeker(int(session.UserID))
+		fmt.Println(jobseekerOrg)
+		if err != nil {
+			return
+		}
+		if r.Method == "GET" {
+			jobCtgs, err := jsh.ctgSrv.Categories()
+			Regions := []string{entity.Tigray, entity.Amhara, entity.Sidama, entity.Afar, entity.Somalia, entity.Gambella, entity.Harare, entity.Snnpr, entity.Oromia, entity.Benshangul}
+			Cities := []string{entity.Addis, entity.Mekele, entity.Hawassa, entity.Adamma, entity.Gonder}
+			SubCities := []string{entity.Gulele, entity.Arada, entity.Yeka, entity.Bole, entity.Cherkos, entity.AddisKetema}
+			names := strings.Split(jobseekerOrg.Fullname, " ")
+			FName := names[0]
+			LName := names[1]
+
+			jspen := JobseekerProfileEditNeed{}
+			jspen.Jobseeker = jobseekerOrg
+			jspen.FName = FName
+			jspen.LName = LName
+			jspen.Regions = Regions
+			jspen.Categories = jobCtgs
+			jspen.SubCities = SubCities
+			jspen.Cities = Cities
+			err = jsh.tmpl.ExecuteTemplate(w, "jobseeker.profile.edit.layout", jspen)
+			if err != nil {
+				fmt.Println(err)
+				return
+			}
+		} else {
+			err := r.ParseForm()
+			err = r.ParseMultipartForm(1024)
+			if err != nil {
+				fmt.Printf("Error Parsing Form: Line %d", 106)
+				return
+			}
+			jobseeker := entity.Jobseeker{}
+			empstatus := r.FormValue("empstatus")
+			jobseeker.EmpStatus = entity.EmpStatus(empstatus)
+			uname := r.FormValue("uname")
+			age := r.FormValue("age")
+			gender := r.FormValue("gender")
+
+			jobseeker.Gender = entity.Gender(gender)
+			if age != "" {
+				ageint, err := strconv.Atoi(age)
+				if err != nil {
+					fmt.Println("Invalid Age value ")
+					jobseeker.Age = 20
+				} else {
+					if ageint > 13 {
+						jobseeker.Age = uint(ageint)
+					} else {
+						jobseeker.Age = 20
+					}
+				}
+			}
+			phone := r.FormValue("phone")
+
+			jobseeker.Phone = phone
+			if uname == "" {
+				fmt.Printf("Please provide Username: Line %d", 112)
+				return
+			}
+			if jobseekerOrg.Username != uname {
+				_, err = jsh.jsSrv.JobseekerByUsername(uname)
+				if err == nil {
+					fmt.Printf("username already taken : Line %d", 116)
+					http.Redirect(w, r, "/login", http.StatusSeeOther)
+					return
+				}
+			}
+
+			email := r.FormValue("email")
+
+			if email == "" {
+				fmt.Printf("Email is empty: Line %d", 124)
+			}
+			if jobseekerOrg.Email != email {
+				_, err = jsh.jsSrv.JobseekerByEmail(email)
+				if err == nil {
+					fmt.Printf("Email must be unique: Line %d", 128)
+					return
+				}
+			}
+
+			jobseeker.Email = email
+			jobseeker.ID = jobseekerOrg.ID
+			jobseeker.Username = uname
+			// todo process firstname and lastname
+			fname := r.FormValue("fname")
+			if fname == "" {
+				fmt.Printf("First Name is required : Line %d", 137)
+			}
+			lname := r.FormValue("lname")
+			if lname == "" {
+				fmt.Printf("Last name is required : Line %d", 141)
+			}
+			jobseeker.Fullname = fname + " " + lname
+			// todo process, make it secure and store user entered password
+			currpswd := r.FormValue("currpswd")
+			newpswd := r.FormValue("newpswd")
+			pswdconfirm := r.FormValue("pswdconfirm")
+			if newpswd != "" {
+				err = bcrypt.CompareHashAndPassword([]byte(jobseekerOrg.Password), []byte(currpswd))
+				if err != nil {
+					fmt.Println("Password Error")
+				}
+				if newpswd != pswdconfirm {
+					fmt.Println("Password not maching")
+					return
+				}
+
+				if len(newpswd) < 3 {
+					fmt.Printf("Empty or invalid password : Line %d", 147)
+					return
+				}
+				hashed, err := bcrypt.GenerateFromPassword([]byte(newpswd), bcrypt.DefaultCost)
+				if err != nil {
+					fmt.Printf("Error Hashing : Line %d", 151)
+					return
+				}
+				hashedpwsd := string(hashed)
+
+				jobseeker.Password = hashedpwsd
+
+			} else {
+				jobseeker.Password = jobseekerOrg.Password
+			}
+
+			// todo process and store user entered work experience
+			wrkexp := r.FormValue("wrkexpr")
+			if wrkexp == "" {
+				wrkexp = string(0)
+			}
+			wrkexpint, err := strconv.Atoi(wrkexp)
+			if err != nil {
+				fmt.Printf("Invalid work experience : Line %d", 164)
+			}
+			jobseeker.WorkExperience = wrkexpint
+
+			// todo process and store user entered portfolio
+			portf := r.FormValue("portf")
+			if portf == "" {
+				fmt.Printf("Portfolio not provided %d", 171)
+			} else {
+				jobseeker.Portfolio = portf
+			}
+			// todo process and store user entered profile picture
+			propic, fh, err := r.FormFile("propic")
+			if err != nil {
+				fmt.Printf("Profile picture not provided : Line %d", 178)
+				jobseeker.Profile = jobseekerOrg.Profile
+
+			} else {
+				path, err := os.Getwd()
+				if err != nil {
+					fmt.Printf("Error: %v", err)
+					return
+				}
+				path = filepath.Join(path, "ui", "asset", "jsdata", uname, "pp")
+				err = os.MkdirAll(path, 0644)
+				if err != nil {
+					fmt.Printf("Error: %v", err)
+					return
+				}
+				path = filepath.Join(path, fh.Filename)
+				written := util.SaveFile(propic, path)
+				if !written {
+					fmt.Printf("Not written profile picture : Line %d", 197)
+				}
+				jobseeker.Profile = fh.Filename
+			}
+			// todo process and store user entered cv
+			cv, fh, err := r.FormFile("cv")
+			if err == nil {
+				path, err := os.Getwd()
+				fmt.Println(path)
+				path = filepath.Join(path, "ui", "asset", "jsdata", uname, "cv")
+				err = os.MkdirAll(path, 0644)
+				if err != nil {
+					fmt.Printf("Error: %v", err)
+					return
+				}
+				path = filepath.Join(path, fh.Filename)
+				cvWritten := util.SaveFile(cv, path)
+				if !cvWritten {
+					fmt.Printf("Not written curriculum vitae : Line %d", 223)
+				}
+				jobseeker.CV = fh.Filename
+			} else {
+				jobseeker.CV = jobseekerOrg.CV
+			}
+			// todo process and store selected interested job categories
+			intjobcat := r.Form["intjobcat"]
+			var categories []entity.Category
+			for v := range intjobcat {
+				ctg, err := jsh.ctgSrv.Category(v)
+				if err != nil {
+					fmt.Printf("Category not found")
+					continue
+				}
+				categories = append(categories, ctg)
+			}
+			jobseeker.Categories = categories
+
+			// todo process and store addresses
+			region := r.FormValue("region")
+			city := r.FormValue("city")
+			subcity := r.FormValue("subcity")
+			localname := r.FormValue("localname")
+			address := entity.Address{}
+			address.Region = region
+			address.City = city
+			address.SubCity = subcity
+			address.LocalName = localname
+			jobseeker.Address = []entity.Address{address}
+
+			js, err := jsh.jsSrv.UpdateJobSeeker(&jobseeker)
+			if err != nil {
+				fmt.Printf("Storing jobseeker failed : Line %d", 268)
+				http.Redirect(w, r, "/login", http.StatusSeeOther)
+				return
+			}
+			fmt.Println("Jobseeker registered successfully", js)
+			http.Redirect(w, r, "/jobseeker/"+jobseeker.Username, http.StatusSeeOther)
 		}
 	} else {
 		err := util.DestroySession(&w, r)
