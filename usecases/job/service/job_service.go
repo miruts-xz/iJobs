@@ -7,10 +7,11 @@ import (
 
 type JobServices struct {
 	handler job.JobRepository
+	ctgSrv  job.CategoryService
 }
 
-func NewJobService(handler job.JobRepository) *JobServices {
-	return &JobServices{handler: handler}
+func NewJobServices(handler job.JobRepository, ctgSrv job.CategoryService) *JobServices {
+	return &JobServices{handler: handler, ctgSrv: ctgSrv}
 }
 
 func (jobService *JobServices) Jobs() ([]entity.Job, error) {
@@ -20,8 +21,7 @@ func (jobService *JobServices) Jobs() ([]entity.Job, error) {
 
 //Returns all jobs under a specific category
 func (jobService *JobServices) JobsOfCategory(cat_id int) ([]entity.Job, error) {
-	return jobService.handler.JobsOfCategory(cat_id)
-
+	return jobService.handler.JobsOfCategory(jobService.ctgSrv, cat_id)
 }
 
 //Returns a job given an its id
@@ -31,18 +31,18 @@ func (jobService *JobServices) Job(id int) (entity.Job, error) {
 }
 
 //Updates a job given the udpated job object
-func (jobService *JobServices) UpdateJob(job entity.Job) error {
+func (jobService *JobServices) UpdateJob(job *entity.Job) (*entity.Job, error) {
 	return jobService.UpdateJob(job)
 }
 
 //Deletes a job given its id
-func (jobService *JobServices) DeleteJob(id int) error {
+func (jobService *JobServices) DeleteJob(id int) (entity.Job, error) {
 	return jobService.handler.DeleteJob(id)
 
 }
 
 //Adds a job to the database
-func (jobService *JobServices) StoreJob(job entity.Job) error {
+func (jobService *JobServices) StoreJob(job *entity.Job) (*entity.Job, error) {
 	return jobService.handler.StoreJob(job)
 
 }

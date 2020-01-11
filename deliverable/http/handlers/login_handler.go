@@ -105,12 +105,15 @@ func (lh *LoginHandler) PostLogin(w http.ResponseWriter, r *http.Request, ps htt
 	fmt.Println(password)
 	jobseeker, err1 := lh.jsSrv.JobseekerByEmail(email)
 	company, err2 := lh.cmpSrv.CompanyByEmail(email)
-	fmt.Println(jobseeker)
-	fmt.Println(company)
+	fmt.Println(jobseeker.Email)
+	fmt.Println(company.Email)
+	fmt.Println(err1)
+	fmt.Println(err2)
 	if err2 != nil && err1 == nil {
 		// Its jobseeker
-		err = bcrypt.CompareHashAndPassword([]byte(password), []byte(jobseeker.Password))
-		if jobseeker.Password == password {
+		err = bcrypt.CompareHashAndPassword([]byte(jobseeker.Password), []byte(password))
+		fmt.Println(err)
+		if err == nil {
 			sess := entity.Session{}
 			uuid, err := uuid.NewV4()
 			if err != nil {
@@ -124,6 +127,7 @@ func (lh *LoginHandler) PostLogin(w http.ResponseWriter, r *http.Request, ps htt
 			if err == nil {
 				err = util.CreateSession(&w, &sess)
 				if err != nil {
+					fmt.Println(err)
 					return
 				}
 			}
@@ -137,7 +141,7 @@ func (lh *LoginHandler) PostLogin(w http.ResponseWriter, r *http.Request, ps htt
 		fmt.Printf("I'm IN Second")
 
 		// Its Company
-		err = bcrypt.CompareHashAndPassword([]byte(password), []byte(company.Password))
+		err = bcrypt.CompareHashAndPassword([]byte(jobseeker.Password), []byte(password))
 		if err == nil {
 			sess := entity.Session{}
 			uuid, err := uuid.NewV4()

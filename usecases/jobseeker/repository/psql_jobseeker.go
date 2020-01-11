@@ -71,7 +71,7 @@ func (jsr *JobseekerRepositoryImpl) DeleteJobSeeker(id int) (entity.Jobseeker, e
 }
 
 // JsCategories return all interested job categories of jobseeker with a given jobseeker id
-func (jsr *JobseekerRepositoryImpl) JsCategories(id int) ([]entity.Category, error) {
+/*func (jsr *JobseekerRepositoryImpl) JsCategories(id int) ([]entity.Category, error) {
 	query := "select category_id from jobseeker_categories where jobseeker_id = $1"
 	rows, err := jsr.conn.Query(query, id)
 	if err != nil {
@@ -101,7 +101,7 @@ func (jsr *JobseekerRepositoryImpl) JsCategories(id int) ([]entity.Category, err
 	return categories, nil
 
 }
-
+*/
 // StoreJobSeeker stores new jobseeker
 func (jsr *JobseekerRepositoryImpl) StoreJobSeeker(js *entity.Jobseeker) (*entity.Jobseeker, error) {
 	query := "insert into jobseekers (username, fullname, email, phone, password, profile, work_experience, cv, portfolio, emp_status, gender, age) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)"
@@ -139,4 +139,13 @@ func (jsr *JobseekerRepositoryImpl) JobseekerByEmail(email string) (entity.Jobse
 }
 func (jsr *JobseekerRepositoryImpl) SetAddress(jsid, addid int) error {
 	return nil
+}
+func (jss *JobseekerRepositoryImpl) JobseekerByUsername(uname string) (entity.Jobseeker, error) {
+	var jobseeker entity.Jobseeker
+	query := "select * from jobseekers where username = $1"
+	err := jss.conn.QueryRow(query, uname).Scan(jobseeker.ID, jobseeker.CreatedAt, jobseeker.UpdatedAt, jobseeker.DeletedAt, jobseeker.Age, jobseeker.Phone, jobseeker.WorkExperience, jobseeker.Username, jobseeker.Fullname, &jobseeker, jobseeker.Email, jobseeker.Profile, jobseeker.Portfolio, jobseeker.CV, jobseeker.Gender, jobseeker.EmpStatus)
+	if err != nil {
+		return jobseeker, err
+	}
+	return jobseeker, nil
 }

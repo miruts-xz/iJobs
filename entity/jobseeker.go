@@ -23,7 +23,7 @@ type Jobseeker struct {
 	Categories   []Category    `json:"categories" gorm:"many2many:jobseeker_categories"`
 
 	Age            uint      `json:"age"`
-	Phone          string    `json:"phone" gorm:"unique;"`
+	Phone          string    `json:"phone"`
 	WorkExperience int       `json:"work_experience"`
 	Username       string    `json:"username" gorm:"unique;not null"`
 	Fullname       string    `json:"fullname"`

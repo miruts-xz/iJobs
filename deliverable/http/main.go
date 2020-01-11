@@ -40,8 +40,10 @@ func init() {
 	pqconnjs, err = sql.Open("postgres", "user=jobseeker password=jobseeker database=ijobs sslmode=disable")
 	defer pqconnjs.Close()
 }
+
+//
 func CreateTables(db *gorm.DB) {
-	errs := db.CreateTable(&entity.Session{}, &entity.Address{}, &entity.Category{}, &entity.Application{}, &entity.Job{}, &entity.Company{}, entity.Jobseeker{}).GetErrors()
+	errs := db.CreateTable(&entity.Session{}, &entity.Address{}, &entity.Application{}, &entity.Category{}, &entity.Job{}, &entity.Company{}, entity.Jobseeker{}).GetErrors()
 	if len(errs) > 0 {
 		fmt.Println(errs[0])
 		return
@@ -54,11 +56,9 @@ func main() {
 		fmt.Println(err)
 		return
 	}
-	defer gormDB.Close()
-
+	gormDB.AutoMigrate(&entity.Category{})
 	// Create Gorm Tables
 	// Run Once
-
 	//CreateTables(gormDB)
 
 	// Data Repositories
@@ -72,8 +72,9 @@ func main() {
 
 	// Services
 	companySrv := cmpsrv.NewCompanyServiceImpl(companyRepo)
-	jobSrv := jobsrv.NewJobService(jobRepo)
+
 	categorySrv := jobsrv.NewCategoryServiceImpl(categoryRepo)
+	jobSrv := jobsrv.NewJobServices(jobRepo, categorySrv)
 	jobseekerSrv := jssrv.NewJobseekerServiceImpl(jobseekerRepo, jobSrv)
 	addressSrv := jssrv.NewAddressServiceImpl(addressRepo)
 	sessionSrv := service.NewSessionServiceImpl(sessionRepo)
@@ -92,7 +93,7 @@ func main() {
 	router.GET("/", welcomeHandler.Welcome)
 	router.GET("/login", loginHandler.GetLogin)
 	router.POST("/login", loginHandler.PostLogin)
-	router.GET("/signup/jobseeker", jobseekerHandler.JobseekerRegister)
+	router.POST("/signup/jobseeker", jobseekerHandler.JobseekerRegister)
 
 	// Jobseeker path registration
 	router.GET("/jobseeker/home", jobseekerHandler.JobseekerHome)

@@ -103,73 +103,89 @@ func (jsh *JobseekerHandler) JobseekerRegister(w http.ResponseWriter, r *http.Re
 	err := r.ParseForm()
 	err = r.ParseMultipartForm(1024)
 	if err != nil {
-		fmt.Printf("Error: %v", err)
+		fmt.Printf("Error Parsing Form: Line %d", 106)
 		return
 	}
 	jobseeker := entity.Jobseeker{}
-	uname := ps.ByName("uname")
-	if !hasvalue(uname) {
+	uname := r.FormValue("uname")
+	if uname == "" {
+		fmt.Printf("Please provide Username: Line %d", 112)
 		return
 	}
+	_, err = jsh.jsSrv.JobseekerByUsername(uname)
+	if err == nil {
+		fmt.Printf("username already taken : Line %d", 116)
+		http.Redirect(w, r, "/login", http.StatusSeeOther)
+		return
+	}
+	email := r.FormValue("email")
+
+	if email == "" {
+		fmt.Printf("Email is empty: Line %d", 124)
+	}
+	_, err = jsh.jsSrv.JobseekerByEmail(email)
+	if err == nil {
+		fmt.Printf("Email must be unique: Line %d", 128)
+		return
+	}
+	jobseeker.Email = email
+
 	jobseeker.Username = uname
 	// todo process firstname and lastname
-	fname := ps.ByName("fname")
-	if !hasvalue(fname) {
-		return
+	fname := r.FormValue("fname")
+	if fname == "" {
+		fmt.Printf("First Name is required : Line %d", 137)
 	}
-	lname := ps.ByName("lname")
-	if !hasvalue(lname) {
-		return
+	lname := r.FormValue("lname")
+	if lname == "" {
+		fmt.Printf("Last name is required : Line %d", 141)
 	}
 	jobseeker.Fullname = fname + " " + lname
 	// todo process, make it secure and store user entered password
-	pswd := ps.ByName("pswd")
-	if !hasvalue(pswd) || len(pswd) < 4 {
-		return
+	pswd := r.FormValue("pswd")
+	if len(pswd) < 3 {
+		fmt.Printf("Empty or invalid password : Line %d", 147)
 	}
 	hashed, err := bcrypt.GenerateFromPassword([]byte(pswd), bcrypt.DefaultCost)
 	if err != nil {
-		fmt.Printf("Error: %v", err)
+		fmt.Printf("Error Hashing : Line %d", 151)
 		return
 	}
 	hashedpwsd := string(hashed)
-	fmt.Print(hashedpwsd)
+
 	jobseeker.Password = hashedpwsd
 	// todo process and store user entered work experience
-	wrkexp := ps.ByName("wrkexp")
+	wrkexp := r.FormValue("wrkexp")
+	if wrkexp == "" {
+		wrkexp = string(0)
+	}
 	wrkexpint, err := strconv.Atoi(wrkexp)
 	if err != nil {
-		fmt.Printf("Error: %v", err)
-		return
-	}
-	if !hasvalue(wrkexp) || wrkexpint < 0 {
-		jobseeker.WorkExperience = 0
+		fmt.Printf("Invalid work experience : Line %d", 164)
 	}
 	jobseeker.WorkExperience = wrkexpint
 
 	// todo process and store user entered portfolio
 	portf := r.FormValue("portf")
-	if !hasvalue(portf) {
-		return
+	if portf == "" {
+		fmt.Printf("Portfolio not provided %d", 171)
+	} else {
+		jobseeker.Portfolio = portf
 	}
-	jobseeker.Portfolio = portf
-
 	// todo process and store user entered profile picture
 	propic, fh, err := r.FormFile("propic")
 	if err != nil {
+		fmt.Printf("Profile picture not provided : Line %d", 178)
 		path := "/assets/img/avatar"
 		jobseeker.Profile = path
 
 	} else {
 		path, err := os.Getwd()
-		fmt.Println(path)
-		path = path[:len(path)-25]
-		fmt.Println(path)
 		if err != nil {
 			fmt.Printf("Error: %v", err)
 			return
 		}
-		path = filepath.Join(path, "ui", "assets", "jsdata", uname, "pp")
+		path = filepath.Join(path, "ui", "asset", "jsdata", uname, "pp")
 		err = os.MkdirAll(path, 0644)
 		if err != nil {
 			fmt.Printf("Error: %v", err)
@@ -177,12 +193,10 @@ func (jsh *JobseekerHandler) JobseekerRegister(w http.ResponseWriter, r *http.Re
 		}
 		path = filepath.Join(path, fh.Filename)
 		written := util.SaveFile(propic, path)
-
 		if !written {
-
+			fmt.Printf("Not written profile picture : Line %d", 197)
 		}
 		imageUri := filepath.Join("/assets", "jsdata", uname, "pp", fh.Filename)
-		fmt.Println(imageUri)
 		jobseeker.Profile = imageUri
 	}
 	// todo process and store user entered cv
@@ -192,13 +206,12 @@ func (jsh *JobseekerHandler) JobseekerRegister(w http.ResponseWriter, r *http.Re
 	}
 	path, err := os.Getwd()
 	if err != nil {
-		fmt.Printf("Error: %v", err)
+		fmt.Printf("Portfolio is required : Line %d", 209)
+		http.Redirect(w, r, "/login", http.StatusSeeOther)
 		return
 	}
 	fmt.Println(path)
-	path = path[:len(path)-25]
-	fmt.Println(path)
-	path = filepath.Join(path, "ui", "assets", "jsdata", uname, "cv")
+	path = filepath.Join(path, "ui", "asset", "jsdata", uname, "cv")
 	err = os.MkdirAll(path, 0644)
 	if err != nil {
 		fmt.Printf("Error: %v", err)
@@ -207,42 +220,28 @@ func (jsh *JobseekerHandler) JobseekerRegister(w http.ResponseWriter, r *http.Re
 	path = filepath.Join(path, fh.Filename)
 	cvWritten := util.SaveFile(cv, path)
 	if !cvWritten {
-
+		fmt.Printf("Not written curriculum vitae : Line %d", 223)
 	}
 	cvUri := filepath.Join("/assets", "jsdata", uname, "cv", fh.Filename)
-	fmt.Println(cvUri)
+
 	jobseeker.CV = cvUri
-	_, err = jsh.jsSrv.StoreJobSeeker(&jobseeker)
-	if err != nil {
-		fmt.Printf("Error: %v", err)
-		return
-	}
-	js, err := jsh.jsSrv.JobSeekers()
-	if err != nil {
-		fmt.Printf("Error: %v", err)
-		return
-	}
-	var jsid int64
-	for _, v := range js {
-		if v.Username == uname {
-			jsid = int64(v.ID)
-			break
-		}
-	}
 
 	// todo process and store selected interested job categories
 	intjobcat := r.Form["intjobcat"]
 	if !hasvalue(intjobcat) {
 		return
 	}
+	var categories []entity.Category
 	for v := range intjobcat {
-		jcid := v
-		err = jsh.jsSrv.AddIntCategory(int(jsid), jcid)
+		ctg, err := jsh.ctgSrv.Category(v)
 		if err != nil {
-			fmt.Printf("Error: %v", err)
-			return
+			fmt.Printf("Category not found")
+			continue
 		}
+		categories = append(categories, ctg)
 	}
+	jobseeker.Categories = categories
+
 	// todo process and store addresses
 	region := r.FormValue("region")
 	city := r.FormValue("city")
@@ -253,16 +252,16 @@ func (jsh *JobseekerHandler) JobseekerRegister(w http.ResponseWriter, r *http.Re
 	address.City = city
 	address.SubCity = subcity
 	address.LocalName = localname
-	adr, err := jsh.addrSrv.StoreAddress(&address)
+	jobseeker.Address = []entity.Address{address}
+
+	js, err := jsh.jsSrv.StoreJobSeeker(&jobseeker)
 	if err != nil {
-		fmt.Println(err)
+		fmt.Printf("Storing jobseeker failed : Line %d", 268)
+		http.Redirect(w, r, "/login", http.StatusSeeOther)
 		return
 	}
-	err = jsh.jsSrv.SetAddress(int(jobseeker.ID), int(adr.ID))
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
+	fmt.Println("Jobseeker registered successfully", js)
+	http.Redirect(w, r, "/login", http.StatusSeeOther)
 }
 func (jsh *JobseekerHandler) JobseekerHome(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	ok, session := util.Authenticate(jsh.sessSrv, r)

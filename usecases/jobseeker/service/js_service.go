@@ -75,3 +75,6 @@ func (jss *JobseekerServiceImpl) RemoveIntCategory(jsid, jcid int) error {
 func (jss *JobseekerServiceImpl) JobseekerByEmail(email string) (entity.Jobseeker, error) {
 	return jss.jsRepo.JobseekerByEmail(email)
 }
+func (jss *JobseekerServiceImpl) JobseekerByUsername(uname string) (entity.Jobseeker, error) {
+	return jss.jsRepo.JobseekerByUsername(uname)
+}

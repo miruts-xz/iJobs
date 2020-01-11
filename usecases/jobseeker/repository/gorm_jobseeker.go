@@ -77,6 +77,7 @@ func (jsr *JobseekerGormRepositoryIMpl) JsCategories(id int) ([]entity.Category,
 // StoreJobSeeker stores new jobseeker
 func (jsr *JobseekerGormRepositoryIMpl) StoreJobSeeker(js *entity.Jobseeker) (*entity.Jobseeker, error) {
 	jobseeker := js
+	fmt.Println(jobseeker.Email)
 	errs := jsr.conn.Create(jobseeker).GetErrors()
 	if len(errs) > 0 {
 		return jobseeker, errs[0]
@@ -111,6 +112,14 @@ func (jss *JobseekerGormRepositoryIMpl) SetAddress(jsid, addid int) error {
 func (jss *JobseekerGormRepositoryIMpl) JobseekerByEmail(email string) (entity.Jobseeker, error) {
 	var jobseeker entity.Jobseeker
 	errs := jss.conn.Where("email = ?", email).First(&jobseeker).GetErrors()
+	if len(errs) > 0 {
+		return jobseeker, errs[0]
+	}
+	return jobseeker, nil
+}
+func (jss *JobseekerGormRepositoryIMpl) JobseekerByUsername(uname string) (entity.Jobseeker, error) {
+	var jobseeker entity.Jobseeker
+	errs := jss.conn.Where("username = ?", uname).First(&jobseeker).GetErrors()
 	if len(errs) > 0 {
 		return jobseeker, errs[0]
 	}
