@@ -6,6 +6,7 @@ import (
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"github.com/julienschmidt/httprouter"
+	"github.com/miruts/iJobs/deliverable/http/api"
 	"github.com/miruts/iJobs/deliverable/http/handlers"
 	"github.com/miruts/iJobs/entity"
 	apprepo "github.com/miruts/iJobs/usecases/application/repository"
@@ -20,6 +21,11 @@ import (
 	"github.com/miruts/iJobs/usecases/session/service"
 	"html/template"
 	"net/http"
+)
+
+const (
+	domain    = "localhost"
+	apiDomain = "api." + domain
 )
 
 var gormDB *gorm.DB
@@ -83,6 +89,7 @@ func main() {
 	loginHandler := handlers.NewLoginHandler(tmpl, jobseekerSrv, companySrv, sessionSrv, categorySrv)
 	welcomeHandler := handlers.NewWelcomeHandler(tmpl, sessionSrv, jobseekerSrv, companySrv)
 	jobseekerHandler := handlers.NewJobseekerHandler(tmpl, jobseekerSrv, categorySrv, addressSrv, applicationSrv, sessionSrv, jobSrv, companySrv)
+	jobseekerAPIHandler := api.NewJobseekerHandler(jobseekerSrv)
 	//go util.ClearExpiredSessions(sessionSrv)
 
 	//File Server
@@ -103,6 +110,7 @@ func main() {
 	router.POST("/jobseeker/:username/profile/edit", jobseekerHandler.ProfileEdit)
 	router.GET("/jobseeker/:username/appliedjobs", jobseekerHandler.JobseekerAppliedJobs)
 	router.GET("/jobseeker/:username/appliedjobs/:id", jobseekerHandler.JobseekerAppliedJobs)
+	router.GET(apiDomain+":8080"+"/jobseekers", jobseekerAPIHandler.Jobseekers)
 
 	// Static file registration
 	router.ServeFiles("/assets/*filepath", http.Dir("ui/asset"))

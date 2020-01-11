@@ -3,10 +3,10 @@ package api
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/miruts/iJobs/usecases/job/service"
 	"net/http"
 	"strconv"
 
-	"github.com/akuadane/iJobs/usecases/job/service"
 	"github.com/julienschmidt/httprouter"
 	"github.com/miruts/iJobs/entity"
 )
@@ -91,7 +91,7 @@ func (jobHander *JobApiHandler) UpdateJob(w http.ResponseWriter, r *http.Request
 		http.Error(w, http.StatusText(404), 404)
 		return
 	}
-	err = jobHander.jobService.UpdateJob(job)
+	_, err = jobHander.jobService.UpdateJob(&job)
 	if err != nil {
 		fmt.Println(err)
 		http.Error(w, http.StatusText(404), 404)
@@ -126,7 +126,7 @@ func (jobHander *JobApiHandler) DeleteJob(w http.ResponseWriter, r *http.Request
 		http.Error(w, http.StatusText(404), 404)
 		return
 	}
-	err = jobHander.jobService.DeleteJob(idint)
+	_, err = jobHander.jobService.DeleteJob(idint)
 	if err != nil {
 		fmt.Println(err)
 		http.Error(w, http.StatusText(404), 404)
@@ -145,7 +145,7 @@ func (jobHander *JobApiHandler) AddJob(w http.ResponseWriter, r *http.Request, p
 		http.Error(w, http.StatusText(404), 404)
 		return
 	}
-	err = jobHander.jobService.StoreJob(job)
+	_, err = jobHander.jobService.StoreJob(&job)
 	if err != nil {
 		fmt.Println(err)
 		http.Error(w, http.StatusText(404), 404)
