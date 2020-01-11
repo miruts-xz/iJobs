@@ -44,6 +44,7 @@ type JobseekerHomeNeed struct {
 	Applications []entity.Application
 	Suggestions  []entity.Job
 	Categories   []entity.Category
+	Jobseeker    entity.Jobseeker
 }
 type JobseekerAppliedNeed struct {
 	Applications []entity.Application
@@ -51,7 +52,7 @@ type JobseekerAppliedNeed struct {
 }
 type JobseekerProfileNeed struct {
 	Categories []entity.Category
-	jobseeker  entity.Jobseeker
+	Jobseeker  entity.Jobseeker
 }
 
 // NewJobseekerHandler creates new JobseekerHandler
@@ -107,7 +108,29 @@ func (jsh *JobseekerHandler) JobseekerRegister(w http.ResponseWriter, r *http.Re
 		return
 	}
 	jobseeker := entity.Jobseeker{}
+	empstatus := r.FormValue("empstatus")
+	jobseeker.EmpStatus = entity.EmpStatus(empstatus)
 	uname := r.FormValue("uname")
+	age := r.FormValue("age")
+	gender := r.FormValue("gender")
+
+	jobseeker.Gender = entity.Gender(gender)
+	if age != "" {
+		ageint, err := strconv.Atoi(age)
+		if err != nil {
+			fmt.Println("Invalid Age value ")
+			jobseeker.Age = 20
+		} else {
+			if ageint > 13 {
+				jobseeker.Age = uint(ageint)
+			} else {
+				jobseeker.Age = 20
+			}
+		}
+	}
+	phone := r.FormValue("phone")
+
+	jobseeker.Phone = phone
 	if uname == "" {
 		fmt.Printf("Please provide Username: Line %d", 112)
 		return
@@ -196,8 +219,7 @@ func (jsh *JobseekerHandler) JobseekerRegister(w http.ResponseWriter, r *http.Re
 		if !written {
 			fmt.Printf("Not written profile picture : Line %d", 197)
 		}
-		imageUri := filepath.Join("/assets", "jsdata", uname, "pp", fh.Filename)
-		jobseeker.Profile = imageUri
+		jobseeker.Profile = fh.Filename
 	}
 	// todo process and store user entered cv
 	cv, fh, err := r.FormFile("cv")
@@ -222,9 +244,7 @@ func (jsh *JobseekerHandler) JobseekerRegister(w http.ResponseWriter, r *http.Re
 	if !cvWritten {
 		fmt.Printf("Not written curriculum vitae : Line %d", 223)
 	}
-	cvUri := filepath.Join("/assets", "jsdata", uname, "cv", fh.Filename)
-
-	jobseeker.CV = cvUri
+	jobseeker.CV = fh.Filename
 
 	// todo process and store selected interested job categories
 	intjobcat := r.Form["intjobcat"]
@@ -269,14 +289,19 @@ func (jsh *JobseekerHandler) JobseekerHome(w http.ResponseWriter, r *http.Reques
 		if r.Method == "GET" {
 			// Get http method
 			jsneeds := JobseekerHomeNeed{}
-
+			jobseeker, err := jsh.jsSrv.JobSeeker(int(session.UserID))
+			if err != nil {
+				fmt.Printf("Couldn't find jobseeker info : Line %d", 271)
+				return
+			}
 			Ctgs, _ := jsh.ctgSrv.Categories()
 			Apps, _ := jsh.appSrv.UserApplication(int(session.UserID))
 			Suggs, _ := jsh.jsSrv.Suggestions(int(session.UserID))
 			jsneeds.Categories = Ctgs
 			jsneeds.Applications = Apps
 			jsneeds.Suggestions = Suggs
-			err := jsh.tmpl.ExecuteTemplate(w, "jobseeker.layout", jsneeds)
+			jsneeds.Jobseeker = jobseeker
+			err = jsh.tmpl.ExecuteTemplate(w, "jobseeker.layout", jsneeds)
 			if err != nil {
 				fmt.Println(err)
 				return
@@ -326,6 +351,8 @@ func (jsh *JobseekerHandler) JobseekerProfile(w http.ResponseWriter, r *http.Req
 	if ok {
 		if r.Method == "GET" {
 			jobseeker, err := jsh.jsSrv.JobSeeker(int(session.UserID))
+
+			fmt.Println(jobseeker)
 			if err != nil {
 				return
 			}
@@ -335,9 +362,12 @@ func (jsh *JobseekerHandler) JobseekerProfile(w http.ResponseWriter, r *http.Req
 			}
 			jspneeds := JobseekerProfileNeed{}
 			jspneeds.Categories = Ctgs
-			jspneeds.jobseeker = jobseeker
+			jspneeds.Jobseeker = jobseeker
+
+			fmt.Println("Employment Status", jobseeker.EmpStatus)
 			err = jsh.tmpl.ExecuteTemplate(w, "jobseeker.profile.layout", jspneeds)
 			if err != nil {
+				fmt.Println(err)
 				return
 			}
 		}

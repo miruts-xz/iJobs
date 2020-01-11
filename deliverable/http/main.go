@@ -96,10 +96,11 @@ func main() {
 	router.POST("/signup/jobseeker", jobseekerHandler.JobseekerRegister)
 
 	// Jobseeker path registration
-	router.GET("/jobseeker/home", jobseekerHandler.JobseekerHome)
-	router.POST("/jobseeker/home", jobseekerHandler.JobseekerHome)
-	router.GET("/jobseeker/profile", jobseekerHandler.JobseekerProfile)
-	router.GET("/jobseeker/appliedjobs", jobseekerHandler.JobseekerAppliedJobs)
+	router.GET("/jobseeker/:username", jobseekerHandler.JobseekerHome)
+	router.POST("/jobseeker/:username", jobseekerHandler.JobseekerHome)
+	router.GET("/jobseeker/:username/profile", jobseekerHandler.JobseekerProfile)
+	router.GET("/jobseeker/:username/profile/edit", jobseekerHandler.JobseekerProfile)
+	router.GET("/jobseeker/:username/appliedjobs", jobseekerHandler.JobseekerAppliedJobs)
 
 	// Static file registration
 	router.ServeFiles("/assets/*filepath", http.Dir("ui/asset"))

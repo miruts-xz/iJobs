@@ -30,13 +30,12 @@
 
     <div class="m-5 row">
       <div class="col-sm-6 ">
-        <img src="/assets/img/Avatar.ico">
+        <img src="/assets/jsdata/{{.Jobseeker.Username}}/pp/{{.Jobseeker.Profile}}"/>
       </div>
       <div class="col-sm-6 ">
-        <h1>Abigya Abayneh</h1>
-        <h2>Abig</h2>
-        <button type="button" class="btn btn-success float-right" >Edit profile</button>
-
+        <h1>{{.Jobseeker.Fullname}}</h1>
+        <h2>{{.Jobseeker.Username}}</h2>
+        <button type="button" class="btn btn-success float-right" ><a style="text-decoration: none" href="/jobseeker/{{.Jobseeker.Username}}/edit">Edit profile</a></button>
       </div>
     </div>
   </div>
@@ -48,34 +47,41 @@
 
         <h6>Work experiance : </h6>
         <h6>Employment status</h6>
-        <h6>portfolio:</h6>
         <h6>cv :</h6>
+        <h6>portfolio:</h6>
       </div>
       <div class="col-sm-3 ">
         <hr>
-        <h6>3  </h6>
-        <h6>Unemployment  </h6>
-        <h6>link</h6>
-        <h6>abig.pdf</h6>
+        <h6>{{.Jobseeker.WorkExperience}}  </h6>
+        <h6>{{.Jobseeker.EmpStatus}} </h6>
+        <h6><a href="/assets/jsdata/{{.Jobseeker.Username}}/cv/{{.Jobseeker.CV}}">Curriculum Vitae</a></h6>
+        <h6>{{.Jobseeker.Portfolio}} </h6>
+      </div>
+      <div class="col-sm-3">
+        <hr>
+        <h6>Email: </h6>
+        <h6>Phone: </h6>
+        <h6>Age:</h6>
+        <h6>Gender :</h6>
+        <h6>Address: </h6>
+        <hr>
+
 
       </div>
       <div class="col-sm-3">
         <hr>
-        <h6>phone</h6>
-        <h6>Address</h6>
-        <h6>Email</h6>
+        <h6>{{.Jobseeker.Email}}</h6>
+        <h6>{{.Jobseeker.Phone}}</h6>
+        <h6>{{.Jobseeker.Age}}</h6>
+        <h6>{{.Jobseeker.Gender}}</h6>
+        <h6>
+          {{with .Jobseeker}}
+            {{range .Address}}
+              {{.LocalName}}, {{.SubCity}}, {{.City}}, {{.Region}}
+            {{end}}
+          {{end}}
+        </h6>
         <hr>
-        <h6>Gender :</h6>
-        <h6>Age:</h6>
-      </div>
-      <div class="col-sm-3">
-        <hr>
-        <h6>0911880989</h6>
-        <h6>Addis Ababa</h6>
-        <h6>abigiabayneh@gmail.com</h6>
-        <hr>
-        <h6>Female</h6>
-        <h6>20</h6>
       </div>
     </div>
   </div>

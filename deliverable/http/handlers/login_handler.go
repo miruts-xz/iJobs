@@ -131,7 +131,7 @@ func (lh *LoginHandler) PostLogin(w http.ResponseWriter, r *http.Request, ps htt
 					return
 				}
 			}
-			http.Redirect(w, r, "/jobseeker/home", http.StatusSeeOther)
+			http.Redirect(w, r, "/jobseeker/"+jobseeker.Username, http.StatusSeeOther)
 		} else {
 			fmt.Printf("I'm IN below first")
 
@@ -159,7 +159,7 @@ func (lh *LoginHandler) PostLogin(w http.ResponseWriter, r *http.Request, ps htt
 			if err != nil {
 				fmt.Printf("storing session failed: %s", err)
 			}
-			http.Redirect(w, r, "/company/home", http.StatusSeeOther)
+			http.Redirect(w, r, "/company/"+company.CompanyName, http.StatusSeeOther)
 		} else {
 			fmt.Printf("I'm IN Login Redirect")
 

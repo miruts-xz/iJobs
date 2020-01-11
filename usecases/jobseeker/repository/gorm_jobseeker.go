@@ -30,7 +30,16 @@ func (jsr *JobseekerGormRepositoryIMpl) JobSeekers() ([]entity.Jobseeker, error)
 // JobSeeker return a jobseeker with given id
 func (jsr *JobseekerGormRepositoryIMpl) JobSeeker(id int) (entity.Jobseeker, error) {
 	var jobseeker entity.Jobseeker
+	var addresses []entity.Address
+	var categories []entity.Category
+	var applications []entity.Application
 	errs := jsr.conn.First(&jobseeker, id).GetErrors()
+	_ = jsr.conn.Model(&jobseeker).Related(&addresses, "Address").GetErrors()
+	_ = jsr.conn.Model(&jobseeker).Related(&categories, "Categories").GetErrors()
+	_ = jsr.conn.Model(&jobseeker).Related(&applications, "Applications").GetErrors()
+	jobseeker.Address = addresses
+	jobseeker.Categories = categories
+	jobseeker.Applications = applications
 	if len(errs) > 0 {
 		return jobseeker, errs[0]
 	}
