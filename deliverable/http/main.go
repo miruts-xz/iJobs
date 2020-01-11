@@ -18,6 +18,9 @@ import (
 	jssrv "github.com/miruts/iJobs/usecases/jobseeker/service"
 	"github.com/miruts/iJobs/usecases/session/repository"
 	"github.com/miruts/iJobs/usecases/session/service"
+
+	apijobhandler "github.com/miruts/iJobs/deliverable/http/api"
+
 	"html/template"
 	"net/http"
 )
@@ -25,7 +28,7 @@ import (
 var gormDB *gorm.DB
 var err error
 var errs error
-var tmpl = template.Must(template.New("index").Funcs(funcMaps).ParseGlob("ui/template/*.html"))
+var tmpl = template.Must(template.New("index").Funcs(funcMaps).ParseGlob("../../ui/template/*.html"))
 var pqconnjs, pqconncmp *sql.DB
 
 var funcMaps = template.FuncMap{"appGetJobCatId": handlers.AppGetJobCatId, "appGetCmpLogo": handlers.AppGetCmpLogo, "appGetJobName": handlers.AppGetJobsName, "appGetCmpName": handlers.AppGetCmpName, "appGetLoc": handlers.AppGetLocation}
@@ -34,14 +37,13 @@ func init() {
 	// Template
 
 	//Company database connection
-	pqconncmp, err = sql.Open("postgres", "user=company password=company database=ijobs sslmode=disable")
-	defer pqconncmp.Close()
-	//Jobseeker database connection
-	pqconnjs, err = sql.Open("postgres", "user=jobseeker password=jobseeker database=ijobs sslmode=disable")
-	defer pqconnjs.Close()
+	// //pqconncmp, err = sql.Open("postgres", "user=company password=company database=ijobs sslmode=disable")
+	// defer pqconncmp.Close()
+	// //Jobseeker database connection
+	// pqconnjs, err = sql.Open("postgres", "user=jobseeker password=jobseeker database=ijobs sslmode=disable")
+	// defer pqconnjs.Close()
 }
 
-//
 func CreateTables(db *gorm.DB) {
 	errs := db.CreateTable(&entity.Session{}, &entity.Address{}, &entity.Application{}, &entity.Category{}, &entity.Job{}, &entity.Company{}, entity.Jobseeker{}).GetErrors()
 	if len(errs) > 0 {
@@ -51,7 +53,7 @@ func CreateTables(db *gorm.DB) {
 }
 func main() {
 	// Gorm Database Connection
-	gormDB, err = gorm.Open("postgres", "user=postgres dbname=ijobs_gorm_db password=postgres sslmode=disable")
+	gormDB, err = gorm.Open("postgres", "user=postgres dbname=ijobs_gorm_db password=akuadane sslmode=disable")
 	if errs != nil {
 		fmt.Println(err)
 		return
@@ -85,6 +87,9 @@ func main() {
 	jobseekerHandler := handlers.NewJobseekerHandler(tmpl, jobseekerSrv, categorySrv, addressSrv, applicationSrv, sessionSrv, jobSrv, companySrv)
 	//go util.ClearExpiredSessions(sessionSrv)
 
+	//RESTApi Handlers
+	apiJobHandler := apijobhandler.NewJobApiHandler(jobSrv)
+
 	//File Server
 	//fs := http.FileServer(http.Dir("ui/asset"))
 	router := httprouter.New()
@@ -103,8 +108,18 @@ func main() {
 	router.GET("/jobseeker/:username/appliedjobs", jobseekerHandler.JobseekerAppliedJobs)
 	router.GET("/jobseeker/:username/appliedjobs/:id", jobseekerHandler.JobseekerAppliedJobs)
 
+	//REST Api registration
+	//Job Api Handlers
+	router.GET("/api/job", apiJobHandler.Jobs)
+	router.GET("/api/job/:id", apiJobHandler.Job)
+	router.POST("api/job/", apiJobHandler.AddJob)
+	router.PUT("/api/job/:id", apiJobHandler.UpdateJob)
+	router.DELETE("/api/job/:id", apiJobHandler.DeleteJob)
+
+	//JobSeeker Api Handler
+
 	// Static file registration
-	router.ServeFiles("/assets/*filepath", http.Dir("ui/asset"))
+	router.ServeFiles("/assets/*filepath", http.Dir("../../ui/asset"))
 	// Start Serving
 	err := http.ListenAndServe(":8080", router)
 	if err != nil {
