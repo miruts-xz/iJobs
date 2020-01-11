@@ -1,46 +1,45 @@
 {{define "jobseeker.layout"}}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Home | iJobs What Job is all about</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- css -->
     <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.min.css">
-	<link rel="stylesheet" type="text/css" href="/assets/css/customCss.css">
-	<link rel="stylesheet" type="text/css" href="/assets/css/fontawesome.css">
+    <link rel="stylesheet" type="text/css" href="/assets/css/customCss.css">
+    <link rel="stylesheet" type="text/css" href="/assets/css/fontawesome.css">
 </head>
+
 <body>
-    {{ template "jobseeker.navbar" . }}
-	{{ template "jobseeker.home.content" . }}
-    {{ template "footer" . }}
+    {{ template "jobseeker.navbar" . }} {{ template "jobseeker.home.content" . }} {{ template "footer" . }}
     <!-- js -->
     <script src="/assets/js/jquery-3.4.1.min.js"></script>
     <script src="/assets/js/popper.min.js"></script>
     <script src="/assets/js/bootstrap.min.js"></script>
     <script defer src="/assets/js/fontawesome.js"></script>
 </body>
-</html>
-{{end}}
 
-{{define "jobseeker.home.content"}}
+</html>
+{{end}} {{define "jobseeker.home.content"}}
 <div class="jumbotron jumbotron-js-home-content-1">
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-xs-12">
                 <h3 class="search-job-h3">Find the Job that fits your life.</h3>
             </div>
-        </div>		
-            <div class="row justify-content-center find-form">
-                <div class="col-xs-12">
-                    <form class="form-inline" method="get">
-                        <div class="form-group">
-                            <input class="form-control" type="text" id="inputJobTitle" placeholder="keyword/job title">
-                        </div>
-                        <div class="form-group">
+        </div>
+        <div class="row justify-content-center find-form">
+            <div class="col-xs-12">
+                <form class="form-inline" method="get">
+                    <div class="form-group">
+                        <input class="form-control" type="text" id="inputJobTitle" placeholder="keyword/job title">
+                    </div>
+                    <div class="form-group">
 
-                            <select class="form-control" name="category" id="inputJobCatagory">
+                        <select class="form-control" name="category" id="inputJobCatagory">
                                 <option class="form-control" value="category" type="text" selected>Category</option>
                                 {{if .Categories}}
                                     {{range .Categories}}
@@ -48,12 +47,21 @@
                                     {{end}}
                                 {{end}}
                             </select>
+<<<<<<< HEAD
+                    </div>
+                    <button class="btn btn-primary" type="submit">Find</button>
+                </form>
+            </div>
+        </div>
+    </div>
+=======
                         </div>
                         <button class="btn btn-primary" type="submit">Find</button>
                     </form>	
                 </div>
             </div>
     </div>			
+>>>>>>> 2bec1c6315dea3b463223c2eb93f9e292a661cc3
 </div>
 
 
@@ -63,6 +71,17 @@
             <div class="col-md-6 js-jobs-responded">
                 <h3>Recently Responded Jobs</h3>
                 <div class="card">
+<<<<<<< HEAD
+                    {{ $cats := .Categories }} {{if .Applications}} {{range .Applications}}
+                    <div class="card-body">
+                        <h5 class="card-title">Job name</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">{{ . | appGetJobName }}</h6>
+                        <h6 class="card-subtitle mb-2 text-muted">{{ . | appGetLoc }}</h6>
+                        <p class="card-text">{{.Status}}</p>
+                        <a href="/jobseeker/appliedjobs/{{$cats.Name}}/{{.ID}}" class="btn btn-primary">View Response</a>
+                    </div>
+                    {{end}} {{end}} {{end}}
+=======
                     {{ $cats := .Categories }}
                         {{if .Applications}}
                             {{range .Applications}}
@@ -75,22 +94,21 @@
                                 </div>
                             {{end}}
                         {{end}}
+>>>>>>> 2bec1c6315dea3b463223c2eb93f9e292a661cc3
                     <div class="card-body">
                         <h5 class="card-title">Job name</h5>
                         <h6 class="card-subtitle mb-2 text-muted">Company name</h6>
                         <h6 class="card-subtitle mb-2 text-muted">Location</h6>
-                           <p class="card-text">response description from the company they applied to.
-                           response description from the company they applied to.</p>
-                           <a href="#" class="btn btn-primary">View Response</a>
+                        <p class="card-text">response description from the company they applied to. response description from the company they applied to.</p>
+                        <a href="#" class="btn btn-primary">View Response</a>
                     </div>
 
                     <div class="card-body">
                         <h5 class="card-title">Job name</h5>
                         <h6 class="card-subtitle mb-2 text-muted">Company name</h6>
                         <h6 class="card-subtitle mb-2 text-muted">Location</h6>
-                           <p class="card-text">response description from the company they applied to.
-                           response description from the company they applied to.</p>
-                           <a href="#" class="btn btn-primary">View Response</a>
+                        <p class="card-text">response description from the company they applied to. response description from the company they applied to.</p>
+                        <a href="#" class="btn btn-primary">View Response</a>
                     </div>
                 </div>
 
@@ -102,31 +120,28 @@
                         <h5 class="card-title">Job name</h5>
                         <h6 class="card-subtitle mb-2 text-muted">Company name</h6>
                         <h6 class="card-subtitle mb-2 text-muted">Location</h6>
-                           <p class="card-text">response description from the company they applied to.
-                           response description from the company they applied to.</p>
-                           <a href="#" class="btn btn-primary">Apply</a>
+                        <p class="card-text">response description from the company they applied to. response description from the company they applied to.</p>
+                        <a href="#" class="btn btn-primary">Apply</a>
 
                     </div>
                     <div class="card-body">
                         <h5 class="card-title">Job name</h5>
                         <h6 class="card-subtitle mb-2 text-muted">Company name</h6>
                         <h6 class="card-subtitle mb-2 text-muted">Location</h6>
-                           <p class="card-text">response description from the company they applied to.
-                           response description from the company they applied to.</p>
-                           <a href="#" class="btn btn-primary">Apply</a>
+                        <p class="card-text">response description from the company they applied to. response description from the company they applied to.</p>
+                        <a href="#" class="btn btn-primary">Apply</a>
 
                     </div>
                     <div class="card-body">
                         <h5 class="card-title">Job name</h5>
                         <h6 class="card-subtitle mb-2 text-muted">Company name</h6>
                         <h6 class="card-subtitle mb-2 text-muted">Location</h6>
-                           <p class="card-text">response description from the company they applied to.
-                           response description from the company they applied to.</p>
-                           <a href="#" class="btn btn-primary">Apply</a>
+                        <p class="card-text">response description from the company they applied to. response description from the company they applied to.</p>
+                        <a href="#" class="btn btn-primary">Apply</a>
 
                     </div>
                 </div>
-                
+
             </div>
         </div>
     </div>
