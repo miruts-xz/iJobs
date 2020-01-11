@@ -16,13 +16,13 @@ func NewAppGormRepositoryImpl(conn *gorm.DB) *AppGormRepositoryImpl {
 	return &AppGormRepositoryImpl{conn: conn}
 }
 
-func (agr *AppGormRepositoryImpl) Store(app *entity.Application) (*entity.Application, error) {
+func (agr *AppGormRepositoryImpl) Store(app *entity.Application) error {
 	application := app
 	errs := agr.conn.Create(application).GetErrors()
 	if len(errs) > 0 {
-		return application, errs[0]
+		return errs[0]
 	}
-	return application, nil
+	return nil
 }
 func (agr *AppGormRepositoryImpl) Application(id int) (entity.Application, error) {
 	var application entity.Application

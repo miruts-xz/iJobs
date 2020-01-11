@@ -7,7 +7,7 @@ import (
 )
 
 type IAppRepository interface {
-	Store(*entity.Application) (*entity.Application, error)
+	Store(app *entity.Application) error
 	Application(id int) (entity.Application, error)
 	UserApplication(jsSrv jobseeker.JobseekerService, jsId int) ([]entity.Application, error)
 	ApplicationsOnJob(jobSrv job.JobService, jobId int) ([]entity.Application, error)
