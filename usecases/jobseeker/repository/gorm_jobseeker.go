@@ -49,7 +49,7 @@ func (jsr *JobseekerGormRepositoryIMpl) JobSeeker(id int) (entity.Jobseeker, err
 // UpdateJobSeeker updates a given jobseeker
 func (jsr *JobseekerGormRepositoryIMpl) UpdateJobSeeker(js *entity.Jobseeker) (*entity.Jobseeker, error) {
 	jobseeker := js
-	errs := jsr.conn.Save(&jobseeker).GetErrors()
+	errs := jsr.conn.Save(jobseeker).GetErrors()
 	if len(errs) > 0 {
 		return jobseeker, errs[0]
 	}
