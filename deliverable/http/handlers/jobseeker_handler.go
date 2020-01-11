@@ -346,7 +346,6 @@ func (jsh *JobseekerHandler) JobseekerProfile(w http.ResponseWriter, r *http.Req
 		err := util.DestroySession(&w, r)
 		if err != nil {
 			fmt.Println(err)
-			return
 		}
 		http.Redirect(w, r, "/login", http.StatusSeeOther)
 	}
