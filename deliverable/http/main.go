@@ -28,7 +28,7 @@ var errs error
 var tmpl = template.Must(template.New("index").Funcs(funcMaps).ParseGlob("ui/template/*.html"))
 var pqconnjs, pqconncmp *sql.DB
 
-var funcMaps = template.FuncMap{"appGetJobName": handlers.AppGetJobsName, "appGetCmpName": handlers.AppGetCmpName, "appGetLoc": handlers.AppGetLocation}
+var funcMaps = template.FuncMap{"appGetJobCatId": handlers.AppGetJobCatId, "appGetCmpLogo": handlers.AppGetCmpLogo, "appGetJobName": handlers.AppGetJobsName, "appGetCmpName": handlers.AppGetCmpName, "appGetLoc": handlers.AppGetLocation}
 
 func init() {
 	// Template
@@ -101,6 +101,7 @@ func main() {
 	router.GET("/jobseeker/:username/profile", jobseekerHandler.JobseekerProfile)
 	router.GET("/jobseeker/:username/profile/edit", jobseekerHandler.JobseekerProfile)
 	router.GET("/jobseeker/:username/appliedjobs", jobseekerHandler.JobseekerAppliedJobs)
+	router.GET("/jobseeker/:username/appliedjobs/:id", jobseekerHandler.JobseekerAppliedJobs)
 
 	// Static file registration
 	router.ServeFiles("/assets/*filepath", http.Dir("ui/asset"))

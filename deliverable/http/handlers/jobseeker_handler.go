@@ -40,6 +40,11 @@ type RegisterNeed struct {
 	Cities     []string
 	Subcities  []string
 }
+type AppliedJobCatNeed struct {
+	Categories []entity.Category
+	Jobseeker  entity.Jobseeker
+	Catid      int
+}
 type JobseekerHomeNeed struct {
 	Applications []entity.Application
 	Suggestions  []entity.Job
@@ -49,6 +54,7 @@ type JobseekerHomeNeed struct {
 type JobseekerAppliedNeed struct {
 	Applications []entity.Application
 	Categories   []entity.Category
+	Jobseeker    entity.Jobseeker
 }
 type JobseekerProfileNeed struct {
 	Categories []entity.Category
@@ -323,12 +329,19 @@ func (jsh *JobseekerHandler) JobseekerAppliedJobs(w http.ResponseWriter, r *http
 	if ok {
 		if r.Method == "GET" {
 			// Get http method
+			jobseeker, err := jsh.jsSrv.JobSeeker(int(session.UserID))
+			if err != nil {
+				fmt.Println("Unable to retrieve jobseeker: Line %", 328)
+				http.Redirect(w, r, "/login", http.StatusSeeOther)
+			}
 			jobappneeds := JobseekerAppliedNeed{}
 			Appls, _ := jsh.appSrv.UserApplication(int(session.UserID))
 			Ctgs, _ := jsh.ctgSrv.Categories()
+			jobappneeds.Jobseeker = jobseeker
 			jobappneeds.Categories = Ctgs
 			jobappneeds.Applications = Appls
-			err := jsh.tmpl.ExecuteTemplate(w, "jobseeker.appliedJobs.layout", jobappneeds)
+
+			err = jsh.tmpl.ExecuteTemplate(w, "jobseeker.appliedJobs.layout", jobappneeds)
 			if err != nil {
 				fmt.Println(err)
 				return
@@ -379,6 +392,47 @@ func (jsh *JobseekerHandler) JobseekerProfile(w http.ResponseWriter, r *http.Req
 		http.Redirect(w, r, "/login", http.StatusSeeOther)
 	}
 }
+func (jsh *JobseekerHandler) AppliedJobCategory(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+
+	ok, session := util.Authenticate(jsh.sessSrv, r)
+	if ok {
+		if r.Method == "GET" {
+			id := ps.ByName("id")
+			idint, err := strconv.Atoi(id)
+			if err != nil {
+				fmt.Println(err)
+				return
+			}
+			jobseeker, err := jsh.jsSrv.JobSeeker(int(session.UserID))
+
+			fmt.Println(jobseeker)
+			if err != nil {
+				return
+			}
+			Ctgs, err := jsh.ctgSrv.Categories()
+			if err != nil {
+				return
+			}
+			appjobneeds := AppliedJobCatNeed{}
+			appjobneeds.Categories = Ctgs
+			appjobneeds.Jobseeker = jobseeker
+			appjobneeds.Catid = idint
+
+			err = jsh.tmpl.ExecuteTemplate(w, "jobseeker.appliedJobs.category.layout", appjobneeds)
+			if err != nil {
+				fmt.Println(err)
+				return
+			}
+		}
+	} else {
+		err := util.DestroySession(&w, r)
+		if err != nil {
+			fmt.Println(err)
+		}
+		http.Redirect(w, r, "/login", http.StatusSeeOther)
+	}
+
+}
 func AppGetJobsName(app entity.Application) (string, error) {
 	job, err := jobSrvc.Job(int(app.JobID))
 	if err != nil {
@@ -412,4 +466,27 @@ func AppGetLocation(app entity.Application) (entity.Address, error) {
 		return addr, err
 	}
 	return addr, nil
+}
+func AppGetCmpLogo(app entity.Application) (string, error) {
+	job, err := jobSrvc.Job(int(app.JobID))
+	if err != nil {
+		return string(job.CompanyID), err
+	}
+	cmp, err := cmpSrvc.Company(int(job.CompanyID))
+	if err != nil {
+		return cmp.Logo, err
+	}
+	return cmp.Logo, nil
+}
+func AppGetJobCatId(app entity.Application) ([]int, error) {
+	job, err := jobSrvc.Job(int(app.JobID))
+	var catsId []int
+	if err != nil {
+		fmt.Println(err)
+		return catsId, err
+	}
+	for id, _ := range job.Categories {
+		catsId = append(catsId, id)
+	}
+	return catsId, nil
 }
