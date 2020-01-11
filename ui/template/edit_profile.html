@@ -1,23 +1,34 @@
+<!-- Definition of welcome page layout-->
+{{ define "jobseeker.profile.edit.layout" }}
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- css -->
+    <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/assets/css/customCss.css">
+    <title>Welcome | iJobs Discover Jobs &amp; Join Favourite Companies</title>
+  </head>
+  <body>
+  {{ template "jobseeker.navbar" . }}
+  {{ template "jobseeker.profile.edit.content" . }}
+  {{ template "footer" . }}
+
+  <script src="/assets/js/bootstrap.bundle.min.js"></script>
+  <script src="/assets/js/jquery-3.2.1.slim.min.js"></script>
+  </body>
+  </html>
+{{ end }}
+
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-
-
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
- 
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
-</head>
-<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
-
+{{define "jobseeker.profile.edit.content"}}
 <h1 class="text-center text-success">Edit profile</h1>
 <div class="container">
 <div class="row flex-lg-nowrap">
-  
+
 
   <div class="col">
     <div class="row">
@@ -36,7 +47,7 @@
                 <div class="col d-flex flex-column flex-sm-row justify-content-between mb-3">
                   <div class="text-center text-sm-left mb-2 mb-sm-0">
 
-                   
+
                     <div class="mt-2">
                       <button class="btn btn-success" type="button">
                         <i class="fa fa-fw fa-camera"></i>
@@ -44,10 +55,10 @@
                       </button>
                     </div>
                   </div>
-               
+
                 </div>
               </div>
-           
+
               <div class="tab-content pt-3">
                 <div class="tab-pane active">
                   <form class="form" >
@@ -140,7 +151,7 @@
                           </div>
                         </div>
                       </div>
-                  
+
                     </div>
                     <div class="row">
                       <div class="col d-flex justify-content-end">
@@ -167,11 +178,11 @@
             </div>
           </div>
         </div>
-     
+
       </div>
     </div>
 
   </div>
 </div>
 </div>
-</html>
+{{end}}
