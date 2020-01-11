@@ -19,7 +19,7 @@ import (
 	"github.com/miruts/iJobs/usecases/session/repository"
 	"github.com/miruts/iJobs/usecases/session/service"
 
-	apijobhandler "github.com/miruts/iJobs/deliverable/http/api"
+	apiHandler "github.com/miruts/iJobs/deliverable/http/api"
 
 	"html/template"
 	"net/http"
@@ -88,9 +88,9 @@ func main() {
 	//go util.ClearExpiredSessions(sessionSrv)
 
 	//RESTApi Handlers
-	apiJobHandler := apijobhandler.NewJobApiHandler(jobSrv)
-	apiJobSkHandler := apijobhandler.NewJobseekerHandler(jobseekerSrv)
-
+	apiJobHandler := apiHandler.NewJobApiHandler(jobSrv)
+	apiJobSkHandler := apiHandler.NewJobseekerHandler(jobseekerSrv)
+	apiAppHandler := apiHandler.NewAppApiHandler(applicationSrv)
 	//File Server
 	//fs := http.FileServer(http.Dir("ui/asset"))
 	router := httprouter.New()
@@ -111,6 +111,7 @@ func main() {
 	router.GET("/jobseeker/:username/appliedjobs/:id", jobseekerHandler.JobseekerAppliedJobs)
 
 	//REST Api registration
+
 	//Job Api Handlers
 	router.GET("/api/job", apiJobHandler.Jobs)
 	router.GET("/api/job/:id", apiJobHandler.Job)
@@ -119,12 +120,17 @@ func main() {
 	router.DELETE("/api/job/:id", apiJobHandler.DeleteJob)
 
 	//JobSeeker Api Handler
-
 	router.GET("/api/jobseeker", apiJobSkHandler.Jobseeker)
 	router.GET("/api/jobseeker/:id", apiJobSkHandler.Jobseekers)
 	router.POST("api/jobseeker/", apiJobSkHandler.AddJobseeker)
 	router.PUT("/api/jobseeker/:id", apiJobSkHandler.UpdateJobseeker)
 	router.DELETE("/api/jobseeker/:id", apiJobSkHandler.DeleteJobseeker)
+
+	//Application Api Handler
+	router.GET("/api/application/:jobId", apiAppHandler.ApplicationsOnJob)
+	router.GET("/api/application/:id", apiAppHandler.Application)
+	router.POST("api/application/", apiAppHandler.AddApplication)
+	router.DELETE("/api/application/:id", apiAppHandler.DeleteApp)
 
 	// Static file registration
 	router.ServeFiles("/assets/*filepath", http.Dir("../../ui/asset"))
