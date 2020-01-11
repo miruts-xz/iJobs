@@ -16,16 +16,16 @@ func NewAppRepo(conn *sql.DB) *AppRepository {
 	return &AppRepository{conn: conn}
 }
 
-func (appRepo *AppRepository) Store(app *entity.Application) (*entity.Application, error) {
+func (appRepo *AppRepository) Store(app *entity.Application) error {
 
 	query := "INSERT INTO applications (job_id,jobseeker_id,status,response) values ($1,$2,$3,$4);"
 	_, err := appRepo.conn.Exec(query, app.ID, app.JobID, app.JobseekerID, app.Status, app.Response)
-	var application *entity.Application
+
 	if err != nil {
-		return application, errors.New("Unable to insert application")
+		return errors.New("Unable to insert application")
 	}
 
-	return application, nil
+	return nil
 
 }
 func (appRepo *AppRepository) Application(id int) (entity.Application, error) {
