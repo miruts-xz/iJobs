@@ -11,10 +11,12 @@ import (
 	"github.com/miruts/iJobs/usecases/company"
 )
 
+// CompanyHandler handles company related http requests
 type CompanyHandler struct {
 	cmpSrv company.CompanyService
 }
 
+// NewCompanyHandler returns new CompanyHandler object
 func NewCompanyHandler(cmpSrv company.CompanyService) *CompanyHandler {
 	return &CompanyHandler{cmpSrv: cmpSrv}
 }
@@ -103,6 +105,7 @@ func (cmph *CompanyHandler) UpdateCompany(w http.ResponseWriter, r *http.Request
 		return
 	}
 }
+
 func (cmph *CompanyHandler) DeleteCompany(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	w.Header().Set("Content-Type", "application/json")
 	id := ps.ByName("id")

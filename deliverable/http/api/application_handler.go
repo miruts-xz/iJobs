@@ -81,7 +81,7 @@ func (appHandler *ApplicationApiHandler) Application(w http.ResponseWriter, r *h
 }
 
 func (appHandler *ApplicationApiHandler) ApplicationsOfJs(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	
+
 	w.Header().Set("Content-Type", "application/json")
 	id := ps.ByName("id")
 	idint, err := strconv.Atoi(id)
