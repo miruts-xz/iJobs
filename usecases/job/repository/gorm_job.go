@@ -64,11 +64,11 @@ func (jgr *JobGormRepositoryImpl) DeleteJob(id int) (entity.Job, error) {
 	}
 	return job, nil
 }
-func (jgr *JobGormRepositoryImpl) StoreJob(job *entity.Job) (*entity.Job, error) {
+func (jgr *JobGormRepositoryImpl) StoreJob(job *entity.Job) error {
 	j := job
 	errs := jgr.conn.Create(&j).GetErrors()
 	if len(errs) > 0 {
-		return j, errs[0]
+		return errs[0]
 	}
-	return j, nil
+	return nil
 }
