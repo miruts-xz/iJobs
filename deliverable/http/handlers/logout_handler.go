@@ -5,7 +5,7 @@ import (
 	"github.com/julienschmidt/httprouter"
 	"github.com/miruts/iJobs/usecases/company"
 	"github.com/miruts/iJobs/usecases/jobseeker"
-	"github.com/miruts/iJobs/usecases/session"
+	"github.com/miruts/ijobs/usecases/session"
 	"html/template"
 	"net/http"
 	"time"

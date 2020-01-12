@@ -55,7 +55,7 @@ type CompanyHomeNeed struct {
 	Jobs         []entity.Job
 }
 
-// CompanyRegister handles company signup request.
+// CompanyRegister handles company SignUp request.
 func (ch *CompanyHandler) CompanyRegister(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	err := r.ParseForm()
 	err = r.ParseMultipartForm(1024)
