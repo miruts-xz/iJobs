@@ -2,6 +2,7 @@ package entity
 
 import "github.com/jinzhu/gorm"
 
+// Category represents job categories
 type Category struct {
 	gorm.Model
 

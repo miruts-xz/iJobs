@@ -15,6 +15,7 @@ const (
 	OTHER  Gender = "other"
 )
 
+// Jobseeker represents users seeking job
 type Jobseeker struct {
 	gorm.Model
 

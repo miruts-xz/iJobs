@@ -4,6 +4,7 @@ import (
 	"github.com/miruts/iJobs/entity"
 )
 
+// CompanyRepository interface represents all company data repository actions
 type CompanyRepository interface {
 	Companies() ([]entity.Company, error)
 	Company(cid int) (entity.Company, error)

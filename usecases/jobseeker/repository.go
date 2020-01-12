@@ -19,6 +19,8 @@ type JobseekerRepository interface {
 	JobseekerByUsername(uname string) (entity.Jobseeker, error)
 	ApplicationJobseeker(id int) (entity.Jobseeker, error)
 }
+
+// AddressRepository interface defines all jobseeker related data/database operations
 type AddressRepository interface {
 	Addresses() ([]entity.Address, error)
 	Address(id int) (entity.Address, error)

@@ -6,13 +6,17 @@ import (
 	"github.com/miruts/iJobs/entity"
 )
 
+// CompanyGormRepositoryImpl implements CompanyRepository interface
 type CompanyGormRepositoryImpl struct {
 	conn *gorm.DB
 }
 
+// NewCompanyGormRepositoryImpl returns new CompanyGormRepositoryImpl
 func NewCompanyGormRepositoryImpl(db *gorm.DB) *CompanyGormRepositoryImpl {
 	return &CompanyGormRepositoryImpl{conn: db}
 }
+
+// Companys retrieves and returns all companys
 func (cpr *CompanyGormRepositoryImpl) Companies() ([]entity.Company, error) {
 	var companies []entity.Company
 	errs := cpr.conn.Find(&companies).GetErrors()
@@ -21,6 +25,8 @@ func (cpr *CompanyGormRepositoryImpl) Companies() ([]entity.Company, error) {
 	}
 	return companies, nil
 }
+
+// Company return a Company with given id
 func (cpr *CompanyGormRepositoryImpl) Company(cid int) (entity.Company, error) {
 	var company entity.Company
 	errs := cpr.conn.First(&company, cid).GetErrors()
@@ -29,6 +35,8 @@ func (cpr *CompanyGormRepositoryImpl) Company(cid int) (entity.Company, error) {
 	}
 	return company, nil
 }
+
+// UpdateCompany updates a given company
 func (cpr *CompanyGormRepositoryImpl) UpdateCompany(cmp *entity.Company) (*entity.Company, error) {
 	company := cmp
 	errs := cpr.conn.Save(&company).GetErrors()
@@ -37,6 +45,8 @@ func (cpr *CompanyGormRepositoryImpl) UpdateCompany(cmp *entity.Company) (*entit
 	}
 	return company, nil
 }
+
+// DeleteCompany deletes a company with a given id
 func (cpr *CompanyGormRepositoryImpl) DeleteCompany(cid int) (entity.Company, error) {
 	var company entity.Company
 	errs := cpr.conn.First(&company, cid).GetErrors()
@@ -45,6 +55,8 @@ func (cpr *CompanyGormRepositoryImpl) DeleteCompany(cid int) (entity.Company, er
 	}
 	return company, nil
 }
+
+// StoreCompany stores new company
 func (cpr *CompanyGormRepositoryImpl) StoreCompany(cmp *entity.Company) (*entity.Company, error) {
 	company := cmp
 	errs := cpr.conn.Create(&company).GetErrors()
@@ -53,6 +65,8 @@ func (cpr *CompanyGormRepositoryImpl) StoreCompany(cmp *entity.Company) (*entity
 	}
 	return company, nil
 }
+
+// Posted jobs retrieves jobs jobs posted by company
 func (cpr *CompanyGormRepositoryImpl) PostedJobs(cid int) ([]entity.Job, error) {
 	company, err := cpr.Company(cid)
 	if err != nil {
@@ -66,6 +80,8 @@ func (cpr *CompanyGormRepositoryImpl) PostedJobs(cid int) ([]entity.Job, error) 
 	}
 	return jobs, nil
 }
+
+// CompanyByEmail retrieves company given email
 func (cpr *CompanyGormRepositoryImpl) CompanyByEmail(email string) (entity.Company, error) {
 	var company entity.Company
 	errs := cpr.conn.Where("email = ?", email).First(&company).GetErrors()
@@ -74,6 +90,8 @@ func (cpr *CompanyGormRepositoryImpl) CompanyByEmail(email string) (entity.Compa
 	}
 	return company, nil
 }
+
+// CompanyAddress retrieves address of a company given company id
 func (cpr *CompanyGormRepositoryImpl) CompanyAddress(id uint) (entity.Address, error) {
 	address := entity.Address{}
 	company, err := cpr.Company(int(id))

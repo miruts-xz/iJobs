@@ -12,14 +12,17 @@ import (
 	appsrv "github.com/miruts/iJobs/usecases/application/service"
 )
 
+// ApplicationApiHandler represents application api handler
 type ApplicationApiHandler struct {
 	appService *appsrv.AppService
 }
 
+// NewAppApiHandler creates new ApplicationApiHandler
 func NewAppApiHandler(appSrv *appsrv.AppService) *ApplicationApiHandler {
 	return &ApplicationApiHandler{appService: appSrv}
 }
 
+// ApplicationsOnJob retrieves all Application on a given job
 func (appHandler *ApplicationApiHandler) ApplicationsOnJob(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 
 	w.Header().Set("Content-Type", "application/json")
@@ -50,6 +53,8 @@ func (appHandler *ApplicationApiHandler) ApplicationsOnJob(w http.ResponseWriter
 	}
 
 }
+
+// Application finds application by id
 func (appHandler *ApplicationApiHandler) Application(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 
 	w.Header().Set("Content-Type", "application/json")
@@ -81,6 +86,7 @@ func (appHandler *ApplicationApiHandler) Application(w http.ResponseWriter, r *h
 
 }
 
+// UserApplication finds all application given jobseeker id and service
 func (appHandler *ApplicationApiHandler) ApplicationsOfJs(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 
 	w.Header().Set("Content-Type", "application/json")
@@ -112,6 +118,7 @@ func (appHandler *ApplicationApiHandler) ApplicationsOfJs(w http.ResponseWriter,
 
 }
 
+// Delete Application deletes application with given id
 func (appHandler *ApplicationApiHandler) DeleteApp(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 
 	w.Header().Set("Content-Type", "application/json")
@@ -143,6 +150,7 @@ func (appHandler *ApplicationApiHandler) DeleteApp(w http.ResponseWriter, r *htt
 
 }
 
+// ApplicationForCompany retrieves all job-applications for a given company
 func (appHandler *ApplicationApiHandler) AddApplication(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	w.Header().Set("Content-Type", "application/json")
 	var app entity.Application

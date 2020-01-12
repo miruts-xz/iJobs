@@ -50,6 +50,7 @@ func init() {
 	// defer pqconnjs.Close()
 }
 
+// CreateTables creates gorm tables provided entity structs
 func CreateTables(db *gorm.DB) {
 	errs := db.CreateTable(&entity.Session{}, &entity.Address{}, &entity.Application{}, &entity.Category{}, &entity.Job{}, &entity.Company{}, entity.Jobseeker{}).GetErrors()
 	if len(errs) > 0 {
@@ -93,6 +94,7 @@ func main() {
 	jobseekerHandler := handlers.NewJobseekerHandler(tmpl, jobseekerSrv, categorySrv, addressSrv, applicationSrv, sessionSrv, jobSrv, companySrv)
 	jobseekerAPIHandler := api.NewJobseekerHandler(jobseekerSrv)
 	companyHandler := handlers.NewCompanyHandler(tmpl, jobseekerSrv, companySrv, categorySrv, addressSrv, applicationSrv, sessionSrv, jobSrv)
+	logoutHandler := handlers.NewLogoutHandler(tmpl, jobseekerSrv, companySrv, sessionSrv)
 	//go util.ClearExpiredSessions(sessionSrv)
 
 	//RESTApi Handlers
@@ -105,6 +107,7 @@ func main() {
 
 	// Welcome SignIn/Up path registration
 	router.GET("/", welcomeHandler.Welcome)
+	router.GET("/signout", logoutHandler.Logout)
 	router.GET("/login", loginHandler.GetLogin)
 	router.POST("/login", loginHandler.PostLogin)
 	router.POST("/signup/jobseeker", jobseekerHandler.JobseekerRegister)

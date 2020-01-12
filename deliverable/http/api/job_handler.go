@@ -19,6 +19,7 @@ func NewJobApiHandler(jbSrv *jobsrv.JobServices) *JobApiHandler {
 	return &JobApiHandler{jobService: jbSrv}
 }
 
+// Jobs retrieves all jobs
 func (jobHandler *JobApiHandler) Jobs(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 
 	w.Header().Set("Content-Type", "application/json")
@@ -38,6 +39,7 @@ func (jobHandler *JobApiHandler) Jobs(w http.ResponseWriter, r *http.Request, ps
 
 }
 
+//Returns a job given an its id
 func (jobHander *JobApiHandler) Job(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 
 	w.Header().Set("Content-Type", "application/json")
@@ -69,6 +71,7 @@ func (jobHander *JobApiHandler) Job(w http.ResponseWriter, r *http.Request, ps h
 
 }
 
+// Updates a job given the updated job object
 func (jobHander *JobApiHandler) UpdateJob(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	w.Header().Set("Content-Type", "application/json")
 	id := ps.ByName("id")
@@ -111,6 +114,7 @@ func (jobHander *JobApiHandler) UpdateJob(w http.ResponseWriter, r *http.Request
 	}
 }
 
+//Deletes a job given its id
 func (jobHander *JobApiHandler) DeleteJob(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	w.Header().Set("Content-Type", "application/json")
 	id := ps.ByName("id")
@@ -136,6 +140,7 @@ func (jobHander *JobApiHandler) DeleteJob(w http.ResponseWriter, r *http.Request
 	return
 }
 
+//Adds a job to the database
 func (jobHander *JobApiHandler) AddJob(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	w.Header().Set("Content-Type", "application/json")
 	var job entity.Job

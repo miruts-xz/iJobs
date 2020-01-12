@@ -2,6 +2,7 @@ package session
 
 import "github.com/miruts/iJobs/entity"
 
+// SessionServices defines Session related services
 type SessionService interface {
 	Sessions() ([]entity.Session, error)
 	Session(id int) (entity.Session, error)

@@ -2,6 +2,7 @@ package entity
 
 import "github.com/jinzhu/gorm"
 
+// represents status of job-application
 type Status string
 
 const (
@@ -10,6 +11,7 @@ const (
 	FURTHER  Status = "further"
 )
 
+// represents a job-application response
 type Response string
 
 const (
@@ -17,6 +19,7 @@ const (
 	UNREVIEWED string = "unreviewed"
 )
 
+// Application represents a job-application
 type Application struct {
 	gorm.Model
 

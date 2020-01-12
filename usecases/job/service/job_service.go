@@ -7,15 +7,18 @@ import (
 	"github.com/miruts/iJobs/usecases/job/repository"
 )
 
+// JobServices Implements JobService Interface
 type JobServices struct {
 	handler *repository.JobGormRepositoryImpl
 	ctgSrv  job.CategoryService
 }
 
+// NewJobServices creates new JobServices
 func NewJobServices(handler *repository.JobGormRepositoryImpl, ctgSrv job.CategoryService) *JobServices {
 	return &JobServices{handler: handler, ctgSrv: ctgSrv}
 }
 
+// Jobs retrieves all jobs
 func (jobService *JobServices) Jobs() ([]entity.Job, error) {
 	return jobService.handler.Jobs()
 
@@ -48,6 +51,8 @@ func (jobService *JobServices) StoreJob(job *entity.Job) (*entity.Job, error) {
 	return jobService.handler.StoreJob(job)
 
 }
+
+// CompanyJobs retrieves jobs of specific company
 func (jobService *JobServices) CompanyJobs(cmpSrv company.CompanyService, cmid int) ([]entity.Job, error) {
 	return jobService.handler.CompanyJobs(cmpSrv, cmid)
 }

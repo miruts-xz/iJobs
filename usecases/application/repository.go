@@ -6,6 +6,7 @@ import (
 	"github.com/miruts/iJobs/usecases/jobseeker"
 )
 
+// IAppRepository represents Application data repository
 type IAppRepository interface {
 	Store(app *entity.Application) error
 	Application(id int) (entity.Application, error)

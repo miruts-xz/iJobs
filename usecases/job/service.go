@@ -5,6 +5,7 @@ import (
 	"github.com/miruts/iJobs/usecases/company"
 )
 
+// JobService specifies all job related services
 type JobService interface {
 	Jobs() ([]entity.Job, error)
 	JobsOfCategory(cat_id int) ([]entity.Job, error)
