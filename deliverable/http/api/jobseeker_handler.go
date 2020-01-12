@@ -11,17 +11,15 @@ import (
 	jssrv "github.com/miruts/iJobs/usecases/jobseeker"
 )
 
-// JobseekerHandler represents jobseeker api request handler
 type JobseekerHandler struct {
 	jsSrv jssrv.JobseekerService
 }
 
-// NewJobseekerHandler creates new JobseekerHandler
 func NewJobseekerHandler(jsSrv jssrv.JobseekerService) *JobseekerHandler {
 	return &JobseekerHandler{jsSrv: jsSrv}
 }
 
-// Jobseekers retrieves all jobseekers
+//Jobseekers handles all JobSeekers JSon data
 func (jsh *JobseekerHandler) Jobseekers(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	w.Header().Set("Content-Type", "application/json")
 	jobseekers, err := jsh.jsSrv.JobSeekers()
@@ -38,8 +36,6 @@ func (jsh *JobseekerHandler) Jobseekers(w http.ResponseWriter, r *http.Request, 
 	}
 	_, err = w.Write(response)
 }
-
-// Jobseeker retrieves a jobseeker with id
 func (jsh *JobseekerHandler) Jobseeker(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	w.Header().Set("Content-Type", "application/json")
 	id := ps.ByName("id")
@@ -68,8 +64,6 @@ func (jsh *JobseekerHandler) Jobseeker(w http.ResponseWriter, r *http.Request, p
 		return
 	}
 }
-
-// UpdateJobseeker updates a jobseeker with id
 func (jsh *JobseekerHandler) UpdateJobseeker(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	w.Header().Set("Content-Type", "application/json")
 	id := ps.ByName("id")
@@ -111,8 +105,6 @@ func (jsh *JobseekerHandler) UpdateJobseeker(w http.ResponseWriter, r *http.Requ
 		return
 	}
 }
-
-// DeleteJobseeker deletes jobseeker with id
 func (jsh *JobseekerHandler) DeleteJobseeker(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	w.Header().Set("Content-Type", "application/json")
 	id := ps.ByName("id")
@@ -147,8 +139,6 @@ func (jsh *JobseekerHandler) DeleteJobseeker(w http.ResponseWriter, r *http.Requ
 		return
 	}
 }
-
-// AddJobseeker adds new jobseeker
 func (jsh *JobseekerHandler) AddJobseeker(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	w.Header().Set("Content-Type", "application/json")
 	var jobseeker entity.Jobseeker

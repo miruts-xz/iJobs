@@ -60,7 +60,7 @@ func CreateTables(db *gorm.DB) {
 }
 func main() {
 	// Gorm Database Connection
-	gormDB, err = gorm.Open("postgres", "user=postgres dbname=ijobs_gorm_db password=postgres sslmode=disable")
+	gormDB, err = gorm.Open("postgres", "user=postgres dbname=ijobs_gorm_db password=tsedekeme sslmode=disable")
 	if errs != nil {
 		fmt.Println(err)
 		return
@@ -90,6 +90,7 @@ func main() {
 	applicationSrv := appsrv.NewAppService(applicationRepo, jobseekerSrv, jobSrv, companySrv)
 	// Handlers
 	loginHandler := handlers.NewLoginHandler(tmpl, jobseekerSrv, companySrv, sessionSrv, categorySrv)
+	logoutHandler := handlers.NewLogoutHandler(tmpl, jobseekerSrv, companySrv, sessionSrv)
 	welcomeHandler := handlers.NewWelcomeHandler(tmpl, sessionSrv, jobseekerSrv, companySrv)
 	jobseekerHandler := handlers.NewJobseekerHandler(tmpl, jobseekerSrv, categorySrv, addressSrv, applicationSrv, sessionSrv, jobSrv, companySrv)
 	jobseekerAPIHandler := api.NewJobseekerHandler(jobseekerSrv)
@@ -110,6 +111,7 @@ func main() {
 	router.GET("/signout", logoutHandler.Logout)
 	router.GET("/login", loginHandler.GetLogin)
 	router.POST("/login", loginHandler.PostLogin)
+	router.GET("/logout", logoutHandler.Logout)
 	router.POST("/signup/jobseeker", jobseekerHandler.JobseekerRegister)
 	router.POST("/signup/company", companyHandler.CompanyRegister)
 
@@ -148,7 +150,7 @@ func main() {
 	// Static file registration
 	router.ServeFiles("/assets/*filepath", http.Dir("ui/asset"))
 	// Start Serving
-	err := http.ListenAndServe(":8080", router)
+	err := http.ListenAndServe(":8181", router)
 	if err != nil {
 		fmt.Printf("server failed: %s", err)
 	}

@@ -27,7 +27,6 @@ var ctgSrvc job.CategoryService
 var jobSrvc job.JobService
 var cmpSrvc company.CompanyService
 
-// JobseekerHandler represents jobseeker request handler
 type JobseekerHandler struct {
 	tmpl    *template.Template
 	jsSrv   jobseeker.JobseekerService
@@ -36,44 +35,32 @@ type JobseekerHandler struct {
 	appSrv  application.IAppService
 	sessSrv session.SessionService
 }
-
-// RegisterNeed represents data needed for jobseeker registration
 type RegisterNeed struct {
 	Categories []entity.Category
 	Regions    []string
 	Cities     []string
 	Subcities  []string
 }
-
-// AppliedJobCatNeed represents data needed for jobseeker applied jobs by category
 type AppliedJobCatNeed struct {
 	Categories []entity.Category
 	Jobseeker  entity.Jobseeker
 	Catid      int
 }
-
-// JobseekerHomeNeed represents data needed for jobseeker home page
 type JobseekerHomeNeed struct {
 	Applications []entity.Application
 	Suggestions  []entity.Job
 	Categories   []entity.Category
 	Jobseeker    entity.Jobseeker
 }
-
-// JobseekerAppliedNeed represents data needed for jobseeker applied jobs page
 type JobseekerAppliedNeed struct {
 	Applications []entity.Application
 	Categories   []entity.Category
 	Jobseeker    entity.Jobseeker
 }
-
-// JobseekerProfileNeed represents data needed for jobseeker profile page
 type JobseekerProfileNeed struct {
 	Categories []entity.Category
 	Jobseeker  entity.Jobseeker
 }
-
-// JobseekerProfileEditNeed represents data needed for jobseeker profile edit page
 type JobseekerProfileEditNeed struct {
 	Jobseeker  entity.Jobseeker
 	Categories []entity.Category
@@ -130,7 +117,7 @@ func hasvalue(value interface{}) bool {
 	return false
 }
 
-// JobseekerRegister handles jobseeker post requests at /signup/jobseeker
+//JobseekerRegister adds a new JobSeeker
 func (jsh *JobseekerHandler) JobseekerRegister(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	err := r.ParseForm()
 	err = r.ParseMultipartForm(1024)
@@ -314,8 +301,6 @@ func (jsh *JobseekerHandler) JobseekerRegister(w http.ResponseWriter, r *http.Re
 	fmt.Println("Jobseeker registered successfully", js)
 	http.Redirect(w, r, "/login", http.StatusSeeOther)
 }
-
-// JobseekerApply handles post requests at /jobseeker/:username/apply/:id
 func (jsh *JobseekerHandler) JobseekerApply(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	ok, session := util.Authenticate(jsh.sessSrv, r)
 	if ok == true {
@@ -358,8 +343,6 @@ func (jsh *JobseekerHandler) JobseekerApply(w http.ResponseWriter, r *http.Reque
 		http.Redirect(w, r, "/login", http.StatusSeeOther)
 	}
 }
-
-// JobseekerHome handles get requests at /jobseeker/:username
 func (jsh *JobseekerHandler) JobseekerHome(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	ok, session := util.Authenticate(jsh.sessSrv, r)
 	if ok == true {
@@ -397,7 +380,7 @@ func (jsh *JobseekerHandler) JobseekerHome(w http.ResponseWriter, r *http.Reques
 	}
 }
 
-// JobseekerAppliedJobs handles jobseeker get requests at /jobseeker/:username/appliedjobs
+//JobseekerAppliedJobs displays Job ith specified ID or AllJobs Posted in the Category
 func (jsh *JobseekerHandler) JobseekerAppliedJobs(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	ok, session := util.Authenticate(jsh.sessSrv, r)
 	if ok {
@@ -434,7 +417,7 @@ func (jsh *JobseekerHandler) JobseekerAppliedJobs(w http.ResponseWriter, r *http
 	}
 }
 
-// JobseekerProfile handles jobseeker get requests at /jobseeker/:username/profile
+//JobseekerProfile display the JobSeeker profile page
 func (jsh *JobseekerHandler) JobseekerProfile(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	ok, session := util.Authenticate(jsh.sessSrv, r)
 	if ok {
@@ -469,7 +452,7 @@ func (jsh *JobseekerHandler) JobseekerProfile(w http.ResponseWriter, r *http.Req
 	}
 }
 
-// ProfileEdit handles jobseeker get and post requests at /jobseeker/:username/profile/edit
+//ProfileEdit display and edit JobSeekers Profile
 func (jsh *JobseekerHandler) ProfileEdit(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	ok, session := util.Authenticate(jsh.sessSrv, r)
 	if ok {
@@ -706,8 +689,6 @@ func (jsh *JobseekerHandler) ProfileEdit(w http.ResponseWriter, r *http.Request,
 		http.Redirect(w, r, "/login", http.StatusSeeOther)
 	}
 }
-
-// AppliedJobCategory handles jobseeker get requests at /jobseeker/:username/appliedjobs/:id
 func (jsh *JobseekerHandler) AppliedJobCategory(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 
 	ok, session := util.Authenticate(jsh.sessSrv, r)
@@ -749,8 +730,6 @@ func (jsh *JobseekerHandler) AppliedJobCategory(w http.ResponseWriter, r *http.R
 	}
 
 }
-
-// AppGetJobName a template function (FuncMap) that retrieves job name give job-application
 func AppGetJobsName(app entity.Application) (string, error) {
 	fmt.Println(app.JobID)
 	job, err := jobSrvc.Job(int(app.JobID))
@@ -759,8 +738,6 @@ func AppGetJobsName(app entity.Application) (string, error) {
 	}
 	return job.Name, nil
 }
-
-// AppGetCmpName a template function (FuncMap) that retrieves company name given job-application
 func AppGetCmpName(app entity.Application) (string, error) {
 	job, err := jobSrvc.Job(int(app.JobID))
 	if err != nil {
@@ -772,8 +749,6 @@ func AppGetCmpName(app entity.Application) (string, error) {
 	}
 	return cmp.CompanyName, nil
 }
-
-// AppGetLocation a template function (FuncMap) that retrieves company address given job-application
 func AppGetLocation(app entity.Application) (entity.Address, error) {
 	var addr entity.Address
 	job, err := jobSrvc.Job(int(app.JobID))
@@ -790,8 +765,6 @@ func AppGetLocation(app entity.Application) (entity.Address, error) {
 	}
 	return addr, nil
 }
-
-// AppGetCmpLogo a template function (FuncMap) that retrieves company logo given job-application
 func AppGetCmpLogo(app entity.Application) (string, error) {
 	job, err := jobSrvc.Job(int(app.JobID))
 	if err != nil {
@@ -803,8 +776,6 @@ func AppGetCmpLogo(app entity.Application) (string, error) {
 	}
 	return cmp.Logo, nil
 }
-
-// AppGetJobCatId a template function (FuncMap) that retrieves job-categories given job-application
 func AppGetJobCatId(app entity.Application) ([]int, error) {
 	job, err := jobSrvc.Job(int(app.JobID))
 	var catsId []int

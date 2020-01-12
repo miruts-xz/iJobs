@@ -19,7 +19,6 @@ import (
 	"time"
 )
 
-// CompanyHandler represents Company request handler
 type CompanyHandler struct {
 	tmpl    *template.Template
 	jsSrv   jobseeker.JobseekerService
@@ -33,23 +32,30 @@ type CompanyHandler struct {
 
 // NewCompanyHandler creates new CompanyHandler
 func NewCompanyHandler(tmpl *template.Template, jsSrv jobseeker.JobseekerService, cmpSrv company.CompanyService, ctgSrv job.CategoryService, addrSrv jobseeker.AddressService, appSrv application.IAppService, sessSrv session.SessionService, jobSrv job.JobService) *CompanyHandler {
-	return &CompanyHandler{tmpl: tmpl, jsSrv: jsSrv, cmpSrv: cmpSrv, ctgSrv: ctgSrv, addrSrv: addrSrv, appSrv: appSrv, sessSrv: sessSrv, jobSrv: jobSrv}
+	return &CompanyHandler{
+		tmpl:    tmpl,
+		jsSrv:   jsSrv,
+		cmpSrv:  cmpSrv,
+		ctgSrv:  ctgSrv,
+		addrSrv: addrSrv,
+		appSrv:  appSrv,
+		sessSrv: sessSrv,
+		jobSrv:  jobSrv,
+	}
 }
 
-// CompanyPostJobNeed respresets data needed when posting job
+// CompanyPostJodNeed stores information required for posting job
 type CompanyPostJobNeed struct {
 	Categories []entity.Category
 	Company    entity.Company
 }
-
-// CompanyHomeNeed represents data needed at company home page
 type CompanyHomeNeed struct {
 	Company      entity.Company
 	Applications []entity.Application
 	Jobs         []entity.Job
 }
 
-// CompanyRegister hanldes post request to /signup/company
+// CompanyRegister handles company SignUp request.
 func (ch *CompanyHandler) CompanyRegister(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	err := r.ParseForm()
 	err = r.ParseMultipartForm(1024)
@@ -147,8 +153,6 @@ func (ch *CompanyHandler) CompanyRegister(w http.ResponseWriter, r *http.Request
 	http.Redirect(w, r, "/login", http.StatusSeeOther)
 	return
 }
-
-// CompanyHome handles get request at /company/:username
 func (ch *CompanyHandler) CompanyHome(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	ok, session := util.Authenticate(ch.sessSrv, r)
 	if ok == true {
@@ -182,8 +186,6 @@ func (ch *CompanyHandler) CompanyHome(w http.ResponseWriter, r *http.Request, ps
 		http.Redirect(w, r, "/login", http.StatusSeeOther)
 	}
 }
-
-// CompanyPostJob handles post and get requests at /company/:username/postjob
 func (ch *CompanyHandler) CompanyPostJob(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	ok, session := util.Authenticate(ch.sessSrv, r)
 	if ok {
@@ -282,8 +284,6 @@ func (ch *CompanyHandler) CompanyPostJob(w http.ResponseWriter, r *http.Request,
 		http.Redirect(w, r, "/login", http.StatusSeeOther)
 	}
 }
-
-// AppJs a template function (FuncMap) that retrieves jobseeker given job-application
 func AppJs(app entity.Application) (entity.Jobseeker, error) {
 	jsid := app.JobseekerID
 	jobseeker, err := jsSrvc.ApplicationJobseeker(int(jsid))
@@ -293,8 +293,6 @@ func AppJs(app entity.Application) (entity.Jobseeker, error) {
 	}
 	return jobseeker, nil
 }
-
-// AppJob a template function (FuncMap) that retrieves job given job-application
 func AppJob(app entity.Application) (entity.Job, error) {
 	jid := app.JobID
 	job, err := jobSrvc.Job(int(jid))
@@ -304,8 +302,6 @@ func AppJob(app entity.Application) (entity.Job, error) {
 	}
 	return job, nil
 }
-
-// JobCmp a template function (FuncMap) that retrieves company given posted-job
 func JobCmp(job entity.Job) (entity.Company, error) {
 	cmid := job.CompanyID
 	fmt.Println(cmid)
