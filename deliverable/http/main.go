@@ -51,7 +51,7 @@ func init() {
 }
 
 func CreateTables(db *gorm.DB) {
-	errs := db.CreateTable(&entity.Job{}, &entity.Company{}, entity.Jobseeker{}).GetErrors()
+	errs := db.CreateTable(&entity.Session{}, &entity.Address{}, &entity.Application{}, &entity.Category{}, &entity.Job{}, &entity.Company{}, entity.Jobseeker{}).GetErrors()
 	if len(errs) > 0 {
 		fmt.Println(errs[0])
 		return
@@ -67,7 +67,7 @@ func main() {
 	gormDB.AutoMigrate(&entity.Category{})
 	// Create Gorm Tables
 	// Run Once
-	CreateTables(gormDB)
+	//CreateTables(gormDB)
 
 	// Data Repositories
 	applicationRepo := apprepo.NewAppGormRepositoryImpl(gormDB)
@@ -89,6 +89,7 @@ func main() {
 	applicationSrv := appsrv.NewAppService(applicationRepo, jobseekerSrv, jobSrv, companySrv)
 	// Handlers
 	loginHandler := handlers.NewLoginHandler(tmpl, jobseekerSrv, companySrv, sessionSrv, categorySrv)
+	logoutHandler := handlers.NewLogoutHandler(tmpl, jobseekerSrv, companySrv, sessionSrv)
 	welcomeHandler := handlers.NewWelcomeHandler(tmpl, sessionSrv, jobseekerSrv, companySrv)
 	jobseekerHandler := handlers.NewJobseekerHandler(tmpl, jobseekerSrv, categorySrv, addressSrv, applicationSrv, sessionSrv, jobSrv, companySrv)
 	jobseekerAPIHandler := api.NewJobseekerHandler(jobseekerSrv)
@@ -107,6 +108,7 @@ func main() {
 	router.GET("/", welcomeHandler.Welcome)
 	router.GET("/login", loginHandler.GetLogin)
 	router.POST("/login", loginHandler.PostLogin)
+	router.GET("/logout", logoutHandler.Logout)
 	router.POST("/signup/jobseeker", jobseekerHandler.JobseekerRegister)
 	router.POST("/signup/company", companyHandler.CompanyRegister)
 
