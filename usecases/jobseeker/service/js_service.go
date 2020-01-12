@@ -78,3 +78,6 @@ func (jss *JobseekerServiceImpl) JobseekerByEmail(email string) (entity.Jobseeke
 func (jss *JobseekerServiceImpl) JobseekerByUsername(uname string) (entity.Jobseeker, error) {
 	return jss.jsRepo.JobseekerByUsername(uname)
 }
+func (jss *JobseekerServiceImpl) ApplicationJobseeker(id int) (entity.Jobseeker, error) {
+	return jss.jsRepo.ApplicationJobseeker(id)
+}

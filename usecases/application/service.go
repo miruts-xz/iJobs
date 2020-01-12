@@ -10,4 +10,5 @@ type IAppService interface {
 	UserApplication(jsId int) ([]entity.Application, error)
 	ApplicationsOnJob(jobId int) ([]entity.Application, error)
 	DeleteApplication(id int) (entity.Application, error)
+	ApplicationForCompany(cmid int) ([]entity.Application, error)
 }

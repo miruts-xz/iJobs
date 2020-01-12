@@ -34,10 +34,10 @@ const (
 var gormDB *gorm.DB
 var err error
 var errs error
-var tmpl = template.Must(template.New("index").Funcs(funcMaps).ParseGlob("../../ui/template/*.html"))
+var tmpl = template.Must(template.New("index").Funcs(funcMaps).ParseGlob("ui/template/*.html"))
 var pqconnjs, pqconncmp *sql.DB
 
-var funcMaps = template.FuncMap{"appGetJobCatId": handlers.AppGetJobCatId, "appGetCmpLogo": handlers.AppGetCmpLogo, "appGetJobName": handlers.AppGetJobsName, "appGetCmpName": handlers.AppGetCmpName, "appGetLoc": handlers.AppGetLocation}
+var funcMaps = template.FuncMap{"cmp": handlers.JobCmp, "appGetJob": handlers.AppJob, "appGetJs": handlers.AppJs, "appGetJobCatId": handlers.AppGetJobCatId, "appGetCmpLogo": handlers.AppGetCmpLogo, "appGetJobName": handlers.AppGetJobsName, "appGetCmpName": handlers.AppGetCmpName, "appGetLoc": handlers.AppGetLocation}
 
 func init() {
 	// Template
@@ -59,7 +59,7 @@ func CreateTables(db *gorm.DB) {
 }
 func main() {
 	// Gorm Database Connection
-	gormDB, err = gorm.Open("postgres", "user=postgres dbname=ijobs_gorm_db password=akuadane sslmode=disable")
+	gormDB, err = gorm.Open("postgres", "user=postgres dbname=ijobs_gorm_db password=postgres sslmode=disable")
 	if errs != nil {
 		fmt.Println(err)
 		return
@@ -86,12 +86,13 @@ func main() {
 	jobseekerSrv := jssrv.NewJobseekerServiceImpl(jobseekerRepo, jobSrv)
 	addressSrv := jssrv.NewAddressServiceImpl(addressRepo)
 	sessionSrv := service.NewSessionServiceImpl(sessionRepo)
-	applicationSrv := appsrv.NewAppService(applicationRepo, jobseekerSrv, jobSrv)
+	applicationSrv := appsrv.NewAppService(applicationRepo, jobseekerSrv, jobSrv, companySrv)
 	// Handlers
 	loginHandler := handlers.NewLoginHandler(tmpl, jobseekerSrv, companySrv, sessionSrv, categorySrv)
 	welcomeHandler := handlers.NewWelcomeHandler(tmpl, sessionSrv, jobseekerSrv, companySrv)
 	jobseekerHandler := handlers.NewJobseekerHandler(tmpl, jobseekerSrv, categorySrv, addressSrv, applicationSrv, sessionSrv, jobSrv, companySrv)
 	jobseekerAPIHandler := api.NewJobseekerHandler(jobseekerSrv)
+	companyHandler := handlers.NewCompanyHandler(tmpl, jobseekerSrv, companySrv, categorySrv, addressSrv, applicationSrv, sessionSrv, jobSrv)
 	//go util.ClearExpiredSessions(sessionSrv)
 
 	//RESTApi Handlers
@@ -107,35 +108,42 @@ func main() {
 	router.GET("/login", loginHandler.GetLogin)
 	router.POST("/login", loginHandler.PostLogin)
 	router.POST("/signup/jobseeker", jobseekerHandler.JobseekerRegister)
+	router.POST("/signup/company", companyHandler.CompanyRegister)
+
+	router.GET("/company/:username/postjob", companyHandler.CompanyPostJob)
+	router.POST("/company/:username/postjob", companyHandler.CompanyPostJob)
+
+	router.GET("/company/:username", companyHandler.CompanyHome)
 
 	// Jobseeker path registration
 	router.GET("/jobseeker/:username", jobseekerHandler.JobseekerHome)
 	router.POST("/jobseeker/:username", jobseekerHandler.JobseekerHome)
+	router.GET("/jobseeker/:username/apply/:id", jobseekerHandler.JobseekerApply)
 	router.GET("/jobseeker/:username/profile", jobseekerHandler.JobseekerProfile)
 	router.GET("/jobseeker/:username/profile/edit", jobseekerHandler.ProfileEdit)
 	router.POST("/jobseeker/:username/profile/edit", jobseekerHandler.ProfileEdit)
 	router.GET("/jobseeker/:username/appliedjobs", jobseekerHandler.JobseekerAppliedJobs)
 	router.GET("/jobseeker/:username/appliedjobs/:id", jobseekerHandler.JobseekerAppliedJobs)
-	router.GET(apiDomain+":8080"+"/jobseekers", jobseekerAPIHandler.Jobseekers)
+	router.GET("/api/jobseekers", jobseekerAPIHandler.Jobseekers)
 
 	//REST Api registration
 	//Job Api Handlers
-	router.GET("/api/job", apiJobHandler.Jobs)
-	router.GET("/api/job/:id", apiJobHandler.Job)
-	router.POST("api/job/", apiJobHandler.AddJob)
-	router.PUT("/api/job/:id", apiJobHandler.UpdateJob)
-	router.DELETE("/api/job/:id", apiJobHandler.DeleteJob)
+	router.GET("/api/jobs", apiJobHandler.Jobs)
+	router.GET("/api/jobs/:id", apiJobHandler.Job)
+	router.POST("/api/jobs/", apiJobHandler.AddJob)
+	router.PUT("/api/jobs/:id", apiJobHandler.UpdateJob)
+	router.DELETE("/api/jobs/:id", apiJobHandler.DeleteJob)
 
 	//JobSeeker Api Handler
 
 	router.GET("/api/jobseeker", apiJobSkHandler.Jobseeker)
-	router.GET("/api/jobseeker/:id", apiJobSkHandler.Jobseekers)
-	router.POST("api/jobseeker/", apiJobSkHandler.AddJobseeker)
-	router.PUT("/api/jobseeker/:id", apiJobSkHandler.UpdateJobseeker)
-	router.DELETE("/api/jobseeker/:id", apiJobSkHandler.DeleteJobseeker)
+	router.GET("/api/jobseekers/:id", apiJobSkHandler.Jobseekers)
+	router.POST("/api/jobseekers/", apiJobSkHandler.AddJobseeker)
+	router.PUT("/api/jobseekers/:id", apiJobSkHandler.UpdateJobseeker)
+	router.DELETE("/api/jobseekers/:id", apiJobSkHandler.DeleteJobseeker)
 
 	// Static file registration
-	router.ServeFiles("/assets/*filepath", http.Dir("../../ui/asset"))
+	router.ServeFiles("/assets/*filepath", http.Dir("ui/asset"))
 	// Start Serving
 	err := http.ListenAndServe(":8080", router)
 	if err != nil {

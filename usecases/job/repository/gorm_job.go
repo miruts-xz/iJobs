@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/jinzhu/gorm"
 	"github.com/miruts/iJobs/entity"
+	"github.com/miruts/iJobs/usecases/company"
 	"github.com/miruts/iJobs/usecases/job"
 )
 
@@ -64,11 +65,24 @@ func (jgr *JobGormRepositoryImpl) DeleteJob(id int) (entity.Job, error) {
 	}
 	return job, nil
 }
-func (jgr *JobGormRepositoryImpl) StoreJob(job *entity.Job) error {
+func (jgr *JobGormRepositoryImpl) StoreJob(job *entity.Job) (*entity.Job, error) {
 	j := job
 	errs := jgr.conn.Create(&j).GetErrors()
 	if len(errs) > 0 {
-		return errs[0]
+		return j, errs[0]
 	}
-	return nil
+	return j, nil
+}
+func (jgr *JobGormRepositoryImpl) CompanyJobs(cmpSrv company.CompanyService, cmid int) ([]entity.Job, error) {
+	company, err := cmpSrv.Company(cmid)
+	var jobs []entity.Job
+	if err != nil {
+		fmt.Println(err)
+		return jobs, err
+	}
+	errs := jgr.conn.Model(&company).Related(&jobs, "Jobs").GetErrors()
+	if len(errs) > 0 {
+		return jobs, errs[0]
+	}
+	return jobs, nil
 }

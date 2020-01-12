@@ -80,7 +80,7 @@ func (cpr *CompanyGormRepositoryImpl) CompanyAddress(id uint) (entity.Address, e
 	if err != nil {
 		return address, err
 	}
-	errs := cpr.conn.Model(&company).Related(&address).GetErrors()
+	errs := cpr.conn.Model(&company).Related(&address, "Address").GetErrors()
 	if len(errs) > 0 {
 		return address, errs[0]
 	}

@@ -12,4 +12,5 @@ type IAppRepository interface {
 	UserApplication(jsSrv jobseeker.JobseekerService, jsId int) ([]entity.Application, error)
 	ApplicationsOnJob(jobSrv job.JobService, jobId int) ([]entity.Application, error)
 	DeleteApplication(id int) (entity.Application, error)
+	ApplicationForCompany(cmid int) ([]entity.Application, error)
 }

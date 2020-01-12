@@ -13,6 +13,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 	"html/template"
 	"net/http"
+	"strings"
 )
 
 // LoginHandler specifies a login handler
@@ -141,7 +142,7 @@ func (lh *LoginHandler) PostLogin(w http.ResponseWriter, r *http.Request, ps htt
 		fmt.Printf("I'm IN Second")
 
 		// Its Company
-		err = bcrypt.CompareHashAndPassword([]byte(jobseeker.Password), []byte(password))
+		err = bcrypt.CompareHashAndPassword([]byte(company.Password), []byte(password))
 		if err == nil {
 			sess := entity.Session{}
 			uuid, err := uuid.NewV4()
@@ -159,7 +160,8 @@ func (lh *LoginHandler) PostLogin(w http.ResponseWriter, r *http.Request, ps htt
 			if err != nil {
 				fmt.Printf("storing session failed: %s", err)
 			}
-			http.Redirect(w, r, "/company/"+company.CompanyName, http.StatusSeeOther)
+			uname := strings.ToLower(company.CompanyName)
+			http.Redirect(w, r, "/company/"+uname, http.StatusSeeOther)
 		} else {
 			fmt.Printf("I'm IN Login Redirect")
 

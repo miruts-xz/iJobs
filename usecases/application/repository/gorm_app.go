@@ -69,3 +69,22 @@ func (agr *AppGormRepositoryImpl) DeleteApplication(id int) (entity.Application,
 	}
 	return application, nil
 }
+func (agr *AppGormRepositoryImpl) ApplicationForCompany(cmid int) ([]entity.Application, error) {
+	var jobs []entity.Job
+	errs := agr.conn.Where("company_id = ?", cmid).Find(&jobs).GetErrors()
+	var tobereturned []entity.Application
+	var applications []entity.Application
+
+	for i, _ := range jobs {
+		errs := agr.conn.Where("job_id = ?", jobs[i].ID).Find(&applications).GetErrors()
+		if len(errs) > 0 {
+			fmt.Println(errs)
+			return tobereturned, errs[0]
+		}
+		tobereturned = append(tobereturned, applications...)
+	}
+	if len(errs) > 0 {
+		return tobereturned, errs[0]
+	}
+	return tobereturned, nil
+}
