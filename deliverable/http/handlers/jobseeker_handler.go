@@ -116,6 +116,8 @@ func hasvalue(value interface{}) bool {
 	}
 	return false
 }
+
+//JobseekerRegister adds a new JobSeeker
 func (jsh *JobseekerHandler) JobseekerRegister(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	err := r.ParseForm()
 	err = r.ParseMultipartForm(1024)
@@ -377,6 +379,8 @@ func (jsh *JobseekerHandler) JobseekerHome(w http.ResponseWriter, r *http.Reques
 		http.Redirect(w, r, "/login", http.StatusSeeOther)
 	}
 }
+
+//JobseekerAppliedJobs displays Job ith specified ID or AllJobs Posted in the Category
 func (jsh *JobseekerHandler) JobseekerAppliedJobs(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	ok, session := util.Authenticate(jsh.sessSrv, r)
 	if ok {
@@ -412,6 +416,8 @@ func (jsh *JobseekerHandler) JobseekerAppliedJobs(w http.ResponseWriter, r *http
 		http.Redirect(w, r, "/login", http.StatusSeeOther)
 	}
 }
+
+//JobseekerProfile display the JobSeeker profile page
 func (jsh *JobseekerHandler) JobseekerProfile(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	ok, session := util.Authenticate(jsh.sessSrv, r)
 	if ok {
@@ -445,6 +451,8 @@ func (jsh *JobseekerHandler) JobseekerProfile(w http.ResponseWriter, r *http.Req
 		http.Redirect(w, r, "/login", http.StatusSeeOther)
 	}
 }
+
+//ProfileEdit display and edit JobSeekers Profile
 func (jsh *JobseekerHandler) ProfileEdit(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	ok, session := util.Authenticate(jsh.sessSrv, r)
 	if ok {

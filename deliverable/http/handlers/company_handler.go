@@ -30,10 +30,21 @@ type CompanyHandler struct {
 	jobSrv  job.JobService
 }
 
+// NewCompanyHandler creates new CompanyHandler
 func NewCompanyHandler(tmpl *template.Template, jsSrv jobseeker.JobseekerService, cmpSrv company.CompanyService, ctgSrv job.CategoryService, addrSrv jobseeker.AddressService, appSrv application.IAppService, sessSrv session.SessionService, jobSrv job.JobService) *CompanyHandler {
-	return &CompanyHandler{tmpl: tmpl, jsSrv: jsSrv, cmpSrv: cmpSrv, ctgSrv: ctgSrv, addrSrv: addrSrv, appSrv: appSrv, sessSrv: sessSrv, jobSrv: jobSrv}
+	return &CompanyHandler{
+		tmpl:    tmpl,
+		jsSrv:   jsSrv,
+		cmpSrv:  cmpSrv,
+		ctgSrv:  ctgSrv,
+		addrSrv: addrSrv,
+		appSrv:  appSrv,
+		sessSrv: sessSrv,
+		jobSrv:  jobSrv,
+	}
 }
 
+// CompanyPostJodNeed stores information required for posting job
 type CompanyPostJobNeed struct {
 	Categories []entity.Category
 	Company    entity.Company
@@ -44,6 +55,7 @@ type CompanyHomeNeed struct {
 	Jobs         []entity.Job
 }
 
+// CompanyRegister handles company signup request.
 func (ch *CompanyHandler) CompanyRegister(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	err := r.ParseForm()
 	err = r.ParseMultipartForm(1024)

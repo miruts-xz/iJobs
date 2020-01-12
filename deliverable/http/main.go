@@ -51,7 +51,7 @@ func init() {
 }
 
 func CreateTables(db *gorm.DB) {
-	errs := db.CreateTable(&entity.Session{}, &entity.Address{}, &entity.Application{}, &entity.Category{}, &entity.Job{}, &entity.Company{}, entity.Jobseeker{}).GetErrors()
+	errs := db.CreateTable(&entity.Job{}, &entity.Company{}, entity.Jobseeker{}).GetErrors()
 	if len(errs) > 0 {
 		fmt.Println(errs[0])
 		return
@@ -59,7 +59,7 @@ func CreateTables(db *gorm.DB) {
 }
 func main() {
 	// Gorm Database Connection
-	gormDB, err = gorm.Open("postgres", "user=postgres dbname=ijobs_gorm_db password=postgres sslmode=disable")
+	gormDB, err = gorm.Open("postgres", "user=postgres dbname=ijobs_gorm_db password=tsedekeme sslmode=disable")
 	if errs != nil {
 		fmt.Println(err)
 		return
@@ -67,7 +67,7 @@ func main() {
 	gormDB.AutoMigrate(&entity.Category{})
 	// Create Gorm Tables
 	// Run Once
-	//CreateTables(gormDB)
+	CreateTables(gormDB)
 
 	// Data Repositories
 	applicationRepo := apprepo.NewAppGormRepositoryImpl(gormDB)
@@ -145,7 +145,7 @@ func main() {
 	// Static file registration
 	router.ServeFiles("/assets/*filepath", http.Dir("ui/asset"))
 	// Start Serving
-	err := http.ListenAndServe(":8080", router)
+	err := http.ListenAndServe(":8181", router)
 	if err != nil {
 		fmt.Printf("server failed: %s", err)
 	}

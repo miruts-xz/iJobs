@@ -18,6 +18,8 @@ type JobseekerHandler struct {
 func NewJobseekerHandler(jsSrv jssrv.JobseekerService) *JobseekerHandler {
 	return &JobseekerHandler{jsSrv: jsSrv}
 }
+
+//Jobseekers handles all JobSeekers JSon data
 func (jsh *JobseekerHandler) Jobseekers(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	w.Header().Set("Content-Type", "application/json")
 	jobseekers, err := jsh.jsSrv.JobSeekers()
