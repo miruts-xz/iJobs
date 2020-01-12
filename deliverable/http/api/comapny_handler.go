@@ -8,16 +8,19 @@ import (
 
 	"github.com/julienschmidt/httprouter"
 	"github.com/miruts/iJobs/entity"
-	"github.com/miruts/iJobs/usecases/company"
+	cmpsrv "github.com/miruts/iJobs/usecases/company/service"
 )
 
+// CompanyHandler handles company related http requests
 type CompanyHandler struct {
-	cmpSrv company.CompanyService
+	cmpSrv *cmpsrv.CompanyServiceImpl
 }
 
-func NewCompanyHandler(cmpSrv company.CompanyService) *CompanyHandler {
+// NewCompanyHandler returns new CompanyHandler object
+func NewCompanyHandler(cmpSrv *cmpsrv.CompanyServiceImpl) *CompanyHandler {
 	return &CompanyHandler{cmpSrv: cmpSrv}
 }
+
 func (cmph *CompanyHandler) Companies(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	w.Header().Set("Content-Type", "application/json")
 	companies, err := cmph.cmpSrv.Companies()
@@ -103,6 +106,7 @@ func (cmph *CompanyHandler) UpdateCompany(w http.ResponseWriter, r *http.Request
 		return
 	}
 }
+
 func (cmph *CompanyHandler) DeleteCompany(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	w.Header().Set("Content-Type", "application/json")
 	id := ps.ByName("id")

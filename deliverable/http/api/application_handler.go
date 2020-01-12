@@ -9,21 +9,21 @@ import (
 	"github.com/julienschmidt/httprouter"
 
 	"github.com/miruts/iJobs/entity"
-	"github.com/miruts/iJobs/usecases/application/service"
+	appsrv "github.com/miruts/iJobs/usecases/application/service"
 )
 
 type ApplicationApiHandler struct {
-	appService service.AppService
+	appService *appsrv.AppService
 }
 
-func NewAppApiHandler(appSrv service.AppService) *ApplicationApiHandler {
+func NewAppApiHandler(appSrv *appsrv.AppService) *ApplicationApiHandler {
 	return &ApplicationApiHandler{appService: appSrv}
 }
 
 func (appHandler *ApplicationApiHandler) ApplicationsOnJob(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 
 	w.Header().Set("Content-Type", "application/json")
-	id := ps.ByName("id")
+	id := ps.ByName("jobId")
 	idint, err := strconv.Atoi(id)
 	if err != nil {
 		fmt.Println(err)
@@ -92,6 +92,37 @@ func (appHandler *ApplicationApiHandler) ApplicationsOfJs(w http.ResponseWriter,
 		return
 	}
 	app, err := appHandler.appService.UserApplication(idint)
+	if err != nil {
+		fmt.Println(err)
+		http.Error(w, http.StatusText(404), 404)
+		return
+	}
+	response, err := json.Marshal(app)
+	if err != nil {
+		fmt.Println(err)
+		http.Error(w, http.StatusText(404), 404)
+		return
+	}
+	_, err = w.Write(response)
+	if err != nil {
+		fmt.Println(err)
+		http.Error(w, http.StatusText(404), 404)
+		return
+	}
+
+}
+
+func (appHandler *ApplicationApiHandler) DeleteApp(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+
+	w.Header().Set("Content-Type", "application/json")
+	id := ps.ByName("id")
+	idint, err := strconv.Atoi(id)
+	if err != nil {
+		fmt.Println(err)
+		http.Error(w, http.StatusText(404), 404)
+		return
+	}
+	app, err := appHandler.appService.DeleteApplication(idint)
 	if err != nil {
 		fmt.Println(err)
 		http.Error(w, http.StatusText(404), 404)
