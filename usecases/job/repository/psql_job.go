@@ -3,6 +3,7 @@ package repository
 import (
 	"database/sql"
 	"errors"
+
 	"github.com/miruts/iJobs/entity"
 	"github.com/miruts/iJobs/usecases/job"
 )
