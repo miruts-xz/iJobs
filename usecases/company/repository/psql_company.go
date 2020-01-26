@@ -17,7 +17,7 @@ func NewCompanyRepositoryImpl(cpr *sql.DB) *CompanyRepositoryImpl {
 	return &CompanyRepositoryImpl{conn: cpr}
 }
 
-// Companys retrieves and returns all companys
+// Companies retrieves and returns all companies
 func (cpr *CompanyRepositoryImpl) Companies() ([]entity.Company, error) {
 	query := "select * from companies"
 	rows, err := cpr.conn.Query(query)
@@ -80,14 +80,20 @@ func (cpr *CompanyRepositoryImpl) StoreCompany(cp *entity.Company) (*entity.Comp
 	}
 	return cp, nil
 }
+
+// Posted jobs retrieves jobs jobs posted by company
 func (cpr *CompanyRepositoryImpl) PostedJobs(cid int) ([]entity.Job, error) {
 	var jobs []entity.Job
 	return jobs, errors.New("un implemented method error")
 }
+
+// CompanyByEmail retrieves company given email
 func (cpr *CompanyRepositoryImpl) CompanyByEmail(email string) (entity.Company, error) {
 	var company entity.Company
 	return company, errors.New("un implemented method error")
 }
+
+// CompanyAddress retrieves address of a company given company id
 func (cpr *CompanyRepositoryImpl) CompanyAddress(id uint) (entity.Address, error) {
 	var address entity.Address
 	return address, errors.New("un implemented method error")

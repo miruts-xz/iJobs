@@ -4,6 +4,7 @@ import (
 	"github.com/miruts/iJobs/entity"
 )
 
+// CompanyService interface represents all company services
 type CompanyService interface {
 	Companies() ([]entity.Company, error)
 	Company(cid int) (entity.Company, error)

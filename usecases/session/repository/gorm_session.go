@@ -5,14 +5,17 @@ import (
 	"github.com/miruts/iJobs/entity"
 )
 
+// SessionGormRepositoryImmpl implements SessionRepository
 type SessionGormRepositoryImpl struct {
 	conn *gorm.DB
 }
 
+// NewSessionGormRepositoryImpl creates new SessionGormRepositoryImpl
 func NewSessionGormRepositoryImpl(conn *gorm.DB) *SessionGormRepositoryImpl {
 	return &SessionGormRepositoryImpl{conn: conn}
 }
 
+// Sessions returns all sessions
 func (sgr *SessionGormRepositoryImpl) Sessions() ([]entity.Session, error) {
 	var sessions []entity.Session
 	errs := sgr.conn.Find(&sessions).GetErrors()
@@ -21,6 +24,8 @@ func (sgr *SessionGormRepositoryImpl) Sessions() ([]entity.Session, error) {
 	}
 	return sessions, nil
 }
+
+// Session returns session with given id
 func (sgr *SessionGormRepositoryImpl) Session(id int) (entity.Session, error) {
 	var session entity.Session
 	errs := sgr.conn.First(&session, id).GetErrors()
@@ -29,6 +34,8 @@ func (sgr *SessionGormRepositoryImpl) Session(id int) (entity.Session, error) {
 	}
 	return session, nil
 }
+
+// DeleteSession deletes session with given id
 func (sgr *SessionGormRepositoryImpl) DeleteSession(id int) (entity.Session, error) {
 	session, err := sgr.Session(id)
 	if err != nil {
@@ -40,6 +47,8 @@ func (sgr *SessionGormRepositoryImpl) DeleteSession(id int) (entity.Session, err
 	}
 	return session, nil
 }
+
+// StoreSession stores new session
 func (sgr *SessionGormRepositoryImpl) StoreSession(sess *entity.Session) (*entity.Session, error) {
 	session := sess
 	errs := sgr.conn.Create(&session).GetErrors()
@@ -48,6 +57,8 @@ func (sgr *SessionGormRepositoryImpl) StoreSession(sess *entity.Session) (*entit
 	}
 	return session, nil
 }
+
+// UpdateSession updates a given session
 func (sgr *SessionGormRepositoryImpl) UpdateSession(sess *entity.Session) (*entity.Session, error) {
 	session := sess
 	errs := sgr.conn.Save(&session).GetErrors()
@@ -56,6 +67,8 @@ func (sgr *SessionGormRepositoryImpl) UpdateSession(sess *entity.Session) (*enti
 	}
 	return session, nil
 }
+
+// SessionByValue retrieves session given session value
 func (sgr *SessionGormRepositoryImpl) SessionByValue(value string) (entity.Session, error) {
 	var session entity.Session
 	errs := sgr.conn.Where("uuid = ?", value).First(&session).GetErrors()

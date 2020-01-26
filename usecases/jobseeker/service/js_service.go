@@ -63,18 +63,33 @@ func (jss *JobseekerServiceImpl) Suggestions(id int) ([]entity.Job, error) {
 	}
 	return alljobs, nil
 }
+
+// SetAddress sets address of jobseeker
 func (jss *JobseekerServiceImpl) SetAddress(jsid, addid int) error {
 	return jss.jsRepo.SetAddress(jsid, addid)
 }
+
+// AddIntCategory Adds interested job category
 func (jss *JobseekerServiceImpl) AddIntCategory(jsid, jcid int) error {
 	return jss.jsRepo.AddIntCategory(jsid, jcid)
 }
+
+// RemoveIntCategory removes category from interested list
 func (jss *JobseekerServiceImpl) RemoveIntCategory(jsid, jcid int) error {
 	return jss.RemoveIntCategory(jsid, jcid)
 }
+
+// JobseekerByEmail retrieves a jobseeker given email
 func (jss *JobseekerServiceImpl) JobseekerByEmail(email string) (entity.Jobseeker, error) {
 	return jss.jsRepo.JobseekerByEmail(email)
 }
+
+// JobseekerByUsername retrieves a jobseeker given username
 func (jss *JobseekerServiceImpl) JobseekerByUsername(uname string) (entity.Jobseeker, error) {
 	return jss.jsRepo.JobseekerByUsername(uname)
+}
+
+// ApplicationJobseekers retrieves jobseekers who applied for application of given id
+func (jss *JobseekerServiceImpl) ApplicationJobseeker(id int) (entity.Jobseeker, error) {
+	return jss.jsRepo.ApplicationJobseeker(id)
 }

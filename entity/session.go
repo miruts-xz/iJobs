@@ -2,6 +2,7 @@ package entity
 
 import "github.com/jinzhu/gorm"
 
+// Session represents active user
 type Session struct {
 	gorm.Model
 

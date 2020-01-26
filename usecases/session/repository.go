@@ -4,6 +4,7 @@ import (
 	"github.com/miruts/iJobs/entity"
 )
 
+// SessionRepository interface defines session related data /database actions
 type SessionRepository interface {
 	Sessions() ([]entity.Session, error)
 	Session(id int) (entity.Session, error)

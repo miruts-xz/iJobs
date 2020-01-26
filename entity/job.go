@@ -5,6 +5,7 @@ import (
 	"time"
 )
 
+// Job represents a job posted by company
 type Job struct {
 	gorm.Model
 

@@ -8,6 +8,7 @@ import (
 	"github.com/miruts/iJobs/usecases/job"
 )
 
+// JobRepository implements JobRepository interface
 type JobRepository struct {
 	conn *sql.DB
 }

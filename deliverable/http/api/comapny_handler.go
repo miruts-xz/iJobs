@@ -21,6 +21,7 @@ func NewCompanyHandler(cmpSrv *cmpsrv.CompanyServiceImpl) *CompanyHandler {
 	return &CompanyHandler{cmpSrv: cmpSrv}
 }
 
+// Companies retrieves and returns all companies
 func (cmph *CompanyHandler) Companies(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	w.Header().Set("Content-Type", "application/json")
 	companies, err := cmph.cmpSrv.Companies()
@@ -37,6 +38,8 @@ func (cmph *CompanyHandler) Companies(w http.ResponseWriter, r *http.Request, ps
 	}
 	_, err = w.Write(response)
 }
+
+// Company return a Company with given id
 func (cmph *CompanyHandler) Company(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	w.Header().Set("Content-Type", "application/json")
 	id := ps.ByName("id")
@@ -65,6 +68,8 @@ func (cmph *CompanyHandler) Company(w http.ResponseWriter, r *http.Request, ps h
 		return
 	}
 }
+
+// UpdateCompany updates a given company
 func (cmph *CompanyHandler) UpdateCompany(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	w.Header().Set("Content-Type", "application/json")
 	id := ps.ByName("id")
@@ -107,6 +112,7 @@ func (cmph *CompanyHandler) UpdateCompany(w http.ResponseWriter, r *http.Request
 	}
 }
 
+// DeleteCompany deletes a company with a given id
 func (cmph *CompanyHandler) DeleteCompany(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	w.Header().Set("Content-Type", "application/json")
 	id := ps.ByName("id")
@@ -141,6 +147,8 @@ func (cmph *CompanyHandler) DeleteCompany(w http.ResponseWriter, r *http.Request
 		return
 	}
 }
+
+// StoreCompany stores new company
 func (cmph *CompanyHandler) AddCompany(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	w.Header().Set("Content-Type", "application/json")
 	var company entity.Company

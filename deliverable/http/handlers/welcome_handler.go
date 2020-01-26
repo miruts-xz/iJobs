@@ -11,6 +11,7 @@ import (
 	"net/http"
 )
 
+// WelcomeHandler represents welcome page handler
 type WelcomeHandler struct {
 	tmpl    *template.Template
 	sessSrv session.SessionService
@@ -18,6 +19,7 @@ type WelcomeHandler struct {
 	cmpSrv  company.CompanyService
 }
 
+// NewWelcomeHanlder creates new WelcomeHandler
 func NewWelcomeHandler(tmpl *template.Template, sessSrv session.SessionService, jsSrv jobseeker.JobseekerService, cmpSrv company.CompanyService) *WelcomeHandler {
 	return &WelcomeHandler{tmpl: tmpl, sessSrv: sessSrv, jsSrv: jsSrv, cmpSrv: cmpSrv}
 }

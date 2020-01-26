@@ -186,7 +186,7 @@
                         </div>
 
                         <div class="tab-pane fade show" id="profile" role="tabpanel" aria-labelledby="hirer-tab">
-                            <form>
+                            <form action="/signup/company" method="post" enctype="multipart/form-data">
                             <h3  class="register-heading">Apply as a Hirer</h3>
                             <div class="row register-form">
 
@@ -196,10 +196,16 @@
                                         <input type="text" name="name" class="form-control" placeholder="Name *" value="" required/>
                                     </div>
                                     <div class="form-group">
+                                        <input type="email" name="email" class="form-control" placeholder="Your Email *" value="" required/>
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="text" name="phone" minlength="10" maxlength="10" name="txtEmpPhone" class="form-control" placeholder="Your Phone *" value="" />
+                                    </div>
+                                    <div class="form-group">
                                         <input type="password" name="pswd" class="form-control"  placeholder="Password *" value="" required/>
                                     </div>
                                     <div class="form-group">
-                                        <input type="password" name="pswd" class="form-control"  placeholder="Confirm Password *" value="" required/>
+                                        <input type="password" name="confirm" class="form-control"  placeholder="Confirm Password *" value="" required/>
                                     </div>
                                     <div class="form-group">
                                         <label for="logo" class="col-sm-2 col-form-label">Upload Logo </label>
@@ -208,10 +214,36 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <input type="email" name="email" class="form-control" placeholder="Your Email *" value="" required/>
+                                        <label for="region">Region</label>
+                                        <select class="form-control" name="region" id="region">
+                                            {{if .Regions}}
+                                                {{range .Regions}}
+                                                    <option value="{{.}}">{{.}}</option>
+                                                {{end}}
+                                            {{end}}
+                                        </select>
+
                                     </div>
                                     <div class="form-group">
-                                        <input type="text" name="phone" minlength="10" maxlength="10" name="txtEmpPhone" class="form-control" placeholder="Your Phone *" value="" />
+                                        <label for="city">City</label>
+                                        <select class="form-control" name="city" id="city">
+                                            {{if .Cities}}
+                                                {{range .Cities}}
+                                                    <option value="{{.}}">{{.}}</option>
+                                                {{end}}
+                                            {{end}}
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="subcity">Sub City</label>
+                                        <select class="form-control" name="subcity" id="subcity">
+                                            {{if .Subcities}}
+                                                {{range .Subcities}}
+                                                    <option value="{{.}}">{{.}}</option>
+                                                {{end}}
+                                            {{end}}
+                                        </select>
+
                                     </div>
                                     <div class="form-group">
                                         <textarea name="detailinfo"class="form-control span6"rows="5"placeholder="Detail information about company"></textarea> 
@@ -220,7 +252,6 @@
                                         <textarea name="shortdesc" class="form-control span6" rows="2" placeholder="Short description about company"></textarea> 
                                     </div>
                                 </div>
-
                                     <input type="submit" class="btnRegister"  value="Register"/>
                                 </div>
                 </form>

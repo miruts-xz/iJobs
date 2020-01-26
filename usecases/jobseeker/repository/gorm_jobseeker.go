@@ -19,10 +19,23 @@ func NewJobseekerGormRepositoryImpl(jsr *gorm.DB) *JobseekerGormRepositoryIMpl {
 // JobSeekers retrieves and returns all jobseekers
 func (jsr *JobseekerGormRepositoryIMpl) JobSeekers() ([]entity.Jobseeker, error) {
 	var jobseekers []entity.Jobseeker
+	var addresses []entity.Address
+	var categories []entity.Category
+	var applications []entity.Application
 	errs := jsr.conn.Find(&jobseekers).GetErrors()
 	if len(errs) > 0 {
 		fmt.Printf("Error: %v", errs)
 		return jobseekers, errs[0]
+	}
+	for i, _ := range jobseekers {
+		_ = jsr.conn.Model(&jobseekers[i]).Related(&addresses, "Address").GetErrors()
+		_ = jsr.conn.Model(&jobseekers[i]).Related(&categories, "Categories").GetErrors()
+		_ = jsr.conn.Model(&jobseekers[i]).Related(&applications, "Applications").GetErrors()
+		fmt.Println(addresses)
+		fmt.Println(categories)
+		jobseekers[i].Address = addresses
+		jobseekers[i].Categories = categories
+		jobseekers[i].Applications = applications
 	}
 	return jobseekers, nil
 }
@@ -129,6 +142,14 @@ func (jss *JobseekerGormRepositoryIMpl) JobseekerByEmail(email string) (entity.J
 func (jss *JobseekerGormRepositoryIMpl) JobseekerByUsername(uname string) (entity.Jobseeker, error) {
 	var jobseeker entity.Jobseeker
 	errs := jss.conn.Where("username = ?", uname).First(&jobseeker).GetErrors()
+	if len(errs) > 0 {
+		return jobseeker, errs[0]
+	}
+	return jobseeker, nil
+}
+func (jss *JobseekerGormRepositoryIMpl) ApplicationJobseeker(id int) (entity.Jobseeker, error) {
+	var jobseeker entity.Jobseeker
+	errs := jss.conn.First(&jobseeker, id).GetErrors()
 	if len(errs) > 0 {
 		return jobseeker, errs[0]
 	}

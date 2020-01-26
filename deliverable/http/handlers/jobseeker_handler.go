@@ -116,6 +116,8 @@ func hasvalue(value interface{}) bool {
 	}
 	return false
 }
+
+//JobseekerRegister adds a new JobSeeker
 func (jsh *JobseekerHandler) JobseekerRegister(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	err := r.ParseForm()
 	err = r.ParseMultipartForm(1024)
@@ -299,6 +301,48 @@ func (jsh *JobseekerHandler) JobseekerRegister(w http.ResponseWriter, r *http.Re
 	fmt.Println("Jobseeker registered successfully", js)
 	http.Redirect(w, r, "/login", http.StatusSeeOther)
 }
+func (jsh *JobseekerHandler) JobseekerApply(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+	ok, session := util.Authenticate(jsh.sessSrv, r)
+	if ok == true {
+		err := r.ParseForm()
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		jobseeker, err := jsh.jsSrv.JobSeeker(int(session.UserID))
+		if err != nil {
+			fmt.Printf("Couldn't find jobseeker info : Line %d", 271)
+			return
+		}
+		jobid := ps.ByName("id")
+		jobidint, err := strconv.Atoi(jobid)
+		job, err := jobSrvc.Job(jobidint)
+
+		application := entity.Application{Status: "Unreviewed", JobID: job.ID, JobseekerID: jobseeker.ID}
+		jobseeker.Applications = []entity.Application{application}
+		job.Applications = []entity.Application{application}
+		jsupdate, err := jsSrvc.UpdateJobSeeker(&jobseeker)
+		if err != nil {
+			fmt.Println("Application failed")
+			return
+		}
+		jobupdate, err := jobSrvc.UpdateJob(&job)
+		if err != nil {
+			fmt.Println("Application failed on job updating")
+
+		}
+		fmt.Println("Applied successfully", jsupdate, jobupdate)
+		http.Redirect(w, r, "/jobseeker/"+jobseeker.Username, http.StatusSeeOther)
+		return
+	} else {
+		err := util.DestroySession(&w, r)
+		fmt.Println("Destroying Session")
+		if err != nil {
+			fmt.Println(err)
+		}
+		http.Redirect(w, r, "/login", http.StatusSeeOther)
+	}
+}
 func (jsh *JobseekerHandler) JobseekerHome(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	ok, session := util.Authenticate(jsh.sessSrv, r)
 	if ok == true {
@@ -312,7 +356,8 @@ func (jsh *JobseekerHandler) JobseekerHome(w http.ResponseWriter, r *http.Reques
 			}
 			Ctgs, _ := jsh.ctgSrv.Categories()
 			Apps, _ := jsh.appSrv.UserApplication(int(session.UserID))
-			Suggs, _ := jsh.jsSrv.Suggestions(int(session.UserID))
+			Suggs, _ := jobSrvc.Jobs()
+			fmt.Println(Suggs)
 			jsneeds.Categories = Ctgs
 			jsneeds.Applications = Apps
 			jsneeds.Suggestions = Suggs
@@ -334,6 +379,8 @@ func (jsh *JobseekerHandler) JobseekerHome(w http.ResponseWriter, r *http.Reques
 		http.Redirect(w, r, "/login", http.StatusSeeOther)
 	}
 }
+
+//JobseekerAppliedJobs displays Job ith specified ID or AllJobs Posted in the Category
 func (jsh *JobseekerHandler) JobseekerAppliedJobs(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	ok, session := util.Authenticate(jsh.sessSrv, r)
 	if ok {
@@ -369,6 +416,8 @@ func (jsh *JobseekerHandler) JobseekerAppliedJobs(w http.ResponseWriter, r *http
 		http.Redirect(w, r, "/login", http.StatusSeeOther)
 	}
 }
+
+//JobseekerProfile display the JobSeeker profile page
 func (jsh *JobseekerHandler) JobseekerProfile(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	ok, session := util.Authenticate(jsh.sessSrv, r)
 	if ok {
@@ -402,6 +451,8 @@ func (jsh *JobseekerHandler) JobseekerProfile(w http.ResponseWriter, r *http.Req
 		http.Redirect(w, r, "/login", http.StatusSeeOther)
 	}
 }
+
+//ProfileEdit display and edit JobSeekers Profile
 func (jsh *JobseekerHandler) ProfileEdit(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	ok, session := util.Authenticate(jsh.sessSrv, r)
 	if ok {
@@ -680,6 +731,7 @@ func (jsh *JobseekerHandler) AppliedJobCategory(w http.ResponseWriter, r *http.R
 
 }
 func AppGetJobsName(app entity.Application) (string, error) {
+	fmt.Println(app.JobID)
 	job, err := jobSrvc.Job(int(app.JobID))
 	if err != nil {
 		return job.Name, err

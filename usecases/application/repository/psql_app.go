@@ -8,14 +8,17 @@ import (
 	"github.com/miruts/iJobs/entity"
 )
 
+// AppRepository respresents psql IAppRepository Implementation
 type AppRepository struct {
 	conn *sql.DB
 }
 
+// NewAppRepo creates new AppRepository
 func NewAppRepo(conn *sql.DB) *AppRepository {
 	return &AppRepository{conn: conn}
 }
 
+// Store stores application
 func (appRepo *AppRepository) Store(app *entity.Application) error {
 
 	query := "INSERT INTO applications (job_id,jobseeker_id,status,response) values ($1,$2,$3,$4);"
@@ -28,6 +31,8 @@ func (appRepo *AppRepository) Store(app *entity.Application) error {
 	return nil
 
 }
+
+// Application finds application by id
 func (appRepo *AppRepository) Application(id int) (entity.Application, error) {
 	query := "select * from applications where id = $1"
 	var application entity.Application
@@ -38,6 +43,8 @@ func (appRepo *AppRepository) Application(id int) (entity.Application, error) {
 	}
 	return application, nil
 }
+
+// UserApplication finds all application given jobseeker id and service
 func (appRepo *AppRepository) UserApplication(JsId int) ([]entity.Application, error) {
 
 	query := "SELECT * FROM applications WHERE jobseeker_id=$1"
@@ -59,6 +66,8 @@ func (appRepo *AppRepository) UserApplication(JsId int) ([]entity.Application, e
 	return apps, nil
 
 }
+
+// ApplicationsOnJob retrieves all Application on a given job
 func (appRepo *AppRepository) ApplicationsOnJob(jobId int) ([]entity.Application, error) {
 
 	query := "SELECT * FROM applications WHERE job_id=$1"
@@ -81,6 +90,7 @@ func (appRepo *AppRepository) ApplicationsOnJob(jobId int) ([]entity.Application
 
 }
 
+// Delete Application deletes application with given id
 func (appRepo *AppRepository) DeleteApplication(id int) (entity.Application, error) {
 	query := "DELETE FROM applications WHERE id=$1"
 	application, err := appRepo.Application(id)
@@ -94,4 +104,11 @@ func (appRepo *AppRepository) DeleteApplication(id int) (entity.Application, err
 	}
 
 	return application, nil
+}
+
+// ApplicationForCompany retrieves all job-applications for a given company
+func (agr *AppRepository) ApplicationForCompany(cmid int) ([]entity.Application, error) {
+	var applications []entity.Application
+
+	return applications, errors.New("unimplemented method")
 }

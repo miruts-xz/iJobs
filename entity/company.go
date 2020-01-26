@@ -2,6 +2,7 @@ package entity
 
 import "github.com/jinzhu/gorm"
 
+// Company represents a hiring company
 type Company struct {
 	gorm.Model
 

@@ -28,6 +28,7 @@ func SaveFile(file multipart.File, path string) bool {
 	return true
 }
 
+// Authenticate authenticates a given request for validity (of user)
 func Authenticate(sessSrv session.SessionService, r *http.Request) (ok bool, sess entity.Session) {
 	cookie, err := r.Cookie("_cookie")
 	if err == nil {
@@ -41,6 +42,8 @@ func Authenticate(sessSrv session.SessionService, r *http.Request) (ok bool, ses
 	}
 	return false, sess
 }
+
+// CreateSession creates new Session
 func CreateSession(w *http.ResponseWriter, sess *entity.Session) error {
 	if sess != nil {
 		cookie := http.Cookie{}
@@ -53,15 +56,7 @@ func CreateSession(w *http.ResponseWriter, sess *entity.Session) error {
 	return errors.New("invalid session")
 }
 
-func ClearExpiredSessions(sess session.SessionService) {
-	sessions, err := sess.Sessions()
-	if err != nil {
-		return
-	}
-	for _, s := range sessions {
-		_, _, _ = sess.Check(&s)
-	}
-}
+// DetectUser detects the type of logged in user
 func DetectUser(w *http.ResponseWriter, r *http.Request, sess entity.Session, jsSrv jobseeker.JobseekerService, cmpSrv company.CompanyService) {
 	_, err1 := jsSrv.JobSeeker(int(sess.UserID))
 	_, err2 := cmpSrv.Company(int(sess.UserID))
@@ -75,6 +70,8 @@ func DetectUser(w *http.ResponseWriter, r *http.Request, sess entity.Session, js
 		fmt.Printf("session error")
 	}
 }
+
+// DestroySession destroy a session
 func DestroySession(w *http.ResponseWriter, r *http.Request) error {
 	cookie, err := r.Cookie("_cookie")
 	if err != nil {
