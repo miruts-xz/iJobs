@@ -30,6 +30,7 @@ func (appHandler *ApplicationApiHandler) ApplicationsOnJob(w http.ResponseWriter
 		http.Error(w, http.StatusText(404), 404)
 		return
 	}
+
 	app, err := appHandler.appService.ApplicationsOnJob(idint)
 	if err != nil {
 		fmt.Println(err)
