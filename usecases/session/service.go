@@ -2,13 +2,9 @@ package session
 
 import "github.com/miruts/iJobs/entity"
 
-// SessionServices defines Session related services
+// SessionService specifies logged in user session related service
 type SessionService interface {
-	Sessions() ([]entity.Session, error)
-	Session(id int) (entity.Session, error)
-	DeleteSession(id int) (entity.Session, error)
-	UpdateSession(sess *entity.Session) (*entity.Session, error)
-	StoreSession(sess *entity.Session) (*entity.Session, error)
-	SessionByValue(value string) (entity.Session, error)
-	Check(sess *entity.Session) (bool, entity.Session, error)
+	Session(sessionID string) (*entity.Session, []error)
+	StoreSession(session *entity.Session) (*entity.Session, []error)
+	DeleteSession(sessionID string) (*entity.Session, []error)
 }

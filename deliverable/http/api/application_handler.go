@@ -161,7 +161,7 @@ func (appHandler *ApplicationApiHandler) AddApplication(w http.ResponseWriter, r
 		http.Error(w, http.StatusText(404), 404)
 		return
 	}
-	err = appHandler.appService.Store(&app)
+	_, err = appHandler.appService.Store(&app)
 	if err != nil {
 		fmt.Println(err)
 		http.Error(w, http.StatusText(404), 404)

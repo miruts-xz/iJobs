@@ -3,12 +3,14 @@ package main
 import (
 	"database/sql"
 	"fmt"
+	"github.com/betsegawlemma/web-prog-go-sample/rtoken"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"github.com/julienschmidt/httprouter"
-	"github.com/miruts/iJobs/deliverable/http/api"
 	"github.com/miruts/iJobs/deliverable/http/handlers"
 	"github.com/miruts/iJobs/entity"
+	repository2 "github.com/miruts/iJobs/role/repository"
+	service2 "github.com/miruts/iJobs/role/service"
 	apprepo "github.com/miruts/iJobs/usecases/application/repository"
 	appsrv "github.com/miruts/iJobs/usecases/application/service"
 	cmprepo "github.com/miruts/iJobs/usecases/company/repository"
@@ -17,8 +19,7 @@ import (
 	jobsrv "github.com/miruts/iJobs/usecases/job/service"
 	jsrepo "github.com/miruts/iJobs/usecases/jobseeker/repository"
 	jssrv "github.com/miruts/iJobs/usecases/jobseeker/service"
-	"github.com/miruts/iJobs/usecases/session/repository"
-	"github.com/miruts/iJobs/usecases/session/service"
+	"time"
 
 	apijobhandler "github.com/miruts/iJobs/deliverable/http/api"
 
@@ -37,7 +38,7 @@ var errs error
 var tmpl = template.Must(template.New("index").Funcs(funcMaps).ParseGlob("../../ui/template/*.html"))
 var pqconnjs, pqconncmp *sql.DB
 
-var funcMaps = template.FuncMap{"cmp": handlers.JobCmp, "appGetJob": handlers.AppJob, "appGetJs": handlers.AppJs, "appGetJobCatId": handlers.AppGetJobCatId, "appGetCmpLogo": handlers.AppGetCmpLogo, "appGetJobName": handlers.AppGetJobsName, "appGetCmpName": handlers.AppGetCmpName, "appGetLoc": handlers.AppGetLocation}
+var funcMaps = template.FuncMap{"cmp": handlers.JobCmp, "appGetJob": handlers.AppGetJob, "appGetJs": handlers.AppJs, "appGetJobCatId": handlers.AppGetJobCatId, "appGetCmp": handlers.AppGetCmp, "appGetLoc": handlers.AppGetLocation}
 
 func init() {
 	// Template
@@ -52,7 +53,7 @@ func init() {
 
 // CreateTables creates gorm tables provided entity structs
 func CreateTables(db *gorm.DB) {
-	errs := db.CreateTable(&entity.Session{}, &entity.Address{}, &entity.Application{}, &entity.Category{}, &entity.Job{}, &entity.Company{}, entity.Jobseeker{}).GetErrors()
+	errs := db.CreateTable(&entity.Session{}, &entity.Address{}, &entity.Application{}, &entity.Category{}, &entity.Job{}, &entity.Company{}, &entity.Jobseeker{}, &entity.Role{}, &entity.User{}).GetErrors()
 	if len(errs) > 0 {
 		fmt.Println(errs[0])
 		return
@@ -60,24 +61,30 @@ func CreateTables(db *gorm.DB) {
 }
 func main() {
 	// Gorm Database Connection
-	gormDB, err = gorm.Open("postgres", "user=postgres dbname=ijobs_gorm_db password=tsedekeme sslmode=disable")
+	gormDB, err = gorm.Open("postgres", "user=postgres dbname=ijobs_gorm_db_2 password=postgres sslmode=disable")
 	if errs != nil {
 		fmt.Println(err)
 		return
 	}
-	gormDB.AutoMigrate(&entity.Category{})
+
 	// Create Gorm Tables
 	// Run Once
-	//CreateTables(gormDB)
 
+	gormDB.Set("gorm:insert_option", "ON DUPLICATE KEY UPDATE")
+	//gormDB.AutoMigrate(&entity.Session{}, &entity.Address{}, &entity.Application{}, &entity.Category{}, &entity.Job{}, &entity.Company{}, &entity.Jobseeker{}, &entity.Role{})
+	//CreateTables(gormDB)
 	// Data Repositories
+
+	sess := configSess()
+	csrfSignKey := []byte(rtoken.GenerateRandomID(32))
 	applicationRepo := apprepo.NewAppGormRepositoryImpl(gormDB)
 	companyRepo := cmprepo.NewCompanyGormRepositoryImpl(gormDB)
 	jobRepo := jobrepo.NewJobGormRepositoryImpl(gormDB)
 	categoryRepo := jobrepo.NewCategoryGormRepositoryImpl(gormDB)
 	jobseekerRepo := jsrepo.NewJobseekerGormRepositoryImpl(gormDB)
 	addressRepo := jsrepo.NewAddressGormRepositoryImpl(gormDB)
-	sessionRepo := repository.NewSessionGormRepositoryImpl(gormDB)
+	sessionRepo := repository2.NewSessionGormRepo(gormDB)
+	roleRepo := repository2.NewRoleGormRepo(gormDB)
 
 	// Services
 	companySrv := cmpsrv.NewCompanyServiceImpl(companyRepo)
@@ -86,16 +93,14 @@ func main() {
 	jobSrv := jobsrv.NewJobServices(jobRepo, categorySrv)
 	jobseekerSrv := jssrv.NewJobseekerServiceImpl(jobseekerRepo, jobSrv)
 	addressSrv := jssrv.NewAddressServiceImpl(addressRepo)
-	sessionSrv := service.NewSessionServiceImpl(sessionRepo)
+	sessionSrv := service2.NewSessionService(sessionRepo)
 	applicationSrv := appsrv.NewAppService(applicationRepo, jobseekerSrv, jobSrv, companySrv)
+	roleSrv := service2.NewRoleService(roleRepo)
 	// Handlers
-	loginHandler := handlers.NewLoginHandler(tmpl, jobseekerSrv, companySrv, sessionSrv, categorySrv)
-	logoutHandler := handlers.NewLogoutHandler(tmpl, jobseekerSrv, companySrv, sessionSrv)
 	welcomeHandler := handlers.NewWelcomeHandler(tmpl, sessionSrv, jobseekerSrv, companySrv)
-	jobseekerHandler := handlers.NewJobseekerHandler(tmpl, jobseekerSrv, categorySrv, addressSrv, applicationSrv, sessionSrv, jobSrv, companySrv)
-	jobseekerAPIHandler := api.NewJobseekerHandler(jobseekerSrv)
-	companyHandler := handlers.NewCompanyHandler(tmpl, jobseekerSrv, companySrv, categorySrv, addressSrv, applicationSrv, sessionSrv, jobSrv)
-	//logoutHandler := handlers.NewLogoutHandler(tmpl, jobseekerSrv, companySrv, sessionSrv)
+	jobseekerHandler := handlers.NewJobseekerHandler(tmpl, jobseekerSrv, categorySrv, addressSrv, applicationSrv, sessionSrv, sess, roleSrv, csrfSignKey)
+	ch := handlers.NewCompanyHandler(tmpl, jobseekerSrv, companySrv, categorySrv, addressSrv, applicationSrv, sessionSrv, jobSrv, sess, roleSrv, csrfSignKey)
+
 	//go util.ClearExpiredSessions(sessionSrv)
 
 	//RESTApi Handlers
@@ -108,28 +113,25 @@ func main() {
 
 	// Welcome SignIn/Up path registration
 	router.GET("/", welcomeHandler.Welcome)
-	router.GET("/signout", logoutHandler.Logout)
-	router.GET("/login", loginHandler.GetLogin)
-	router.POST("/login", loginHandler.PostLogin)
-	router.GET("/logout", logoutHandler.Logout)
-	router.POST("/signup/jobseeker", jobseekerHandler.JobseekerRegister)
-	router.POST("/signup/company", companyHandler.CompanyRegister)
+	router.GET("/login", jobseekerHandler.Signup)
+	router.POST("/login/jobseeker", jobseekerHandler.Login)
+	router.POST("/login/company", ch.Login)
+	router.POST("/signup/jobseeker", jobseekerHandler.Signup)
+	router.POST("/signup/company", ch.Signup)
 
-	router.GET("/company/:username/postjob", companyHandler.CompanyPostJob)
-	router.POST("/company/:username/postjob", companyHandler.CompanyPostJob)
-
-	router.GET("/company/:username", companyHandler.CompanyHome)
+	router.GET("/company/:username/postjob", ch.Authenticated(ch.Authorized(http.HandlerFunc(ch.CompanyPostJob))))
+	router.POST("/company/:username/postjob", ch.Authenticated(ch.Authorized(http.HandlerFunc(ch.CompanyPostJob))))
+	router.GET("/company/:username/jobs", ch.Authenticated(ch.Authorized(http.HandlerFunc(ch.CompanyJobs))))
+	router.GET("/company/:username/home", ch.Authenticated(ch.Authorized(http.HandlerFunc(ch.CompanyHome))))
 
 	// Jobseeker path registration
-	router.GET("/jobseeker/:username", jobseekerHandler.JobseekerHome)
-	router.POST("/jobseeker/:username", jobseekerHandler.JobseekerHome)
+	router.GET("/jobseeker/:username/home", jobseekerHandler.Authenticated(jobseekerHandler.Authorized(http.HandlerFunc(jobseekerHandler.JobseekerHome))))
 	router.GET("/jobseeker/:username/apply/:id", jobseekerHandler.JobseekerApply)
 	router.GET("/jobseeker/:username/profile", jobseekerHandler.JobseekerProfile)
 	router.GET("/jobseeker/:username/profile/edit", jobseekerHandler.ProfileEdit)
 	router.POST("/jobseeker/:username/profile/edit", jobseekerHandler.ProfileEdit)
 	router.GET("/jobseeker/:username/appliedjobs", jobseekerHandler.JobseekerAppliedJobs)
 	router.GET("/jobseeker/:username/appliedjobs/:id", jobseekerHandler.JobseekerAppliedJobs)
-	router.GET("/api/jobseekers", jobseekerAPIHandler.Jobseekers)
 
 	//REST Api registration
 	//Job Api Handlers
@@ -153,5 +155,20 @@ func main() {
 	err := http.ListenAndServe(":8181", router)
 	if err != nil {
 		fmt.Printf("server failed: %s", err)
+	}
+}
+func configSess() *entity.Session {
+	tokenExpires := time.Now().Add(time.Minute * 30).Unix()
+	sessionID := rtoken.GenerateRandomID(32)
+	signingString, err := rtoken.GenerateRandomString(32)
+	if err != nil {
+		panic(err)
+	}
+	signingKey := []byte(signingString)
+
+	return &entity.Session{
+		Expires:    tokenExpires,
+		SigningKey: signingKey,
+		Uuid:       sessionID,
 	}
 }

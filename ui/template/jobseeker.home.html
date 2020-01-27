@@ -63,15 +63,22 @@
             <div class="col-md-6 js-jobs-responded">
                 <h3>Recently Responded Jobs</h3>
                 <div class="card">
+                    {{$js := .Jobseeker}}
                     {{ $cats := .Categories }}
                         {{if .Applications}}
                             {{range .Applications}}
-                                <div class="card-body">
-                                    <h5 class="card-subtitle mb-2 text-muted">{{ $jn := . | appGetJobName }}{{$jn}}</h5>
-                                    <h6 class="card-subtitle mb-2 text-muted">{{ $add := . | appGetLoc }}{{$add.LocalName}} {{$add.SubCity}}, {{$add.City}}, {{$add.Region}}</h6>
-                                    <p class="text-info" class="card-text">{{.Status}}</p>
-                                    <a href="/jobseeker/appliedjobs/{{.ID}}" class="btn btn-primary">View Response</a>
-                                </div>
+                                {{if eq $js.ID .JobseekerID}}
+                                    {{$cmp := . | appGetCmp}}
+                                    {{$job := . | appGetJob}}
+                                    {{if eq .Status "reviewed"}}
+                                        <div class="card-body">
+                                            <h5 class="card-subtitle mb-2 text-muted">{{ $jn := $job.Name}}{{$jn}}</h5>
+                                            <h6 class="card-subtitle mb-2 text-muted">{{ $add := $cmp.Address }}{{$add.LocalName}} {{$add.SubCity}}, {{$add.City}}, {{$add.Region}}</h6>
+                                            <p class="text-info" class="card-text">{{.Status}}</p>
+                                            <a href="/jobseeker/{{$js.Username}}/appliedjobs/{{.ID}}" class="btn btn-primary">View Response</a>
+                                        </div>
+                                    {{end}}
+                                {{end}}
                             {{end}}
                         {{end}}
                         <div class="card-body">
@@ -97,7 +104,6 @@
             </div>
             <div class="col-md-6 js-jobs-suggested">
                 <h3>Suggested Jobs</h3>
-                {{$js := .Jobseeker}}
                 <div class="card">
                     {{range .Suggestions}}
                         {{$company := . | cmp}}

@@ -51,6 +51,7 @@ func (jgr *JobGormRepositoryImpl) Job(id int) (entity.Job, error) {
 	if len(errs) > 0 {
 		return job, errs[0]
 	}
+	fmt.Println(job)
 	return job, nil
 }
 

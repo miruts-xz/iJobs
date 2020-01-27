@@ -10,7 +10,7 @@ type Job struct {
 	gorm.Model
 
 	CompanyID    uint          `json:"company_id" gorm:"not null"`
-	Categories   []Category    `json:"categories" gorm:"many2many:job_categories"`
+	Categories   []Category    `json:"categories" gorm:"many2many:job_categories;not null"`
 	Applications []Application `json:"applications" gorm:"foreign_key:JobID"`
 
 	RequiredNum uint      `json:"required_num" gorm:"not null"`

@@ -1,12 +1,10 @@
 package handlers
 
 import (
-	"fmt"
 	"github.com/julienschmidt/httprouter"
 	"github.com/miruts/iJobs/usecases/company"
 	"github.com/miruts/iJobs/usecases/jobseeker"
 	"github.com/miruts/iJobs/usecases/session"
-	"github.com/miruts/iJobs/util"
 	"html/template"
 	"net/http"
 )
@@ -33,14 +31,9 @@ func (wh *WelcomeHandler) Welcome(w http.ResponseWriter, r *http.Request, ps htt
 		wh.tmpl.ExecuteTemplate(w, "error.layout", http.StatusSeeOther)
 		return
 	}
-	ok, session := util.Authenticate(wh.sessSrv, r)
-	if !ok {
-		err := wh.tmpl.ExecuteTemplate(w, "welcome.layout", nil)
-		if err != nil {
-			fmt.Printf("Login Templating error: %s", err)
-			return
-		}
+	err := wh.tmpl.ExecuteTemplate(w, "welcome.layout", nil)
+	if err != nil {
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 		return
 	}
-	util.DetectUser(&w, r, session, wh.jsSrv, wh.cmpSrv)
 }

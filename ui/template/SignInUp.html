@@ -16,8 +16,9 @@
 	{{ template "signInUp.content" . }}
     {{ template "footer" . }}
     <!-- js -->
-    <script src="assets/js/jquery-3.4.1.min.js"></script>
-	<script src="assets/js/bootstrap.min.js"></script>
+    <script src="/assets/js/jquery-3.4.1.min.js"></script>
+    <script src="/assets/js/popper.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
     <script defer src="/assets/js/fontawesome.js"></script>
 </body>
 </html>
@@ -29,16 +30,33 @@
         <div class="col-md-4 register-left">
             <div class="jumbotron-overlay"></div>
             <div class="login py-5">
-                <form action="/login" method="post">
+                <script>
+                    function formAction(){
+                        var varhirer = $("#hirer-tab").attr("aria-selected");
+                        var varjs = $("#home-tab").attr("aria-selected");
+                        console.log(varhirer);
+                        console.log(varjs);
+                        if (varhirer === "true"){
+                            $("#loginform").attr("action", "/login/jobseeker");
+                        } else if(varjs === "true"){
+                            $("#loginform").attr("action", "/login/company");
+                        }
+                    }
+                </script>
+                <form action="/login/jobseeker" method="post" id="loginform" autocomplete="off">
+                    <input type="hidden" name="_csrf" value="{{if .Inputs.CSRF}}{{.Inputs.CSRF}}{{end}}">
+                    {{with .Inputs.VErrors.Get "generic"}}
+                        <label class="text-danger">{{.}}</label>
+                    {{end}}
                     <div class="form-label-group">
-                      <input name="email" type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
-                      
+                      <input name="email" type="email" value="{{.Inputs.Values.Get "email"}}" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
                 </div>
-
                 <div class="form-label-group">
-                     <input name="password" type="password" id="inputPassword" class="form-control" placeholder="Password" required>
-                      
+                     <input name="password" type="password" id="inputPassword" value="{{.Inputs.Values.Get "password"}}" class="form-control" placeholder="Password">
                 </div>
+                {{with .Inputs.VErrors.Get "email"}}
+                <label class="text-danger">{{.}}</label>
+                {{end}}
                 <button class="btn btn-lg btn-primary btn-block btn-login text-uppercase font-weight-bold mb-2" type="submit">Sign in</button>
                 
                   </form>
@@ -49,10 +67,10 @@
         <div class="col-md-8 register-right">
             <ul class="nav nav-tabs nav-justified" id="mytab" role="tablist">
                 <li class="nav-item">
-                    <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Job-Seeker</a>
+                    <a onclick="formAction()" class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Job-Seeker</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" id="hirer-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Hirer</a>
+                    <a onclick="formAction()" class="nav-link" id="hirer-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Hirer</a>
                </li>	
             </ul>
 
@@ -60,29 +78,51 @@
                         <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
                             <form action="/signup/jobseeker" method="post" enctype="multipart/form-data">
                             <h3 class="register-heading">Apply as a Job-Seeker</h3>
+                                <input type="hidden" name="_csrf" value="{{if .Inputs.CSRF}}{{.Inputs.CSRF}}{{end}}">
                             <div class="row register-form">
 
                                   <div class="col-md-6">
                                         <div class="form-group">
+                                            {{with .Inputs.VErrors.Get "fname"}}
+                                                <label class="text-danger">{{.}}</label>
+                                            {{end}}
                                             <input type="text" name="fname" class="form-control" placeholder="First Name *" value="" />
                                         </div>
                                         <div class="form-group">
+                                            {{with .Inputs.VErrors.Get "lname"}}
+                                                <label class="text-danger">{{.}}</label>
+                                            {{end}}
                                             <input type="text" name="lname" class="form-control" placeholder="Last Name *" value="" />
                                         </div>
                                         <div class="form-group">
+                                            {{with .Inputs.VErrors.Get "uname"}}
+                                                <label class="text-danger">{{.}}</label>
+                                            {{end}}
                                             <input type="text" name="uname" class="form-control" placeholder="Username *" value="" required/>
                                         </div>
                                         <div class="form-group">
+                                            {{with .Inputs.VErrors.Get "email"}}
+                                                <label class="text-danger">{{.}}</label>
+                                            {{end}}
                                             <input type="email" name="email" class="form-control" placeholder="Your Email *" value="" required/>
                                         </div>
                                         <div class="form-group">
+                                            {{with .Inputs.VErrors.Get "pswd"}}
+                                                <label class="text-danger">{{.}}</label>
+                                            {{end}}
                                             <input type="password"  name="pswd" class="form-control"  placeholder="Password *" value="" />
                                         </div>
                                         <div class="form-group">
+                                            {{with .Inputs.VErrors.Get "pswdconfirm"}}
+                                                <label class="text-danger">{{.}}</label>
+                                            {{end}}
                                             <input type="password" name="pswdconfirm" class="form-control"  placeholder="Confirm Password *" value="" />
                                         </div>
                                         <div class="form-group">
-                                            <input type="text" name="phone" minlength="10" maxlength="10" name="txtEmpPhone" class="form-control" placeholder="Your Phone *" value="" />
+                                            {{with .Inputs.VErrors.Get "phone"}}
+                                                <label class="text-danger">{{.}}</label>
+                                            {{end}}
+                                            <input type="text" name="phone" minlength="10" maxlength="10" class="form-control" placeholder="Your Phone *" value="" />
                                         </div>
                                         <div class="form-group">
                                             <script>
@@ -99,6 +139,9 @@
                                                     }
                                                 }
                                             </script>
+                                                {{with .Inputs.VErrors.Get "propic"}}
+                                                    <label class="text-danger">{{.}}</label>
+                                                {{end}}
                                                 <label for="propic" id="propiclabel" class="col-sm-2 col-form-label">Upload Profile Picture </label>
                                                 <img id="preview" src="#" alt="" width="100px" height="100px"/>
                                                 <input type="file" onchange="readURL(this)" class="form-control-file" name="propic" id="propic"/>
@@ -106,11 +149,11 @@
                                         <div class="form-group">
                                             <div class="maxl">
                                                 <label class="radio inline">
-                                                    <input type="radio" name="gender" value="male" checked>
+                                                    <input class="form-control" type="radio" name="gender" value="male" checked>
                                                     <span> Male </span>
                                                 </label>
                                                 <label class="radio inline">
-                                                    <input type="radio" name="gender" value="female">
+                                                    <input class="form-control" type="radio" name="gender" value="female">
                                                     <span>Female </span>
                                                 </label>
                                             </div>
@@ -119,7 +162,7 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="region">Region</label>
-                                        <select class="form-control" name="region" id="region">
+                                        <select class="form-control" name="region" id="jsregion">
                                             {{if .Regions}}
                                                 {{range .Regions}}
                                                     <option value="{{.}}">{{.}}</option>
@@ -130,7 +173,7 @@
                                     </div>
                                     <div class="form-group">
                                         <label for="city">City</label>
-                                        <select class="form-control" name="city" id="city">
+                                        <select class="form-control" name="city" id="jscity">
                                             {{if .Cities}}
                                                 {{range .Cities}}
                                                     <option value="{{.}}">{{.}}</option>
@@ -140,7 +183,7 @@
                                     </div>
                                     <div class="form-group">
                                         <label for="subcity">Sub City</label>
-                                        <select class="form-control" name="subcity" id="subcity">
+                                        <select class="form-control" name="subcity" id="jssubcity">
                                             {{if .Subcities}}
                                                 {{range .Subcities}}
                                                     <option value="{{.}}">{{.}}</option>
@@ -150,11 +193,14 @@
 
                                     </div>
                                     <div class="form-group">
+                                        {{with .Inputs.VErrors.Get "localname"}}
+                                            <label class="text-danger">{{.}}</label>
+                                        {{end}}
                                         <input type="text" id="localname" name="localname" class="form-control" placeholder="Local Name *" value="" />
                                     </div>
                                     <div class="form-group">
                                         <label for="intjobcat">Interested Categories</label>
-                                        <select class="form-control" id="intjobcat" name="intjobcat" class="form-control" multiple>
+                                        <select class="form-control" id="jsintjobcat" name="intjobcat" class="form-control" multiple>
                                             {{ if .Categories}}
                                                 {{range .Categories}}
                                                     <option value="{{.ID}}">{{.Name}}</option>
@@ -163,18 +209,27 @@
                                         </select>
                                     </div>
                                     <div class="form-group">
+                                        {{with .Inputs.VErrors.Get "wrkexp"}}
+                                            <label class="text-danger">{{.}}</label>
+                                        {{end}}
                                         <input type="text" name="wrkexp" class="form-control" placeholder="Work experience *" value="" />
                                     </div><div class="form-group">
+                                        {{with .Inputs.VErrors.Get "age"}}
+                                            <label class="text-danger">{{.}}</label>
+                                        {{end}}
                                         <input type="number" name="age" class="form-control" placeholder="Age *" value="" />
                                     </div>
                                     <div class="form-group">
                                         <label for="empstatus">Employment Status</label>
                                         <select class="form-control" id="empstatus" name="empstatus" required>
-                                            <option>Employed</option>
-                                            <option>Unemployed</option>
+                                            <option value="employed">Employed</option>
+                                            <option value="unemployed" selected>Unemployed</option>
                                         </select>
                                     </div>
                                     <div class="form-group">
+                                        {{with .Inputs.VErrors.Get "cv"}}
+                                            <label class="text-danger">{{.}}</label>
+                                        {{end}}
                                         <label for="cv" class="col-sm-2 col-form-label">Upload CV </label>
                                           <input type="file" class="form-control-file" name="cv" id="cv" required>
                                     </div>
@@ -188,26 +243,45 @@
                         <div class="tab-pane fade show" id="profile" role="tabpanel" aria-labelledby="hirer-tab">
                             <form action="/signup/company" method="post" enctype="multipart/form-data">
                             <h3  class="register-heading">Apply as a Hirer</h3>
+                                <input type="hidden" name="_csrf" value="{{if .Inputs.CSRF}}{{.Inputs.CSRF}}{{end}}">
                             <div class="row register-form">
 
                                 <div class="col-md-6">
 
                                     <div class="form-group">
+                                        {{with .Inputs.VErrors.Get "name"}}
+                                            <label class="text-danger">{{.}}</label>
+                                        {{end}}
                                         <input type="text" name="name" class="form-control" placeholder="Name *" value="" required/>
                                     </div>
                                     <div class="form-group">
+                                        {{with .Inputs.VErrors.Get "email"}}
+                                            <label class="text-danger">{{.}}</label>
+                                        {{end}}
                                         <input type="email" name="email" class="form-control" placeholder="Your Email *" value="" required/>
                                     </div>
                                     <div class="form-group">
+                                        {{with .Inputs.VErrors.Get "phone"}}
+                                            <label class="text-danger">{{.}}</label>
+                                        {{end}}
                                         <input type="text" name="phone" minlength="10" maxlength="10" name="txtEmpPhone" class="form-control" placeholder="Your Phone *" value="" />
                                     </div>
                                     <div class="form-group">
+                                        {{with .Inputs.VErrors.Get "pswd"}}
+                                            <label class="text-danger">{{.}}</label>
+                                        {{end}}
                                         <input type="password" name="pswd" class="form-control"  placeholder="Password *" value="" required/>
                                     </div>
                                     <div class="form-group">
+                                        {{with .Inputs.VErrors.Get "confirm"}}
+                                            <label class="text-danger">{{.}}</label>
+                                        {{end}}
                                         <input type="password" name="confirm" class="form-control"  placeholder="Confirm Password *" value="" required/>
                                     </div>
                                     <div class="form-group">
+                                        {{with .Inputs.VErrors.Get "logo"}}
+                                            <label class="text-danger">{{.}}</label>
+                                        {{end}}
                                         <label for="logo" class="col-sm-2 col-form-label">Upload Logo </label>
                                           <input type="file" class="form-control-file" name="logo" id="logo">
                                     </div>
@@ -246,9 +320,15 @@
 
                                     </div>
                                     <div class="form-group">
+                                        {{with .Inputs.VErrors.Get "detailinfo"}}
+                                            <label class="text-danger">{{.}}</label>
+                                        {{end}}
                                         <textarea name="detailinfo"class="form-control span6"rows="5"placeholder="Detail information about company"></textarea> 
                                     </div>
                                     <div class="form-group">
+                                        {{with .Inputs.VErrors.Get "shortdesc"}}
+                                            <label class="text-danger">{{.}}</label>
+                                        {{end}}
                                         <textarea name="shortdesc" class="form-control span6" rows="2" placeholder="Short description about company"></textarea> 
                                     </div>
                                 </div>

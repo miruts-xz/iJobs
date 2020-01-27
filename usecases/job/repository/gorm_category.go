@@ -29,7 +29,7 @@ func (cgr *CategoryGormRepositoryImpl) Categories() ([]entity.Category, error) {
 //Category returns a category with a given id
 func (cgr *CategoryGormRepositoryImpl) Category(id int) (entity.Category, error) {
 	var category entity.Category
-	errs := cgr.conn.Find(&category, id).GetErrors()
+	errs := cgr.conn.First(&category, id).GetErrors()
 	if len(errs) > 0 {
 		return category, errs[0]
 	}

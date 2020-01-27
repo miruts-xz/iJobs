@@ -18,6 +18,11 @@ type JobseekerRepository interface {
 	JobseekerByEmail(email string) (entity.Jobseeker, error)
 	JobseekerByUsername(uname string) (entity.Jobseeker, error)
 	ApplicationJobseeker(id int) (entity.Jobseeker, error)
+	UserRoles(user *entity.Jobseeker) ([]entity.Role, []error)
+	PhoneExists(phone string) bool
+	EmailExists(email string) bool
+	UsernameExists(email string) bool
+	AlreadyApplied(id uint, id2 uint) bool
 }
 
 // AddressRepository interface defines all jobseeker related data/database operations

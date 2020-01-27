@@ -1,15 +1,9 @@
 package util
 
 import (
-	"errors"
 	"fmt"
-	"github.com/miruts/iJobs/entity"
-	"github.com/miruts/iJobs/usecases/company"
-	"github.com/miruts/iJobs/usecases/jobseeker"
-	"github.com/miruts/iJobs/usecases/session"
 	"io/ioutil"
 	"mime/multipart"
-	"net/http"
 )
 
 // SaveFile saves multipart file on the given path
@@ -28,7 +22,7 @@ func SaveFile(file multipart.File, path string) bool {
 	return true
 }
 
-// Authenticate authenticates a given request for validity (of user)
+/*// Authenticate authenticates a given request for validity (of user)
 func Authenticate(sessSrv session.SessionService, r *http.Request) (ok bool, sess entity.Session) {
 	cookie, err := r.Cookie("_cookie")
 	if err == nil {
@@ -71,7 +65,7 @@ func DetectUser(w *http.ResponseWriter, r *http.Request, sess entity.Session, js
 	}
 }
 
-// DestroySession destroy a session
+ DestroySession destroy a session
 func DestroySession(w *http.ResponseWriter, r *http.Request) error {
 	cookie, err := r.Cookie("_cookie")
 	if err != nil {
@@ -81,3 +75,4 @@ func DestroySession(w *http.ResponseWriter, r *http.Request) error {
 	http.SetCookie(*w, cookie)
 	return nil
 }
+*/

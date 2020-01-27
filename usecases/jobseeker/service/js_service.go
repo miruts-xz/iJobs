@@ -61,6 +61,8 @@ func (jss *JobseekerServiceImpl) Suggestions(id int) ([]entity.Job, error) {
 			alljobs = append(alljobs, ctg)
 		}
 	}
+	fmt.Println("Suggestions")
+	fmt.Println(alljobs)
 	return alljobs, nil
 }
 
@@ -92,4 +94,33 @@ func (jss *JobseekerServiceImpl) JobseekerByUsername(uname string) (entity.Jobse
 // ApplicationJobseekers retrieves jobseekers who applied for application of given id
 func (jss *JobseekerServiceImpl) ApplicationJobseeker(id int) (entity.Jobseeker, error) {
 	return jss.jsRepo.ApplicationJobseeker(id)
+}
+
+// UserRoles returns list of roles a user has
+func (jss *JobseekerServiceImpl) UserRoles(user *entity.Jobseeker) ([]entity.Role, []error) {
+	userRoles, errs := jss.jsRepo.UserRoles(user)
+	if len(errs) > 0 {
+		return nil, errs
+	}
+	return userRoles, errs
+}
+
+// PhoneExists check if there is a user with a given phone number
+func (jss *JobseekerServiceImpl) PhoneExists(phone string) bool {
+	exists := jss.jsRepo.PhoneExists(phone)
+	return exists
+}
+func (jss *JobseekerServiceImpl) UsernameExists(email string) bool {
+	exists := jss.jsRepo.UsernameExists(email)
+	return exists
+}
+
+// EmailExists checks if there exist a user with a given email address
+func (jss *JobseekerServiceImpl) EmailExists(email string) bool {
+	exists := jss.jsRepo.EmailExists(email)
+	return exists
+}
+func (jss *JobseekerServiceImpl) AlreadyApplied(id uint, id2 uint) bool {
+	applied := jss.jsRepo.AlreadyApplied(id, id2)
+	return applied
 }

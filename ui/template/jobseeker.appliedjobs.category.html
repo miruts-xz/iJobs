@@ -17,7 +17,10 @@
     {{ template "footer" . }}
     <!-- js -->
     <script defer src="/assets/js/fontawesome.js"></script>
-
+    <script src="/assets/js/jquery-3.4.1.min.js"></script>
+    <script src="/assets/js/popper.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script defer src="/assets/js/fontawesome.js"></script>
     </body>
     </html>
 {{end}}
@@ -50,6 +53,8 @@
                             {{$catid := .Catid}}
                             {{if .Applications}}
                                 {{range .Applications}}
+                                    {{$cmp := . | appGetCmp}}
+                                    {{$job := . | appGetJob}}
                                     {{$valid := false}}
                                     {{$catsids := . | appGetJobCatId}}
                                     {{range $catsids}}
@@ -69,10 +74,10 @@
                                                 {{end}}
                                                 <div class="col-md-10">
                                                     <div class="card-body">
-                                                        <h5 class="card-title" style="margin-bottom: -1%">{{. | appGetJobName}}</h5>
+                                                        <h5 class="card-title" style="margin-bottom: -1%">{{$job.Name}}</h5>
                                                         <div style="display: inline-flex;">
-                                                            <img src="/assets/cmdata/{{. | appGetCmpName}}/logo/{{. | appGetCmpLogo}}" alt="">
-                                                            <h6 class="card-subitle text-muted" style="margin-right: 100px;">{{. | appGetCmpName}}</h6>
+                                                            <img src="/assets/cmdata/{{$cmp.CompanyName}}/logo/{{$cmp.Logo}}" alt="">
+                                                            <h6 class="card-subitle text-muted" style="margin-right: 100px;">{{$cmp.CompanyName}}</h6>
                                                             <p class="card-text" style="margin-right: 10px;"><small class="text-muted">.Status</small></p>
                                                             <p class="card-text" style="margin-right: 10px;"><small class="text-muted">.Response</small></p>
                                                         </div>

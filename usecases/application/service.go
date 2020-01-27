@@ -6,7 +6,7 @@ import (
 
 // IAppSerivce represents all Application services
 type IAppService interface {
-	Store(app *entity.Application) error
+	Store(app *entity.Application) (*entity.Application, error)
 	Application(id int) (entity.Application, error)
 	UserApplication(jsId int) ([]entity.Application, error)
 	ApplicationsOnJob(jobId int) ([]entity.Application, error)
