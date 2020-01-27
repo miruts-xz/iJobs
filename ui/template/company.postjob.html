@@ -1,0 +1,70 @@
+{{define "company.postjob.layout"}}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Company|Post a Job</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- css -->
+    <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="/assets/css/customCss.css">
+	<link rel="stylesheet" type="text/css" href="/assets/css/fontawesome.css">
+</head>
+<body>
+    {{ template "company.navbar" . }}
+	{{ template "company.postjob.content" . }}
+    {{ template "footer" . }}
+    <!-- js -->
+    <script src="/assets/js/jquery-3.4.1.min.js"></script>
+    <script src="/assets/js/popper.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script defer src="/assets/js/fontawesome.js"></script>
+</body>
+</html>
+{{end}}
+
+{{define "company.postjob.content"}}
+<div class="container">	
+    <div class="row justify-content-center">
+        <div class="col-xs-12">
+            <div class="jumbotron jumbotron-comp-post-job-content-1">
+                    <div class=" register-form col-md-8 justify-content-center">
+                        <form action="/company/{{.Company.CompanyName}}/postjob" method="post" enctype="multipart/form-data">
+                            <label for="ctgs">Select Category</label>
+                                <div class="form-group">
+                                            <select class="form-control" name="ctgs" id="ctgs" multiple>
+                                                {{range .Categories}}
+                                                <option value="{{.ID}}" >{{.Name}}</option>
+                                                {{end}}
+                                            </select>
+                                </div>
+                                <div class="form-group">
+                                    <input type="text" name="jbtitle" class="form-control" placeholder="Job Title *" value="" />
+                                </div>
+                                <div class="form-group">
+                                    <textarea name="description" class="form-control span6" rows="3" placeholder="Description"></textarea> 
+                                </div>
+                                <div class="form-group">
+                                    <input type="number" name="reqnum" class="form-control" placeholder="Required number *" value="" />
+                                </div>
+                                <div class="form-group">
+                                    <input type="number" name="salary" class="form-control"  placeholder="Salary *" value="" />
+                                </div>
+                                <div class="form-group">
+                                    <select class="form-control" name="jbtime" id="jbtime">
+                                        <option value="fulltime">Full Time</option>
+                                        <option value="parttime">Part Time</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <input type="date" name="deadline" minlength="10" maxlength="10" name="deadline" class="form-control" placeholder="Deadline *" value="" />
+                                </div>
+                                <input type="submit" class="btnPostjob"  value="Post Job"/>
+                        </form>
+            </div>
+        </div>						
+</div>			
+</div>
+</div>
+{{end}}

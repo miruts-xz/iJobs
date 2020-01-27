@@ -28,15 +28,10 @@ func (cs *CategoryServiceImpl) Categories() ([]entity.Category, error) {
 }
 
 // StoreCategory persists new category information
-func (cs *CategoryServiceImpl) StoreCategory(category entity.Category) error {
+func (cs *CategoryServiceImpl) StoreCategory(category *entity.Category) (*entity.Category, error) {
 
-	err := cs.categoryRepo.StoreCategory(category)
+	return cs.categoryRepo.StoreCategory(category)
 
-	if err != nil {
-		return err
-	}
-
-	return nil
 }
 
 // Category returns a category object with a given id
@@ -52,23 +47,14 @@ func (cs *CategoryServiceImpl) Category(id int) (entity.Category, error) {
 }
 
 // UpdateCategory updates a cateogory with new data
-func (cs *CategoryServiceImpl) UpdateCategory(category entity.Category) error {
+func (cs *CategoryServiceImpl) UpdateCategory(category *entity.Category) (*entity.Category, error) {
 
-	err := cs.categoryRepo.UpdateCategory(category)
+	return cs.categoryRepo.UpdateCategory(category)
 
-	if err != nil {
-		return err
-	}
-
-	return nil
 }
 
 // DeleteCategory delete a category by its id
-func (cs *CategoryServiceImpl) DeleteCategory(id int) error {
+func (cs *CategoryServiceImpl) DeleteCategory(id int) (entity.Category, error) {
 
-	err := cs.categoryRepo.DeleteCategory(id)
-	if err != nil {
-		return err
-	}
-	return nil
+	return cs.categoryRepo.DeleteCategory(id)
 }

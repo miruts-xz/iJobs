@@ -192,7 +192,7 @@ body{
 	position: relative;
     text-align: center;
     color: #fff;
-    background-image: url('../img/signPgImg.jpg');
+    background-image: url('/assets/img/signPgImg.jpg');
 	background-size: contain;
 	background-repeat: no-repeat;
 }
@@ -281,4 +281,25 @@ body{
 	background-color: #ffffff;
 	margin-bottom: 0;
 	padding: 0;
+}
+
+
+/*////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////Post Job page/////////////////////////////////////////////////////////////////////*/
+
+.jumbotron-comp-post-job-content-1{
+	margin-top: 1%;
+	min-width: 800px;
+	background-color: #f5f5f5;
+}
+
+.btnPostjob{
+    border: none;
+    border-radius: 1.5rem;
+    padding: 2%;
+    background: #c7ea22;
+    color: #fff;
+    font-weight: 600;
+    width: 50%;
+    cursor: pointer;
 }

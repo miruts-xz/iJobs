@@ -5,12 +5,20 @@
                 <nav class="col-xs-12">
                     <ul class="nav nav-pills">
 
-                        <a class="navbar-brand" href="/welcome"> <img src="../img/j.jpg" alt="logo" width="50" height="50"> </a>
-                        <li class="nav-item"><a class="nav-link active" href="/company/home">Home</a></li>
+                        <a class="navbar-brand" href="/"> <img src="/assets/img/icon/j.png" alt="logo" width="50" height="50"> </a>
+                        <li class="nav-item"><a class="nav-link active" href="/company/{{.Company.CompanyName}}">Home</a></li>
                         <li class="nav-item"><a class="nav-link" href="#">Profile</a></li>
-                        <li class="nav-item"><a class="nav-link" href="/company/Jobs">Jobs</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/company/{{.Company.CompanyName}}/jobs">Jobs</a></li>
                     </ul>
                 </nav>
+                <ul class="nav nav-pills" style="margin-left: 650px; display: inline-block">
+                    <li class="nav-item dropdown"><a class="nav-link dropdown-toggle" href="#" id="navbardropdownpropic" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img src="/assets/cmpdata/{{.Company.CompanyName}}/logo/{{.Company.Logo}}" width="40" height="40" class="rounded-circle"></a>
+                        <div class="dropdown-menu" aria-labelledby="navbardropdownpropic">
+                            <a class="dropdown-item" href="/company/{{.Company.CompanyName}}/profile/edit">Edit Profile</a>
+                            <a class="dropdown-item" href="/logout">Sign Out</a>
+                        </div>
+                    </li>
+                </ul>
             </div>
         </div>
     </header>

@@ -31,9 +31,9 @@ const (
 	AddisKetema string = "Addis Ketema"
 )
 
+// Address represents address of user
 type Address struct {
 	gorm.Model
-
 	Region    string `json:"region" gorm:"type:varchar(255)"`
 	City      string `json:"city" gorm:"type:varchar(255)"`
 	SubCity   string `json:"sub_city" gorm:"type:varchar(255)"`

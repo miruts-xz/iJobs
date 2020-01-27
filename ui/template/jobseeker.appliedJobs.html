@@ -22,20 +22,20 @@
 {{end}}
 
 {{define "jobseeker.appliedJobs.content"}}
-
 <div class="container-fluid " style="margin-left: 5%;">
     <div class="row no-gutters">
-        <div class="d-none d-md-flex col-md-4 col-lg-6">
+        <div class="d-none d-md-flex col-md-6 col-lg-6">
             <div class="card text-black mb-3 catagories-card">
                   <div class="card-header">Categories</div>
                       <div class="card-body">
-                          <a href="" class="text-dark btn"><h6 class="card-text">Enginnering</h6></a>
-                          <a href="" class="text-dark btn"><h6 class="card-text">Enginnering</h6></a>
-                          <a href="" class="text-dark btn"><h6 class="card-text">Enginnering</h6></a>
-                          <a href="" class="text-dark btn"><h6 class="card-text">Food and Restaurant</h6></a>
-                          <a href="" class="text-dark btn"><h6 class="card-text">Enginnering</h6></a>
-                          <a href="" class="text-dark btn"><h6 class="card-text">Accounting</h6></a>
-                          <a href="" class="text-dark btn"><h6 class="card-text">Enginnering</h6></a>
+                          {{$uname := .Jobseeker.Username}}
+                          {{if .Categories}}
+                              {{range .Categories}}
+                                  <img src="/assets/img/categories/{{.Image}}" alt="Category Image">
+                                  <a  href="/jobseeker/{{$uname}}/appliedjobs/{{.ID}}" class="text-dark btn"><h6 class="card-text">{{.Name}}</h6></a>
+                                  <hr>
+                              {{end}}
+                          {{end}}
                      </div>
             </div>
         </div>
@@ -44,10 +44,34 @@
 <div class="jobs-card d-flex">
 <div class="container">
     <div class="row-fluid no-gutters">
-        <div class="card mb-3 " style="max-width: 540px;">
+
+        {{$cats := .Categories}}
+            {{if .Applications}}
+                {{range .Applications}}
+                    <div class="card mb-3 " style="max-width: 540px;">
+                        <div class="row no-gutters">
+                            <div class="col-md-2">
+                                <img src="/assets/img/categories/{{$cats.Name}}" class="card-img" alt="comp-logo" max-width="50" height="50" style="margin-top: 20%;">
+                            </div>
+                            <div class="col-md-10">
+                                <div class="card-body">
+                                    <h5 class="card-title" style="margin-bottom: -1%">{{. | appGetJobName}}</h5>
+                                    <div style="display: inline-flex;">
+                                        <img src="/assets/cmdata/{{. | appGetCmpName}}/logo/{{. | appGetCmpLogo}}" alt="">
+                                        <h6 class="card-subitle text-muted" style="margin-right: 100px;">{{. | appGetCmpName}}</h6>
+                                        <p class="card-text" style="margin-right: 10px;"><small class="text-muted">.Status</small></p>
+                                        <p class="card-text" style="margin-right: 10px;"><small class="text-muted">.Response</small></p>
+                                    </div>
+                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                {{end}}
+            {{end}}
+        <div class="card mb-3" style="max-width: 540px;">
               <div class="row no-gutters">
                     <div class="col-md-2">
-                      <img src="/assets/img/j.jpg" class="card-img" alt="comp-logo" max-width="50" height="50" style="margin-top: 20%;">
+                      <img src="/assets/img/images.png" class="card-img" alt="comp-logo" max-width="50" height="50" style="margin-top: 20%;">
                  </div>
                 <div class="col-md-10">
                       <div class="card-body">
@@ -65,7 +89,7 @@
         <div class="card mb-3" style="max-width: 540px;">
               <div class="row no-gutters">
                     <div class="col-md-2">
-                      <img src="/assets/img/j.jpg" class="card-img" alt="comp-logo" max-width="50" height="50" style="margin-top: 20%;">
+                      <img src="/assets/img/images.png" class="card-img" alt="comp-logo" max-width="50" height="50" style="margin-top: 20%;">
                  </div>
                 <div class="col-md-10">
                       <div class="card-body">
@@ -83,25 +107,7 @@
         <div class="card mb-3" style="max-width: 540px;">
               <div class="row no-gutters">
                     <div class="col-md-2">
-                      <img src="/assets/img/j.jpg" class="card-img" alt="comp-logo" max-width="50" height="50" style="margin-top: 20%;">
-                 </div>
-                <div class="col-md-10">
-                      <div class="card-body">
-                        <h5 class="card-title" style="margin-bottom: -1%;">Web Developer</h5>
-                        <div style="display: inline-flex;">
-                            <h6 class="card-subitle text-muted" style="margin-right: 100px;">Company name</h6>
-                            <p class="card-text" style="margin-right: 10px;"><small class="text-muted">Status</small></p>
-                            <p class="card-text" style="margin-right: 10px;"><small class="text-muted">Response</small></p>
-                        </div>
-                      </div>
-                </div>
-              </div>
-        </div>
-
-        <div class="card mb-3" style="max-width: 540px;">
-              <div class="row no-gutters">
-                    <div class="col-md-2">
-                      <img src="/assets/img/j.jpg" class="card-img" alt="comp-logo" max-width="50" height="50" style="margin-top: 20%;">
+                      <img src="/assets/img/images.png" class="card-img" alt="comp-logo" max-width="50" height="50" style="margin-top: 20%;">
                  </div>
                 <div class="col-md-10">
                       <div class="card-body">
@@ -120,7 +126,7 @@
         <div class="card mb-3" style="max-width: 540px;">
               <div class="row no-gutters">
                     <div class="col-md-2">
-                      <img src="/assets/img/j.jpg" class="card-img" alt="comp-logo" max-width="50" height="50" style="margin-top: 20%;">
+                      <img src="/assets/img/images.png" class="card-img" alt="comp-logo" max-width="50" height="50" style="margin-top: 20%;">
                  </div>
                 <div class="col-md-10">
                       <div class="card-body">
@@ -142,6 +148,5 @@
 </div>
 </div>
 
-</div>	
-
+</div>
 {{end}}

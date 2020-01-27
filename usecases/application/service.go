@@ -1,10 +1,15 @@
 package application
 
-import "github.com/miruts/iJobs/entity"
+import (
+	"github.com/miruts/iJobs/entity"
+)
 
+// IAppSerivce represents all Application services
 type IAppService interface {
-	Store(entity.Application) error
-	UserApplication(JsId int) ([]entity.Application, error)
+	Store(app *entity.Application) error
+	Application(id int) (entity.Application, error)
+	UserApplication(jsId int) ([]entity.Application, error)
 	ApplicationsOnJob(jobId int) ([]entity.Application, error)
-	DeleteApplication(id int) error
+	DeleteApplication(id int) (entity.Application, error)
+	ApplicationForCompany(cmid int) ([]entity.Application, error)
 }

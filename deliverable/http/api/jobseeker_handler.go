@@ -3,20 +3,23 @@ package api
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/julienschmidt/httprouter"
-	"github.com/miruts/iJobs/entity"
-	"github.com/miruts/iJobs/usecases/jobseeker"
 	"net/http"
 	"strconv"
+
+	"github.com/julienschmidt/httprouter"
+	"github.com/miruts/iJobs/entity"
+	jssrv "github.com/miruts/iJobs/usecases/jobseeker"
 )
 
 type JobseekerHandler struct {
-	jsSrv jobseeker.JobseekerService
+	jsSrv jssrv.JobseekerService
 }
 
-func NewJobseekerHandler(jsSrv jobseeker.JobseekerService) *JobseekerHandler {
+func NewJobseekerHandler(jsSrv jssrv.JobseekerService) *JobseekerHandler {
 	return &JobseekerHandler{jsSrv: jsSrv}
 }
+
+//Jobseekers handles all JobSeekers JSon data
 func (jsh *JobseekerHandler) Jobseekers(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	w.Header().Set("Content-Type", "application/json")
 	jobseekers, err := jsh.jsSrv.JobSeekers()

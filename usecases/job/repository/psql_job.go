@@ -3,9 +3,12 @@ package repository
 import (
 	"database/sql"
 	"errors"
+
 	"github.com/miruts/iJobs/entity"
+	"github.com/miruts/iJobs/usecases/job"
 )
 
+// JobRepository implements JobRepository interface
 type JobRepository struct {
 	conn *sql.DB
 }
@@ -41,9 +44,9 @@ func (jobRepo *JobRepository) Jobs() ([]entity.Job, error) {
 }
 
 //Returns all jobs under a specific category
-func (jobRepo *JobRepository) JobsOfCategory(cat_id int) ([]entity.Job, error) {
+func (jobRepo *JobRepository) JobsOfCategory(ctgSrv job.CategoryService, cat_id int) ([]entity.Job, error) {
 
-	query := "SELECT * FROM jobs where cat_id=$1;"
+	query := "SELECT * FROM jobs where id =$1;"
 
 	records, err := jobRepo.conn.Query(query, cat_id)
 
@@ -83,34 +86,35 @@ func (jobRepo *JobRepository) Job(id int) (entity.Job, error) {
 }
 
 //Updates a job given the udpated job object
-func (jobRepo *JobRepository) UpdateJob(job entity.Job) error {
+func (jobRepo *JobRepository) UpdateJob(job *entity.Job) (*entity.Job, error) {
 
-	query := "UPDATE jobs SET name=$1,salary=$2,required_num=$3,cat_id=$4,deadline=$5,description=$6,job_time=$7 WHERE id=$8"
+	query := "UPDATE jobs SET name=$1,salary=$2,required_num=$3,id=$4,deadline=$5,description=$6,job_time=$7 WHERE id=$8"
 	_, err := jobRepo.conn.Exec(query, job.Name, job.Salary, job.RequiredNum, job.Categories, job.Deadline, job.Description, job.JobTime, job.ID)
 
 	if err != nil {
-		return errors.New("Unable to update job")
+		return job, errors.New("Unable to update job")
 	}
-	return nil
+	return job, nil
 
 }
 
 //Deletes a job given its id
-func (jobRepo *JobRepository) DeleteJob(id int) error {
+func (jobRepo *JobRepository) DeleteJob(id int) (entity.Job, error) {
+	var job entity.Job
 	query := "DELETE FROM jobs WHERE id=$1"
 	_, err := jobRepo.conn.Exec(query, id)
 
 	if err != nil {
-		return errors.New("Unable to delete job")
+		return job, errors.New("Unable to delete job")
 	}
 
-	return nil
+	return job, nil
 }
 
 //Adds a job to the database
-func (jobRepo *JobRepository) StoreJob(job entity.Job) error {
+func (jobRepo *JobRepository) StoreJob(job *entity.Job) error {
 
-	query := "INSERT INTO jobs (name,cm_id,salary,required_num,cat_id,deadline,description,job_time) values ($1,$2,$3,$4,$5,$6,$7,$8);"
+	query := "INSERT INTO jobs (name,id,salary,required_num,id,deadline,description,job_time) values ($1,$2,$3,$4,$5,$6,$7,$8);"
 	_, err := jobRepo.conn.Exec(query, job.Name, job.CompanyID, job.Salary, job.RequiredNum, job.Categories, job.Deadline, job.Description, job.JobTime)
 
 	if err != nil {

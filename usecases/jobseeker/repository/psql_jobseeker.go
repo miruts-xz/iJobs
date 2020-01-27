@@ -92,7 +92,7 @@ func (jsr *JobseekerRepositoryImpl) JsCategories(id int) ([]entity.Category, err
 			return categories, err
 		}
 		for ctgrows.Next() {
-			if err := ctgrows.Scan(&category.ID, &category.Name, &category.Desc, &category.Image); err != nil {
+			if err := ctgrows.Scan(&category.ID, &category.Name, &category.Descr, &category.Image); err != nil {
 				return categories, nil
 			}
 			categories = append(categories, category)
@@ -105,7 +105,7 @@ func (jsr *JobseekerRepositoryImpl) JsCategories(id int) ([]entity.Category, err
 // StoreJobSeeker stores new jobseeker
 func (jsr *JobseekerRepositoryImpl) StoreJobSeeker(js *entity.Jobseeker) (*entity.Jobseeker, error) {
 	query := "insert into jobseekers (username, fullname, email, phone, password, profile, work_experience, cv, portfolio, emp_status, gender, age) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)"
-	_, err := jsr.conn.Exec(query, js.ID, js.Username, js.Fullname, js.Email, js.Phone, js.Password, js.Profile, js.WorkExperience, js.CV, js.Portfolio, js.EmpStatus, js.Gender, js.Age)
+	_, err := jsr.conn.Exec(query, js.Username, js.Fullname, js.Email, js.Phone, js.Password, js.Profile, js.WorkExperience, js.CV, js.Portfolio, js.EmpStatus, js.Gender, js.Age)
 	if err != nil {
 		return js, errors.New("unable to store jobseeker")
 	}
@@ -133,10 +133,29 @@ func (jsr *JobseekerRepositoryImpl) RemoveIntCategory(jsid, jcid int) error {
 	}
 	return nil
 }
+
+// JobseekerByEmail retrieves jobseeker given email
 func (jsr *JobseekerRepositoryImpl) JobseekerByEmail(email string) (entity.Jobseeker, error) {
 	var jobseeker entity.Jobseeker
 	return jobseeker, nil
 }
+
+// SetAddress sets address of jobseeker
 func (jsr *JobseekerRepositoryImpl) SetAddress(jsid, addid int) error {
 	return nil
+}
+
+// JobseekerByUsername retrieves jobseeker by his/her username
+func (jss *JobseekerRepositoryImpl) JobseekerByUsername(uname string) (entity.Jobseeker, error) {
+	var jobseeker entity.Jobseeker
+	query := "select * from jobseekers where username = $1"
+	err := jss.conn.QueryRow(query, uname).Scan(jobseeker.ID, jobseeker.CreatedAt, jobseeker.UpdatedAt, jobseeker.DeletedAt, jobseeker.Age, jobseeker.Phone, jobseeker.WorkExperience, jobseeker.Username, jobseeker.Fullname, &jobseeker, jobseeker.Email, jobseeker.Profile, jobseeker.Portfolio, jobseeker.CV, jobseeker.Gender, jobseeker.EmpStatus)
+	if err != nil {
+		return jobseeker, err
+	}
+	return jobseeker, nil
+}
+func (jss *JobseekerRepositoryImpl) ApplicationJobseeker(id int) (entity.Jobseeker, error) {
+	var jobseeker entity.Jobseeker
+	return jobseeker, errors.New("un implemented method error")
 }

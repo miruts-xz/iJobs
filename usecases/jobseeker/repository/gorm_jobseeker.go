@@ -19,10 +19,23 @@ func NewJobseekerGormRepositoryImpl(jsr *gorm.DB) *JobseekerGormRepositoryIMpl {
 // JobSeekers retrieves and returns all jobseekers
 func (jsr *JobseekerGormRepositoryIMpl) JobSeekers() ([]entity.Jobseeker, error) {
 	var jobseekers []entity.Jobseeker
+	var addresses []entity.Address
+	var categories []entity.Category
+	var applications []entity.Application
 	errs := jsr.conn.Find(&jobseekers).GetErrors()
 	if len(errs) > 0 {
 		fmt.Printf("Error: %v", errs)
 		return jobseekers, errs[0]
+	}
+	for i, _ := range jobseekers {
+		_ = jsr.conn.Model(&jobseekers[i]).Related(&addresses, "Address").GetErrors()
+		_ = jsr.conn.Model(&jobseekers[i]).Related(&categories, "Categories").GetErrors()
+		_ = jsr.conn.Model(&jobseekers[i]).Related(&applications, "Applications").GetErrors()
+		fmt.Println(addresses)
+		fmt.Println(categories)
+		jobseekers[i].Address = addresses
+		jobseekers[i].Categories = categories
+		jobseekers[i].Applications = applications
 	}
 	return jobseekers, nil
 }
@@ -30,7 +43,16 @@ func (jsr *JobseekerGormRepositoryIMpl) JobSeekers() ([]entity.Jobseeker, error)
 // JobSeeker return a jobseeker with given id
 func (jsr *JobseekerGormRepositoryIMpl) JobSeeker(id int) (entity.Jobseeker, error) {
 	var jobseeker entity.Jobseeker
+	var addresses []entity.Address
+	var categories []entity.Category
+	var applications []entity.Application
 	errs := jsr.conn.First(&jobseeker, id).GetErrors()
+	_ = jsr.conn.Model(&jobseeker).Related(&addresses, "Address").GetErrors()
+	_ = jsr.conn.Model(&jobseeker).Related(&categories, "Categories").GetErrors()
+	_ = jsr.conn.Model(&jobseeker).Related(&applications, "Applications").GetErrors()
+	jobseeker.Address = addresses
+	jobseeker.Categories = categories
+	jobseeker.Applications = applications
 	if len(errs) > 0 {
 		return jobseeker, errs[0]
 	}
@@ -40,7 +62,7 @@ func (jsr *JobseekerGormRepositoryIMpl) JobSeeker(id int) (entity.Jobseeker, err
 // UpdateJobSeeker updates a given jobseeker
 func (jsr *JobseekerGormRepositoryIMpl) UpdateJobSeeker(js *entity.Jobseeker) (*entity.Jobseeker, error) {
 	jobseeker := js
-	errs := jsr.conn.Save(&jobseeker).GetErrors()
+	errs := jsr.conn.Save(jobseeker).GetErrors()
 	if len(errs) > 0 {
 		return jobseeker, errs[0]
 	}
@@ -62,8 +84,12 @@ func (jsr *JobseekerGormRepositoryIMpl) DeleteJobSeeker(id int) (entity.Jobseeke
 
 // JsCategories return all interested job categories of jobseeker with a given jobseeker id
 func (jsr *JobseekerGormRepositoryIMpl) JsCategories(id int) ([]entity.Category, error) {
+	jobseeker, err := jsr.JobSeeker(id)
 	var categories []entity.Category
-	errs := jsr.conn.Where("id in (?)", jsr.conn.Table("jobseeker_categories").Select("cat_id").Where("js_id = ?", id)).Find(&categories).GetErrors()
+	if err != nil {
+		return categories, err
+	}
+	errs := jsr.conn.Model(&jobseeker).Related(&categories, "Categories").GetErrors()
 	if len(errs) > 0 {
 		return categories, errs[0]
 	}
@@ -73,6 +99,7 @@ func (jsr *JobseekerGormRepositoryIMpl) JsCategories(id int) ([]entity.Category,
 // StoreJobSeeker stores new jobseeker
 func (jsr *JobseekerGormRepositoryIMpl) StoreJobSeeker(js *entity.Jobseeker) (*entity.Jobseeker, error) {
 	jobseeker := js
+	fmt.Println(jobseeker.Email)
 	errs := jsr.conn.Create(jobseeker).GetErrors()
 	if len(errs) > 0 {
 		return jobseeker, errs[0]
@@ -107,6 +134,22 @@ func (jss *JobseekerGormRepositoryIMpl) SetAddress(jsid, addid int) error {
 func (jss *JobseekerGormRepositoryIMpl) JobseekerByEmail(email string) (entity.Jobseeker, error) {
 	var jobseeker entity.Jobseeker
 	errs := jss.conn.Where("email = ?", email).First(&jobseeker).GetErrors()
+	if len(errs) > 0 {
+		return jobseeker, errs[0]
+	}
+	return jobseeker, nil
+}
+func (jss *JobseekerGormRepositoryIMpl) JobseekerByUsername(uname string) (entity.Jobseeker, error) {
+	var jobseeker entity.Jobseeker
+	errs := jss.conn.Where("username = ?", uname).First(&jobseeker).GetErrors()
+	if len(errs) > 0 {
+		return jobseeker, errs[0]
+	}
+	return jobseeker, nil
+}
+func (jss *JobseekerGormRepositoryIMpl) ApplicationJobseeker(id int) (entity.Jobseeker, error) {
+	var jobseeker entity.Jobseeker
+	errs := jss.conn.First(&jobseeker, id).GetErrors()
 	if len(errs) > 0 {
 		return jobseeker, errs[0]
 	}
