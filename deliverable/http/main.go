@@ -34,7 +34,7 @@ const (
 var gormDB *gorm.DB
 var err error
 var errs error
-var tmpl = template.Must(template.New("index").Funcs(funcMaps).ParseGlob("ui/template/*.html"))
+var tmpl = template.Must(template.New("index").Funcs(funcMaps).ParseGlob("../../ui/template/*.html"))
 var pqconnjs, pqconncmp *sql.DB
 
 var funcMaps = template.FuncMap{"cmp": handlers.JobCmp, "appGetJob": handlers.AppJob, "appGetJs": handlers.AppJs, "appGetJobCatId": handlers.AppGetJobCatId, "appGetCmpLogo": handlers.AppGetCmpLogo, "appGetJobName": handlers.AppGetJobsName, "appGetCmpName": handlers.AppGetCmpName, "appGetLoc": handlers.AppGetLocation}
@@ -148,7 +148,7 @@ func main() {
 	router.DELETE("/api/jobseekers/:id", apiJobSkHandler.DeleteJobseeker)
 
 	// Static file registration
-	router.ServeFiles("/assets/*filepath", http.Dir("ui/asset"))
+	router.ServeFiles("/assets/*filepath", http.Dir("../../ui/asset"))
 	// Start Serving
 	err := http.ListenAndServe(":8181", router)
 	if err != nil {

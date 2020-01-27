@@ -284,6 +284,7 @@ func (ch *CompanyHandler) CompanyPostJob(w http.ResponseWriter, r *http.Request,
 		http.Redirect(w, r, "/login", http.StatusSeeOther)
 	}
 }
+
 func AppJs(app entity.Application) (entity.Jobseeker, error) {
 	jsid := app.JobseekerID
 	jobseeker, err := jsSrvc.ApplicationJobseeker(int(jsid))
@@ -293,6 +294,7 @@ func AppJs(app entity.Application) (entity.Jobseeker, error) {
 	}
 	return jobseeker, nil
 }
+
 func AppJob(app entity.Application) (entity.Job, error) {
 	jid := app.JobID
 	job, err := jobSrvc.Job(int(jid))
@@ -302,6 +304,7 @@ func AppJob(app entity.Application) (entity.Job, error) {
 	}
 	return job, nil
 }
+
 func JobCmp(job entity.Job) (entity.Company, error) {
 	cmid := job.CompanyID
 	fmt.Println(cmid)
