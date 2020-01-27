@@ -109,25 +109,38 @@ func (ch *CompanyHandler) CompanyHome(w http.ResponseWriter, r *http.Request) {
 		aid := r.URL.Query().Get("aid")
 		accept := r.URL.Query().Get("accept")
 		if aid != "" {
-			aidint, err := strconv.Atoi(aid)
-			application, err := ch.appSrv.Application(aidint)
+			aidint, _ := strconv.Atoi(aid)
+			app, _ := ch.appSrv.Application(aidint)
 			switch accept {
 			case "true":
-
+				app.Status = "reviewed"
+				app.Response = "accepted"
 				break
 			case "false":
+				app.Status = "reviewed"
+				app.Response = "rejected"
 				break
 			case "further":
+				app.Status = "reviewed"
+				app.Response = "further"
+				break
+			default:
 				break
 			}
+			_, _ = ch.appSrv.UpdateApplication(&app)
 		}
-
 		cmpneeds := CompanyHomeNeed{}
 		Jobs, err := ch.jobSrv.CompanyJobs(ch.cmpSrv, int(ch.loggedInUser.ID))
 		Applications, err := ch.appSrv.ApplicationForCompany(int(ch.loggedInUser.ID))
+		var apps []entity.Application
+		for _, v := range Applications {
+			if v.Status != "reviewed" {
+				apps = append(apps, v)
+			}
+		}
 		cmpneeds.Company = *ch.loggedInUser
 		cmpneeds.Jobs = Jobs
-		cmpneeds.Applications = Applications
+		cmpneeds.Applications = apps
 
 		err = ch.tmpl.ExecuteTemplate(w, "company.home.layout", cmpneeds)
 		if err != nil {

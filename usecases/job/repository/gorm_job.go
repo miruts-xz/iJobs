@@ -73,6 +73,8 @@ func (jgr *JobGormRepositoryImpl) DeleteJob(id int) (entity.Job, error) {
 		return job, err
 	}
 	errs := jgr.conn.Delete(&job).GetErrors()
+	errss := jgr.conn.Raw("delete from applications where job_id = ?", id).GetErrors()
+	fmt.Println(errss)
 	if len(errs) > 0 {
 		return job, errs[0]
 	}

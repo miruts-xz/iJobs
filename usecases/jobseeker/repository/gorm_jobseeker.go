@@ -193,7 +193,7 @@ func (jss *JobseekerGormRepositoryIMpl) EmailExists(email string) bool {
 }
 func (jss *JobseekerGormRepositoryIMpl) AlreadyApplied(id uint, id2 uint) bool {
 	application := entity.Application{}
-	errs := jss.conn.Find(&application, "jobseeker_id=? and job_id=?", id, id2).GetErrors()
+	errs := jss.conn.First(&application, "jobseeker_id=? and job_id=?", id, id2).GetErrors()
 	if len(errs) > 0 {
 		return false
 	}

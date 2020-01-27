@@ -12,7 +12,7 @@
         <link rel="stylesheet" type="text/css" href="/assets/css/fontawesome.css">
         <style>
             .vertical-menu {
-                width: 200px;
+                width: 100%;
             }
 
             .vertical-menu a {
@@ -20,6 +20,7 @@
                 color: black;
                 display: block;
                 padding: 12px;
+                width: 100%;
                 text-decoration: none;
             }
 
@@ -49,14 +50,14 @@
     {{define "company.jobs.content"}}
         <div class="container" style="min-height: 700px">
             <div class="container row" >
-                <div class="col">
+                <div class="col-3">
                     <h3 class="card-header">Posted JOBS</h3>
                     <div class="vertical-menu card">
                         <script>
                             function makeMeActive(id) {
-                                $("#active").css("id", "");
+                                $(".active").removeClass("active");
                                 $(".displayed").css("display", "none");
-                                $("#"+id).css("id","active");
+                                $("#"+id).addClass("active");
                                 $("."+id).css("display", "block");
                                 $("."+id).addClass("displayed");
                             }
@@ -68,7 +69,7 @@
                     </div>
                 </div>
 
-                <div class="col">
+                <div class="col-8">
                     <h3 class="card-header">Job Details</h3>
                     {{range .Jobs}}
                         <div class="{{.ID}} card" id="{{.Name}}" class="container-fluid card vertical-menu" style="display: none" >

@@ -48,3 +48,6 @@ func (appService *AppService) DeleteApplication(id int) (entity.Application, err
 func (appService *AppService) ApplicationForCompany(cmid int) ([]entity.Application, error) {
 	return appService.appRepo.ApplicationForCompany(cmid)
 }
+func (appService *AppService) UpdateApplication(e *entity.Application) (*entity.Application, error) {
+	return appService.appRepo.UpdateApplication(e)
+}

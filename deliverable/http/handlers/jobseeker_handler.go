@@ -41,6 +41,8 @@ type JobseekerHandler struct {
 	addrSrv jobseeker.AddressService
 	appSrv  application.IAppService
 	sessSrv session.SessionService
+	jobSrv  job.JobService
+	cmpSrv  company.CompanyService
 
 	userSess     *entity.Session
 	loggedInUser *entity.Jobseeker
@@ -51,8 +53,13 @@ type contextKey string
 
 var ctxUserSessionKey = contextKey("signed_in_user_session")
 
-func NewJobseekerHandler(tmpl *template.Template, jsSrv jobseeker.JobseekerService, ctgSrv job.CategoryService, addrSrv jobseeker.AddressService, appSrv application.IAppService, sessSrv session.SessionService, userSess *entity.Session, userRole role.RoleService, csrfSignKey []byte) *JobseekerHandler {
-	return &JobseekerHandler{tmpl: tmpl, jsSrv: jsSrv, ctgSrv: ctgSrv, addrSrv: addrSrv, appSrv: appSrv, sessSrv: sessSrv, userSess: userSess, userRole: userRole, csrfSignKey: csrfSignKey}
+func NewJobseekerHandler(cmpSrv company.CompanyService, jobSrv job.JobService, tmpl *template.Template, jsSrv jobseeker.JobseekerService, ctgSrv job.CategoryService, addrSrv jobseeker.AddressService, appSrvcc application.IAppService, sessSrv session.SessionService, userSess *entity.Session, userRole role.RoleService, csrfSignKey []byte) *JobseekerHandler {
+	jsSrvc = jsSrv
+	ctgSrvc = ctgSrv
+	appSrvc = appSrvcc
+	jobSrvc = jobSrv
+	cmpSrvc = cmpSrv
+	return &JobseekerHandler{jobSrv: jobSrv, tmpl: tmpl, jsSrv: jsSrv, ctgSrv: ctgSrv, addrSrv: addrSrv, appSrv: appSrvcc, sessSrv: sessSrv, userSess: userSess, userRole: userRole, csrfSignKey: csrfSignKey}
 }
 
 type RegisterNeed struct {
@@ -323,37 +330,40 @@ func (jsh *JobseekerHandler) JobseekerRegister(w http.ResponseWriter, r *http.Re
 	fmt.Println("Jobseeker registered successfully", js)
 	http.Redirect(w, r, "/login", http.StatusSeeOther)
 }
-func (jsh *JobseekerHandler) JobseekerApply(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+func (jsh *JobseekerHandler) JobseekerApply(w http.ResponseWriter, r *http.Request) {
 	err := r.ParseForm()
 	if err != nil {
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 		return
 	}
-	jobid := ps.ByName("id")
-
+	jobid := r.URL.Query().Get("jobid")
 	jobidint, err := strconv.Atoi(jobid)
-	job, err := jobSrvc.Job(jobidint)
+	job, err := jsh.jobSrv.Job(jobidint)
 
 	applyform := form.Input{Values: r.PostForm, VErrors: form.ValidationErrors{}}
 
 	alreadyApplied := jsh.jsSrv.AlreadyApplied(jsh.loggedInUser.ID, job.ID)
 	if alreadyApplied {
 		applyform.VErrors.Add("generic", "Already Applied")
-		jsh.tmpl.ExecuteTemplate(w, "jobseeker.appliedjobs.layout", alreadyApplied)
+		jsh.tmpl.ExecuteTemplate(w, "jobseeker.appliedjobs.layout", applyform)
 		return
 	}
 	appl := entity.Application{Status: "Unreviewed", JobID: job.ID, JobseekerID: jsh.loggedInUser.ID}
 	app, err := jsh.appSrv.Store(&appl)
-	jsh.loggedInUser.Applications = []entity.Application{*app}
-	job.Applications = []entity.Application{*app}
-
-	jsh.loggedInUser, err = jsSrvc.UpdateJobSeeker(jsh.loggedInUser)
-	_, err = jobSrvc.UpdateJob(&job)
+	jsh.loggedInUser.Applications = append(jsh.loggedInUser.Applications, *app)
 	if err != nil {
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 	}
 	http.Redirect(w, r, "/jobseeker/"+jsh.loggedInUser.Username+"/appliedjobs", http.StatusSeeOther)
 	return
+}
+func contains(apps []entity.Application, job entity.Job) bool {
+	for _, a := range apps {
+		if a.JobID == job.ID {
+			return true
+		}
+	}
+	return false
 }
 func (jsh *JobseekerHandler) JobseekerHome(w http.ResponseWriter, r *http.Request) {
 	_ = r.Context().Value("params").(httprouter.Params)
@@ -361,6 +371,12 @@ func (jsh *JobseekerHandler) JobseekerHome(w http.ResponseWriter, r *http.Reques
 		Ctgs, _ := jsh.ctgSrv.Categories()
 		Apps, _ := jsh.appSrv.UserApplication(int(jsh.loggedInUser.ID))
 		Suggs, _ := jsh.jsSrv.Suggestions(int(jsh.loggedInUser.ID))
+		var sugges []entity.Job
+		for _, s := range Suggs {
+			if !contains(Apps, s) {
+				sugges = append(sugges, s)
+			}
+		}
 		jobseekerhomeinfo := struct {
 			Categories   []entity.Category
 			Applications []entity.Application
@@ -370,11 +386,12 @@ func (jsh *JobseekerHandler) JobseekerHome(w http.ResponseWriter, r *http.Reques
 			Categories:   Ctgs,
 			Applications: Apps,
 
-			Suggestions: Suggs,
+			Suggestions: sugges,
 			Jobseeker:   *jsh.loggedInUser,
 		}
 		err := jsh.tmpl.ExecuteTemplate(w, "jobseeker.layout", jobseekerhomeinfo)
 		if err != nil {
+			fmt.Println(err)
 			http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 			return
 		}
@@ -382,7 +399,7 @@ func (jsh *JobseekerHandler) JobseekerHome(w http.ResponseWriter, r *http.Reques
 }
 
 //JobseekerAppliedJobs displays Job ith specified ID or AllJobs Posted in the Category
-func (jsh *JobseekerHandler) JobseekerAppliedJobs(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+func (jsh *JobseekerHandler) JobseekerAppliedJobs(w http.ResponseWriter, r *http.Request) {
 	Appls, _ := jsh.appSrv.UserApplication(int(jsh.loggedInUser.ID))
 	Ctgs, _ := jsh.ctgSrv.Categories()
 
@@ -398,15 +415,15 @@ func (jsh *JobseekerHandler) JobseekerAppliedJobs(w http.ResponseWriter, r *http
 
 	err := jsh.tmpl.ExecuteTemplate(w, "jobseeker.appliedJobs.layout", appliedjobsinfo)
 	if err != nil {
+		fmt.Println(err)
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 		return
 	}
 }
 
 //JobseekerProfile display the JobSeeker profile page
-func (jsh *JobseekerHandler) JobseekerProfile(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+func (jsh *JobseekerHandler) JobseekerProfile(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "GET" {
-
 		Ctgs, err := jsh.ctgSrv.Categories()
 		if err != nil {
 			return
@@ -428,7 +445,7 @@ func (jsh *JobseekerHandler) JobseekerProfile(w http.ResponseWriter, r *http.Req
 }
 
 //ProfileEdit display and edit JobSeekers Profile
-func (jsh *JobseekerHandler) ProfileEdit(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+func (jsh *JobseekerHandler) ProfileEdit(w http.ResponseWriter, r *http.Request) {
 	token, err := rtoken.CSRFToken(jsh.csrfSignKey)
 	if err != nil {
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
@@ -642,19 +659,20 @@ func AppGetJob(app entity.Application) (entity.Job, error) {
 }
 func AppGetCmp(app entity.Application) (entity.Company, error) {
 	jb, err := jobSrvc.Job(int(app.JobID))
-	fmt.Println(app.JobID)
 	var cmp entity.Company
-	fmt.Println("AppGetCmp")
-	fmt.Println(jb.CompanyID)
-	if err != nil {
-		return cmp, err
-	}
-
-	cmp, err = cmpSrvc.Company(int(jb.CompanyID))
-	if err != nil {
-		return cmp, err
+	if err == nil {
+		fmt.Println(jb.CompanyID)
+		if err != nil {
+			return cmp, err
+		}
+		cmp, err = cmpSrvc.Company(int(jb.CompanyID))
+		if err != nil {
+			return cmp, err
+		}
+		return cmp, nil
 	}
 	return cmp, nil
+
 }
 func AppGetLocation(app entity.Application) (entity.Address, error) {
 	var addr entity.Address
@@ -952,7 +970,7 @@ func (uh *JobseekerHandler) Signup(w http.ResponseWriter, r *http.Request, ps ht
 			Phone:          r.FormValue("phone"),
 			WorkExperience: wrkint,
 			Username:       r.FormValue("uname"),
-			Fullname:       r.FormValue("fname") + r.FormValue("lname"),
+			Fullname:       r.FormValue("fname") + r.FormValue(" lname"),
 			Password:       string(hashedPassword),
 			Email:          r.FormValue("email"),
 			Profile:        r.FormValue("propic"),
