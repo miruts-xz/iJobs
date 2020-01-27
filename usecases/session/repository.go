@@ -4,12 +4,9 @@ import (
 	"github.com/miruts/iJobs/entity"
 )
 
-// SessionRepository interface defines session related data /database actions
+// SessionRepository specifies logged in user session related database operations
 type SessionRepository interface {
-	Sessions() ([]entity.Session, error)
-	Session(id int) (entity.Session, error)
-	DeleteSession(id int) (entity.Session, error)
-	UpdateSession(sess *entity.Session) (*entity.Session, error)
-	StoreSession(sess *entity.Session) (*entity.Session, error)
-	SessionByValue(value string) (entity.Session, error)
+	Session(sessionID string) (*entity.Session, []error)
+	StoreSession(session *entity.Session) (*entity.Session, []error)
+	DeleteSession(sessionID string) (*entity.Session, []error)
 }

@@ -155,3 +155,47 @@ func (jss *JobseekerGormRepositoryIMpl) ApplicationJobseeker(id int) (entity.Job
 	}
 	return jobseeker, nil
 }
+func (jss *JobseekerGormRepositoryIMpl) UserRoles(user *entity.Jobseeker) ([]entity.Role, []error) {
+	userRoles := []entity.Role{}
+	errs := jss.conn.Model(user).Related(&userRoles).GetErrors()
+	if len(errs) > 0 {
+		return nil, errs
+	}
+	return userRoles, errs
+}
+
+// PhoneExists check if a given phone number is found
+func (userRepo *JobseekerGormRepositoryIMpl) PhoneExists(phone string) bool {
+	user := entity.Jobseeker{}
+	errs := userRepo.conn.Find(&user, "phone=?", phone).GetErrors()
+	if len(errs) > 0 {
+		return false
+	}
+	return true
+}
+func (jss *JobseekerGormRepositoryIMpl) UsernameExists(email string) bool {
+	user := entity.Jobseeker{}
+	errs := jss.conn.Find(&user, "email=?", email).GetErrors()
+	if len(errs) > 0 {
+		return false
+	}
+	return true
+}
+
+// EmailExists check if a given email is found
+func (jss *JobseekerGormRepositoryIMpl) EmailExists(email string) bool {
+	user := entity.Jobseeker{}
+	errs := jss.conn.Find(&user, "email=?", email).GetErrors()
+	if len(errs) > 0 {
+		return false
+	}
+	return true
+}
+func (jss *JobseekerGormRepositoryIMpl) AlreadyApplied(id uint, id2 uint) bool {
+	application := entity.Application{}
+	errs := jss.conn.Find(&application, "jobseeker_id=? and job_id=?", id, id2).GetErrors()
+	if len(errs) > 0 {
+		return false
+	}
+	return true
+}

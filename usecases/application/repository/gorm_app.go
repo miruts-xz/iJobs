@@ -19,13 +19,13 @@ func NewAppGormRepositoryImpl(conn *gorm.DB) *AppGormRepositoryImpl {
 }
 
 // Store stores application
-func (agr *AppGormRepositoryImpl) Store(app *entity.Application) error {
+func (agr *AppGormRepositoryImpl) Store(app *entity.Application) (*entity.Application, error) {
 	application := app
 	errs := agr.conn.Create(application).GetErrors()
 	if len(errs) > 0 {
-		return errs[0]
+		return application, errs[0]
 	}
-	return nil
+	return application, nil
 }
 
 // Application finds application by id

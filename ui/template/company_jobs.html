@@ -1,113 +1,94 @@
+{{define "company.jobs.layout"}}
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Company-Home | iJobs What Job is all about</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <!-- css -->
+        <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="/assets/css/customCss.css">
+        <link rel="stylesheet" type="text/css" href="/assets/css/fontawesome.css">
+        <style>
+            .vertical-menu {
+                width: 200px;
+            }
 
+            .vertical-menu a {
+                background-color: #eee;
+                color: black;
+                display: block;
+                padding: 12px;
+                text-decoration: none;
+            }
 
-<!DOCTYPE html>
-<html lang="en">
+            .vertical-menu a:hover {
+                background-color: #ccc;
+            }
 
+            .vertical-menu a.active {
+                background-color: #4CAF50;
+                color: white;
+            }
+        </style>
+    </head>
+    <body>
+    {{ template "company.navbar" . }}
+    {{ template "company.jobs.content" . }}
+    {{ template "footer" . }}
+    <!-- js -->
+    <script src="/assets/js/jquery-3.4.1.min.js"></script>
+    <script src="/assets/js/popper.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script defer src="/assets/js/fontawesome.js"></script>
+    </body>
+    </html>
+{{end}}
 
-<head>
-  <title>Bootstrap Example</title>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
-</head>
-<body>
+    {{define "company.jobs.content"}}
+        <div class="container" style="min-height: 700px">
+            <div class="container row" >
+                <div class="col">
+                    <h3 class="card-header">Posted JOBS</h3>
+                    <div class="vertical-menu card">
+                        <script>
+                            function makeMeActive(id) {
+                                $("#active").css("id", "");
+                                $(".displayed").css("display", "none");
+                                $("#"+id).css("id","active");
+                                $("."+id).css("display", "block");
+                                $("."+id).addClass("displayed");
+                            }
+                        </script>
+                        {{$cmp := .Company}}
+                        {{range .Jobs}}
+                            <a id="{{.ID}}" href="#" onclick="makeMeActive({{.ID}})">{{.Name}}</a>
+                        {{end}}
+                    </div>
+                </div>
 
-<div class="container-fluid">     
-    <div class="m-5 row">
-	
-      <div class="col-sm-2 ">
-       <img src="C:\Users\abi\Go\src\github.com\Abig\iJobs\ui\asset\img\logo.PNG">
-      </div>
-	    <div class="col-sm-2 ">
-       <h5>Home</h5>
-      </div>
-	   <div class="col-sm-2 ">
-       <h5>Find company</h5>
-      </div>
-	   <div class="col-sm-2 ">
-       <h5>profile</h5>
-      </div>
+                <div class="col">
+                    <h3 class="card-header">Job Details</h3>
+                    {{range .Jobs}}
+                        <div class="{{.ID}} card" id="{{.Name}}" class="container-fluid card vertical-menu" style="display: none" >
+                            <label class="font-weight-bold" style="margin: 10px 5px">Job Name</label>
+                            <span class="">{{.Name}}</span><br>
+                            <label class="font-weight-bold text-left" style="margin: 10px 5px">Salary</label>
+                            <span class="">{{.Salary}}</span><br>
+                            <label class="font-weight-bold text-left" style="margin: 10px 5px ">Required Number</label>
+                            <span class="">{{.RequiredNum}}</span><br>
+                            <label class="font-weight-bold text-left" style="margin: 10px 5px">Description</label>
+                            <span class="">{{.Description}}</span><br>
+                            <label class="font-weight-bold text-left" style="margin: 10px 5px">Job Time</label>
+                            <span class="">{{.JobTime}}</span><br>
+                            <label class="font-weight-bold text-left" style="margin: 10px 5px">Deadline</label>
+                            <span class="">{{.Deadline}}</span><br>
+                            <button class="my_button"><a href="/company/{{$cmp.CompanyName}}/jobs?id={{.ID}}">Delete</a></button>
+                        </div>
+                    {{end}}
+                </div>
+            </div>
+        </div>
+    {{end}}
 
-	  </body>
-	  </div>
-	  </div>
-	  <div class="container-fluid">     
-    <div class="row">
-	
-
-	 
-	    
-		  <div class="col-sm-1">
-       <div class="m-5"><img src="C:\Users\abi\Go\src\github.com\Abig\iJobs\ui\asset\img\Mini_logo.PNG"></div> 
-	   <div class="m-5"><img src="C:\Users\abi\Go\src\github.com\Abig\iJobs\ui\asset\img\Mini_logo.PNG"> </div> 
-	   <div class="m-5"><img src="C:\Users\abi\Go\src\github.com\Abig\iJobs\ui\asset\img\Mini_logo.PNG"> </div> 		
-	   <div class="m-5"><img src="C:\Users\abi\Go\src\github.com\Abig\iJobs\ui\asset\img\Mini_logo.PNG"> </div> 		
-	   <div class="m-5"><img src="C:\Users\abi\Go\src\github.com\Abig\iJobs\ui\asset\img\Mini_logo.PNG"> </div> 		
-	   <div class="m-5"><img src="C:\Users\abi\Go\src\github.com\Abig\iJobs\ui\asset\img\Mini_logo.PNG"> </div> 	
-	   </div>
-	   		  <div class=" col-sm-3">
-			<div class="m-5">
-				<h5>Web developer</h5>
-				<h6>Deadline 13/01/2020</h6>
-			</div>
-				<div class="m-5">
-				<h5>Web developer</h5>
-				<h6>Deadline 13/01/2020</h6>
-					</div>
-				<div class="m-5">
-				<h5>Web developer</h5>
-				<h6>Deadline 13/01/2020</h6>
-				</div>
-					<div class="m-5">
-				<h4>Web developer</h4>
-				<h5>Deadline 13/01/2020</h5>
-					</div>
-						<div class="m-5">
-				<h4>Web developer</h4>
-				<h5>Deadline 13/01/2020</h5>
-					</div>
-					<div class="m-5">
-				<h4>Web developer</h4>
-				<h5>Deadline 13/01/2020</h5>
-				</div>
-	   </div>
-
-
-	   <div class="col-sm-8 ">
-		<h3 class="text-success">Web developer</h3>
-		<p>description descriptiondescription description description description description description description description descriptiondescription description description description</p>
-		<h3>Required Skill</h3>
-		<p> . Lorem epsum Lorem epsum  Lorem epsum  Lorem epsum  Lorem epsum  Lorem epsum  Lorem epsum  Lorem epsum  Lorem epsum  Lorem epsum  </p>
-		<p> . Lorem epsum Lorem epsum  Lorem epsum  Lorem epsum  Lorem epsum  Lorem epsum  Lorem epsum  Lorem epsum  Lorem epsum  Lorem epsum  </p>
-		<p> . Lorem epsum Lorem epsum  Lorem epsum  Lorem epsum  Lorem epsum  Lorem epsum  Lorem epsum  Lorem epsum  Lorem epsum  Lorem epsum  </p>
-		<p> . Lorem epsum Lorem epsum  Lorem epsum  Lorem epsum  Lorem epsum  Lorem epsum  Lorem epsum  Lorem epsum  Lorem epsum  Lorem epsum  </p>
-
-	<div class="container">
-	<div class="row">
-	<div class="col-sm-4 ">
-	  <h3 class="text-success">Required number </h3> 
-	   
-	  <h3 class="text-success">Salary </h3> 
-	   
-	  <h3 class="text-success">Job time </h3> 
-	  <h3 class="text-success">Deadline </h3> 
-	  </div>
-	  	<div class="col-sm-4 ">
-	  <h4>10 </h4> 
-	   
-	  <h4>10000 </h4> 
-	   
-	  <h4>Lorem epsum</h4> 
-	  <h4>13/01/2020 </h4> 
-	  </div>
-	  </div>
-	  </div>
-		</div>
-	  </div>
-	  </body>
-
-	  
-	  </html>

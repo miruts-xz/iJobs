@@ -14,4 +14,7 @@ type CompanyService interface {
 	PostedJobs(cid int) ([]entity.Job, error)
 	CompanyByEmail(email string) (entity.Company, error)
 	CompanyAddress(id uint) (entity.Address, error)
+	UserRoles(user *entity.Company) ([]entity.Role, []error)
+	UsernameExists(username string) bool
+	JobExists(cm_id int, job string) bool
 }

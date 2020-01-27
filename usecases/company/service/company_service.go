@@ -52,3 +52,32 @@ func (cs *CompanyServiceImpl) CompanyByEmail(email string) (entity.Company, erro
 func (cs *CompanyServiceImpl) CompanyAddress(id uint) (entity.Address, error) {
 	return cs.compRepo.CompanyAddress(id)
 }
+
+// UserRoles returns list of roles a user has
+func (jss *CompanyServiceImpl) UserRoles(user *entity.Company) ([]entity.Role, []error) {
+	userRoles, errs := jss.compRepo.UserRoles(user)
+	if len(errs) > 0 {
+		return nil, errs
+	}
+	return userRoles, errs
+}
+
+// PhoneExists check if there is a user with a given phone number
+func (jss *CompanyServiceImpl) PhoneExists(phone string) bool {
+	exists := jss.compRepo.PhoneExists(phone)
+	return exists
+}
+func (jss *CompanyServiceImpl) UsernameExists(email string) bool {
+	exists := jss.compRepo.UsernameExists(email)
+	return exists
+}
+
+// EmailExists checks if there exist a user with a given email address
+func (jss *CompanyServiceImpl) EmailExists(email string) bool {
+	exists := jss.compRepo.EmailExists(email)
+	return exists
+}
+func (jss *CompanyServiceImpl) JobExists(cm_id int, job string) bool {
+	exists := jss.compRepo.JobExists(cm_id, job)
+	return exists
+}

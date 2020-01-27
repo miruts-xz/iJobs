@@ -40,13 +40,14 @@
         <div class="row">
             <div class="col-md-6 js-job-applicants">
                 <h3>Applicants</h3>
+                {{$cmp := .Company}}
                 {{range .Applications}}
                     <div class="card">
                         <div class="row no-gutters">
                             <div class="col-md-2">
                                 {{$js := . | appGetJs}}
                                 {{$job := . | appGetJob}}
-                                <img src="/assets/jsdata/{{$js.Username}}/pp/{{$js.Profile}}" class="card-img rounded-circle" alt="js-profile-pic" width="50" height="50" style="margin-top: 20%;">
+                                <img src="/assets/jsdata/{{$js.Username}}/pp/{{$js.Profile}}" class="card-img rounded-circle" alt="js-profile-pic" width="40" height="70" style="margin-top: 20%;">
                             </div>
                             <div class="card-body">
                                 <h5 class="card-title">Applicant name : {{$js.Fullname}}</h5>
@@ -55,7 +56,12 @@
                                 <h6 class="card-subtitle mb-2 text-muted">Phone : {{$js.Phone}}</h6>
                                 <span class="card-text mb-2 text-muted">Gender : {{$js.Gender}}</span>
                                 <p class="card-text mb-2 text-muted">Age : {{$js.Age}}</p>
-                                <a href="/assets/jsdata/{{$js.Username}}/cv/{{$js.CV}}" class="btn btn-primary">View CV</a>
+                                <div class="row">
+                                    <a href="/assets/jsdata/{{$js.Username}}/cv/{{$js.CV}}" class="btn btn-primary">View CV</a>
+                                    <a href="/company/{{$cmp.CompanyName}}/home?aid={{.ID}}&accept=true" class="btn btn-primary">Accept</a>
+                                    <a href="/company/{{$cmp.CompanyName}}/home?aid={{.ID}}&accept=false" class="btn btn-primary">Reject</a>
+                                    <a href="/company/{{$cmp.CompanyName}}/home?aid={{.ID}}&accept=further" class="btn btn-primary">Further</a>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -65,7 +71,7 @@
                 <div class="card">
                     <div class="row no-gutters">
                         <div class="col-md-2">
-                      <img src="/assets/img/person.jpg" class="card-img rounded-circle" alt="js-profile-pic" max-width="50" height="50" style="margin-top: 20%;"> </div>
+                      <img src="/assets/img/person.jpg" class="rounded-circle" alt="js-profile-pic" max-width="50" height="50" style="margin: 20%;"> </div>
                     <div class="card-body">
                         <h5 class="card-title">Applicant name</h5>
                         <h6 class="card-subtitle mb-2 text-muted">applicant@gmail.com</h6>
@@ -73,6 +79,9 @@
                            <span class="card-text mb-2 text-muted">Gender</span>
                            <p class="card-text mb-2 text-muted">Age</p>
                            <a href="#" class="btn btn-primary">View CV</a>
+                            <a href="/company/{{$cmp.CompanyName}}/home?aid=&accept=true" class="btn btn-primary">Accept</a>
+                            <a href="/company/{{$cmp.CompanyName}}/home?aid=&accept=false" class="btn btn-primary">Reject</a>
+                            <a href="/company/{{$cmp.CompanyName}}/home?aid=&accept=further" class="btn btn-primary">Further</a>
                     </div>
                 </div>
                 </div>

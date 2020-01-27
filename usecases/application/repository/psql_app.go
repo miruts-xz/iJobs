@@ -19,16 +19,16 @@ func NewAppRepo(conn *sql.DB) *AppRepository {
 }
 
 // Store stores application
-func (appRepo *AppRepository) Store(app *entity.Application) error {
+func (appRepo *AppRepository) Store(app *entity.Application) (*entity.Application, error) {
 
 	query := "INSERT INTO applications (job_id,jobseeker_id,status,response) values ($1,$2,$3,$4);"
 	_, err := appRepo.conn.Exec(query, app.ID, app.JobID, app.JobseekerID, app.Status, app.Response)
 
 	if err != nil {
-		return errors.New("Unable to insert application")
+		return &entity.Application{}, errors.New("Unable to insert application")
 	}
 
-	return nil
+	return &entity.Application{}, nil
 
 }
 

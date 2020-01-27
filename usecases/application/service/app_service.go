@@ -25,7 +25,7 @@ func (appService *AppService) Application(id int) (entity.Application, error) {
 }
 
 // Store stores application
-func (appService *AppService) Store(app *entity.Application) error {
+func (appService *AppService) Store(app *entity.Application) (*entity.Application, error) {
 	return appService.appRepo.Store(app)
 }
 

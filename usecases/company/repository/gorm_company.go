@@ -84,10 +84,16 @@ func (cpr *CompanyGormRepositoryImpl) PostedJobs(cid int) ([]entity.Job, error) 
 // CompanyByEmail retrieves company given email
 func (cpr *CompanyGormRepositoryImpl) CompanyByEmail(email string) (entity.Company, error) {
 	var company entity.Company
+	var addresses []entity.Address
+	var jobs []entity.Job
 	errs := cpr.conn.Where("email = ?", email).First(&company).GetErrors()
 	if len(errs) > 0 {
 		return company, errs[0]
 	}
+	_ = cpr.conn.Model(&company).Related(&addresses, "Address").GetErrors()
+	_ = cpr.conn.Model(&company).Related(&jobs, "Jobs").GetErrors()
+	company.Address = addresses
+	company.Jobs = jobs
 	return company, nil
 }
 
@@ -103,4 +109,48 @@ func (cpr *CompanyGormRepositoryImpl) CompanyAddress(id uint) (entity.Address, e
 		return address, errs[0]
 	}
 	return address, nil
+}
+func (jss *CompanyGormRepositoryImpl) UserRoles(user *entity.Company) ([]entity.Role, []error) {
+	userRoles := []entity.Role{}
+	errs := jss.conn.Model(user).Related(&userRoles).GetErrors()
+	if len(errs) > 0 {
+		return nil, errs
+	}
+	return userRoles, errs
+}
+
+// PhoneExists check if a given phone number is found
+func (userRepo *CompanyGormRepositoryImpl) PhoneExists(phone string) bool {
+	user := entity.Company{}
+	errs := userRepo.conn.Find(&user, "phone=?", phone).GetErrors()
+	if len(errs) > 0 {
+		return false
+	}
+	return true
+}
+func (jss *CompanyGormRepositoryImpl) UsernameExists(email string) bool {
+	user := entity.Company{}
+	errs := jss.conn.Find(&user, "email=?", email).GetErrors()
+	if len(errs) > 0 {
+		return false
+	}
+	return true
+}
+
+// EmailExists check if a given email is found
+func (jss *CompanyGormRepositoryImpl) EmailExists(email string) bool {
+	user := entity.Company{}
+	errs := jss.conn.Find(&user, "email=?", email).GetErrors()
+	if len(errs) > 0 {
+		return false
+	}
+	return true
+}
+func (jss *CompanyGormRepositoryImpl) JobExists(cm_id int, job string) bool {
+	jb := entity.Job{}
+	errs := jss.conn.Find(&jb, "company_id=? and name=?", cm_id, job).GetErrors()
+	if len(errs) > 0 {
+		return false
+	}
+	return true
 }
