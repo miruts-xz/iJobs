@@ -95,7 +95,7 @@ func main() {
 	jobseekerHandler := handlers.NewJobseekerHandler(tmpl, jobseekerSrv, categorySrv, addressSrv, applicationSrv, sessionSrv, jobSrv, companySrv)
 	jobseekerAPIHandler := api.NewJobseekerHandler(jobseekerSrv)
 	companyHandler := handlers.NewCompanyHandler(tmpl, jobseekerSrv, companySrv, categorySrv, addressSrv, applicationSrv, sessionSrv, jobSrv)
-	logoutHandler := handlers.NewLogoutHandler(tmpl, jobseekerSrv, companySrv, sessionSrv)
+	//logoutHandler := handlers.NewLogoutHandler(tmpl, jobseekerSrv, companySrv, sessionSrv)
 	//go util.ClearExpiredSessions(sessionSrv)
 
 	//RESTApi Handlers
@@ -141,8 +141,8 @@ func main() {
 
 	//JobSeeker Api Handler
 
-	router.GET("/api/jobseeker", apiJobSkHandler.Jobseeker)
-	router.GET("/api/jobseekers/:id", apiJobSkHandler.Jobseekers)
+	router.GET("/api/jobseeker", apiJobSkHandler.Jobseekers)
+	router.GET("/api/jobseekers/:id", apiJobSkHandler.Jobseeker)
 	router.POST("/api/jobseekers/", apiJobSkHandler.AddJobseeker)
 	router.PUT("/api/jobseekers/:id", apiJobSkHandler.UpdateJobseeker)
 	router.DELETE("/api/jobseekers/:id", apiJobSkHandler.DeleteJobseeker)

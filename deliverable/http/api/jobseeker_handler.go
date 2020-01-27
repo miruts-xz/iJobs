@@ -21,6 +21,7 @@ func NewJobseekerHandler(jsSrv jssrv.JobseekerService) *JobseekerHandler {
 
 //Jobseekers handles all JobSeekers JSon data
 func (jsh *JobseekerHandler) Jobseekers(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+	fmt.Println("I'm here")
 	w.Header().Set("Content-Type", "application/json")
 	jobseekers, err := jsh.jsSrv.JobSeekers()
 	if err != nil {
