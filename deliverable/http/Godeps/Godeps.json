@@ -1,0 +1,145 @@
+{
+	"ImportPath": "github.com/miruts/iJobs/deliverable/http",
+	"GoVersion": "go1.13",
+	"GodepVersion": "v80",
+	"Deps": [
+		{
+			"ImportPath": "github.com/dgrijalva/jwt-go",
+			"Comment": "v3.2.0-20-gdc14462",
+			"Rev": "dc14462fd58732591c7fa58cc8496d6824316a82"
+		},
+		{
+			"ImportPath": "github.com/jinzhu/gorm",
+			"Rev": "66d0b484f862536da000e73bf9dc3cb39ba9552d"
+		},
+		{
+			"ImportPath": "github.com/jinzhu/gorm/dialects/postgres",
+			"Rev": "66d0b484f862536da000e73bf9dc3cb39ba9552d"
+		},
+		{
+			"ImportPath": "github.com/jinzhu/inflection",
+			"Rev": "66d0b484f862536da000e73bf9dc3cb39ba9552d"
+		},
+		{
+			"ImportPath": "github.com/julienschmidt/httprouter",
+			"Comment": "v1.3.0-19-g08a3b3d",
+			"Rev": "08a3b3d20bbeeab9ca4889bcdb65fec0423ef882"
+		},
+		{
+			"ImportPath": "github.com/lib/pq",
+			"Comment": "v1.2.0-14-gf91d341",
+			"Rev": "f91d3411e481ed313eeab65ebfe9076466c39d01"
+		},
+		{
+			"ImportPath": "github.com/lib/pq/hstore",
+			"Comment": "v1.2.0-14-gf91d341",
+			"Rev": "f91d3411e481ed313eeab65ebfe9076466c39d01"
+		},
+		{
+			"ImportPath": "github.com/lib/pq/oid",
+			"Comment": "v1.2.0-14-gf91d341",
+			"Rev": "f91d3411e481ed313eeab65ebfe9076466c39d01"
+		},
+		{
+			"ImportPath": "github.com/lib/pq/scram",
+			"Comment": "v1.2.0-14-gf91d341",
+			"Rev": "f91d3411e481ed313eeab65ebfe9076466c39d01"
+		},
+		{
+			"ImportPath": "github.com/miruts/iJobs/entity",
+			"Rev": "100aa64c107c740b1a7dc2a61ca5b2bf1cd67bf8"
+		},
+		{
+			"ImportPath": "github.com/miruts/iJobs/role",
+			"Rev": "100aa64c107c740b1a7dc2a61ca5b2bf1cd67bf8"
+		},
+		{
+			"ImportPath": "github.com/miruts/iJobs/role/repository",
+			"Rev": "100aa64c107c740b1a7dc2a61ca5b2bf1cd67bf8"
+		},
+		{
+			"ImportPath": "github.com/miruts/iJobs/role/service",
+			"Rev": "100aa64c107c740b1a7dc2a61ca5b2bf1cd67bf8"
+		},
+		{
+			"ImportPath": "github.com/miruts/iJobs/security/form",
+			"Rev": "100aa64c107c740b1a7dc2a61ca5b2bf1cd67bf8"
+		},
+		{
+			"ImportPath": "github.com/miruts/iJobs/security/permission",
+			"Rev": "100aa64c107c740b1a7dc2a61ca5b2bf1cd67bf8"
+		},
+		{
+			"ImportPath": "github.com/miruts/iJobs/security/rndtoken",
+			"Rev": "100aa64c107c740b1a7dc2a61ca5b2bf1cd67bf8"
+		},
+		{
+			"ImportPath": "github.com/miruts/iJobs/security/session",
+			"Rev": "100aa64c107c740b1a7dc2a61ca5b2bf1cd67bf8"
+		},
+		{
+			"ImportPath": "github.com/miruts/iJobs/usecases/application",
+			"Rev": "100aa64c107c740b1a7dc2a61ca5b2bf1cd67bf8"
+		},
+		{
+			"ImportPath": "github.com/miruts/iJobs/usecases/application/repository",
+			"Rev": "100aa64c107c740b1a7dc2a61ca5b2bf1cd67bf8"
+		},
+		{
+			"ImportPath": "github.com/miruts/iJobs/usecases/application/service",
+			"Rev": "100aa64c107c740b1a7dc2a61ca5b2bf1cd67bf8"
+		},
+		{
+			"ImportPath": "github.com/miruts/iJobs/usecases/company",
+			"Rev": "100aa64c107c740b1a7dc2a61ca5b2bf1cd67bf8"
+		},
+		{
+			"ImportPath": "github.com/miruts/iJobs/usecases/company/repository",
+			"Rev": "100aa64c107c740b1a7dc2a61ca5b2bf1cd67bf8"
+		},
+		{
+			"ImportPath": "github.com/miruts/iJobs/usecases/company/service",
+			"Rev": "100aa64c107c740b1a7dc2a61ca5b2bf1cd67bf8"
+		},
+		{
+			"ImportPath": "github.com/miruts/iJobs/usecases/job",
+			"Rev": "100aa64c107c740b1a7dc2a61ca5b2bf1cd67bf8"
+		},
+		{
+			"ImportPath": "github.com/miruts/iJobs/usecases/job/repository",
+			"Rev": "100aa64c107c740b1a7dc2a61ca5b2bf1cd67bf8"
+		},
+		{
+			"ImportPath": "github.com/miruts/iJobs/usecases/job/service",
+			"Rev": "100aa64c107c740b1a7dc2a61ca5b2bf1cd67bf8"
+		},
+		{
+			"ImportPath": "github.com/miruts/iJobs/usecases/jobseeker",
+			"Rev": "100aa64c107c740b1a7dc2a61ca5b2bf1cd67bf8"
+		},
+		{
+			"ImportPath": "github.com/miruts/iJobs/usecases/jobseeker/repository",
+			"Rev": "100aa64c107c740b1a7dc2a61ca5b2bf1cd67bf8"
+		},
+		{
+			"ImportPath": "github.com/miruts/iJobs/usecases/jobseeker/service",
+			"Rev": "100aa64c107c740b1a7dc2a61ca5b2bf1cd67bf8"
+		},
+		{
+			"ImportPath": "github.com/miruts/iJobs/usecases/session",
+			"Rev": "100aa64c107c740b1a7dc2a61ca5b2bf1cd67bf8"
+		},
+		{
+			"ImportPath": "github.com/miruts/iJobs/util",
+			"Rev": "100aa64c107c740b1a7dc2a61ca5b2bf1cd67bf8"
+		},
+		{
+			"ImportPath": "golang.org/x/crypto/bcrypt",
+			"Rev": "61a87790db17894570dfb32dbaa0a4af9ce60cb4"
+		},
+		{
+			"ImportPath": "golang.org/x/crypto/blowfish",
+			"Rev": "61a87790db17894570dfb32dbaa0a4af9ce60cb4"
+		}
+	]
+}
