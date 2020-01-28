@@ -19,6 +19,7 @@ import (
 	jobsrv "github.com/miruts/iJobs/usecases/job/service"
 	jsrepo "github.com/miruts/iJobs/usecases/jobseeker/repository"
 	jssrv "github.com/miruts/iJobs/usecases/jobseeker/service"
+	"os"
 	"time"
 
 	apijobhandler "github.com/miruts/iJobs/deliverable/http/api"
@@ -66,7 +67,10 @@ func main() {
 		fmt.Println(err)
 		return
 	}
-
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "80"
+	}
 	// Create Gorm Tables
 	// Run Once
 
@@ -165,7 +169,7 @@ func main() {
 	// Static file registration
 	router.ServeFiles("/assets/*filepath", http.Dir("../../ui/asset"))
 	// Start Serving
-	err := http.ListenAndServe(":80", router)
+	err := http.ListenAndServe(":"+port, router)
 	if err != nil {
 		fmt.Printf("server failed: %s", err)
 	}
