@@ -162,6 +162,7 @@ func (jobHander *JobApiHandler) AddJob(w http.ResponseWriter, r *http.Request, p
 		http.Error(w, http.StatusText(404), 404)
 		return
 	}
+	w.WriteHeader(http.StatusCreated)
 	_, err = w.Write(response)
 	if err != nil {
 		fmt.Println(err)
