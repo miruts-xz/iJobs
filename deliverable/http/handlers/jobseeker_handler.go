@@ -331,7 +331,7 @@ func (jsh *JobseekerHandler) JobseekerRegister(w http.ResponseWriter, r *http.Re
 	fmt.Println("Jobseeker registered successfully", js)
 	http.Redirect(w, r, "/login", http.StatusSeeOther)
 }
-func (jsh *JobseekerHandler) JobseekerApply(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+func (jsh *JobseekerHandler) JobseekerApply(w http.ResponseWriter, r *http.Request) {
 	err := r.ParseForm()
 	if err != nil {
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
@@ -447,7 +447,7 @@ func (jsh *JobseekerHandler) JobseekerProfile(w http.ResponseWriter, r *http.Req
 }
 
 //ProfileEdit display and edit JobSeekers Profile
-func (jsh *JobseekerHandler) ProfileEdit(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+func (jsh *JobseekerHandler) ProfileEdit(w http.ResponseWriter, r *http.Request) {
 	token, err := rndtoken.CSRFToken(jsh.csrfSignKey)
 	if err != nil {
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
