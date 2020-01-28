@@ -10,7 +10,7 @@ import (
 )
 
 // Create creates and sets session cookie
-func Create(claims jwt.Claims, sessionID string, signingKey []byte, w http.ResponseWriter) {
+func Create(claims jwt.Claims, sessionID string, expires int, signingKey []byte, w http.ResponseWriter) {
 
 	signedString, err := rndtoken.Generate(signingKey, claims)
 	if err != nil {
@@ -19,6 +19,7 @@ func Create(claims jwt.Claims, sessionID string, signingKey []byte, w http.Respo
 	}
 	c := http.Cookie{
 		Name:     sessionID,
+		Expires:  time.Now().Add(time.Hour * time.Duration(expires)),
 		Value:    signedString,
 		Path:     "/",
 		HttpOnly: true,
@@ -40,8 +41,8 @@ func Remove(sessionID string, w http.ResponseWriter) {
 	c := http.Cookie{
 		Name:    sessionID,
 		MaxAge:  -1,
-		Expires: time.Unix(1, 0),
-		Value:   "",
+		Expires: time.Now().Add(-100 * time.Hour),
+		Path:    "/",
 	}
 	http.SetCookie(w, &c)
 }

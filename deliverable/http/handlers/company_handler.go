@@ -367,8 +367,13 @@ func (uh *CompanyHandler) Login(w http.ResponseWriter, r *http.Request, ps httpr
 		}
 
 		uh.loggedInUser = &usr
+<<<<<<< HEAD
 		claims := rndtoken.Claims(usr.Email, uh.userSess.Expires)
 		sess.Create(claims, uh.userSess.Uuid, uh.userSess.SigningKey, w)
+=======
+		claims := rtoken.Claims(usr.Email, uh.userSess.Expires)
+		sess.Create(claims, uh.userSess.Uuid, int(uh.userSess.Expires), uh.userSess.SigningKey, w)
+>>>>>>> 68a5fbc565e70d14df87ba653a42d1c21dfa9776
 		newSess, er := uh.sessSrv.StoreSession(uh.userSess)
 		if len(er) > 0 {
 			signUpForm.Inputs.VErrors.Add("generic", "Failed to store session")
