@@ -3,6 +3,9 @@ package main
 import (
 	"database/sql"
 	"fmt"
+	"os"
+	"time"
+
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"github.com/julienschmidt/httprouter"
@@ -19,7 +22,6 @@ import (
 	jobsrv "github.com/miruts/iJobs/usecases/job/service"
 	jsrepo "github.com/miruts/iJobs/usecases/jobseeker/repository"
 	jssrv "github.com/miruts/iJobs/usecases/jobseeker/service"
-	"time"
 
 	apijobhandler "github.com/miruts/iJobs/deliverable/http/api"
 
@@ -72,7 +74,7 @@ func main() {
 
 	//gormDB.Set("gorm:insert_option", "ON DUPLICATE KEY UPDATE")
 	//gormDB.AutoMigrate(&entity.Session{}, &entity.Address{}, &entity.Application{}, &entity.Category{}, &entity.Job{}, &entity.Company{}, &entity.Jobseeker{}, &entity.Role{})
-	CreateTables(gormDB)
+	//CreateTables(gormDB)
 	// Data Repositories
 	//gormDB.AutoMigrate(&entity.Session{})
 	sess := configSess()
@@ -153,7 +155,15 @@ func main() {
 	// Static file registration
 	router.ServeFiles("/assets/*filepath", http.Dir("../../ui/asset"))
 	// Start Serving
-	err := http.ListenAndServe(":8181", router)
+	var port string
+
+	if os.Getenv("PORT") == "" {
+		port = "8181"
+	} else {
+		port = os.Getenv("PORT")
+	}
+
+	err := http.ListenAndServe(":"+port, router)
 	if err != nil {
 		fmt.Printf("server failed: %s", err)
 	}
