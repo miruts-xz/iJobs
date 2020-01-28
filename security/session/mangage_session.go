@@ -3,7 +3,7 @@ package session
 import (
 	"errors"
 	"fmt"
-	"github.com/betsegawlemma/web-prog-go-sample/rtoken"
+	"github.com/miruts/iJobs/security/rndtoken"
 	"github.com/dgrijalva/jwt-go"
 	"net/http"
 	"time"
@@ -12,7 +12,7 @@ import (
 // Create creates and sets session cookie
 func Create(claims jwt.Claims, sessionID string, expires int, signingKey []byte, w http.ResponseWriter) {
 
-	signedString, err := rtoken.Generate(signingKey, claims)
+	signedString, err := rndtoken.Generate(signingKey, claims)
 	if err != nil {
 		fmt.Println(err)
 		w.WriteHeader(http.StatusInternalServerError)
@@ -29,7 +29,7 @@ func Create(claims jwt.Claims, sessionID string, expires int, signingKey []byte,
 
 // Valid validates client cookie value
 func Valid(cookieValue string, signingKey []byte) (bool, error) {
-	valid, err := rtoken.Valid(cookieValue, signingKey)
+	valid, err := rndtoken.Valid(cookieValue, signingKey)
 	if err != nil || !valid {
 		return false, errors.New("Invalid Session Cookie")
 	}

@@ -35,7 +35,7 @@ const (
 var gormDB *gorm.DB
 var err error
 var errs error
-var tmpl = template.Must(template.New("index").Funcs(funcMaps).ParseGlob("ui/template/*.html"))
+var tmpl = template.Must(template.New("index").Funcs(funcMaps).ParseGlob("../../ui/template/*.html"))
 var pqconnjs, pqconncmp *sql.DB
 
 var funcMaps = template.FuncMap{"cmp": handlers.JobCmp, "appGetJob": handlers.AppGetJob, "appGetJs": handlers.AppJs, "appGetJobCatId": handlers.AppGetJobCatId, "appGetCmp": handlers.AppGetCmp, "appGetLoc": handlers.AppGetLocation}
@@ -61,7 +61,7 @@ func CreateTables(db *gorm.DB) {
 }
 func main() {
 	// Gorm Database Connection
-	gormDB, err = gorm.Open("postgres", "user=postgres dbname=ijobs_gorm_db_2 password=postgres sslmode=disable")
+	gormDB, err = gorm.Open("postgres", "user=postgres dbname=ijobs_gorm_db_2 password=akuadane sslmode=disable")
 	if errs != nil {
 		fmt.Println(err)
 		return
@@ -70,7 +70,7 @@ func main() {
 	// Create Gorm Tables
 	// Run Once
 
-	gormDB.Set("gorm:insert_option", "ON DUPLICATE KEY UPDATE")
+	//gormDB.Set("gorm:insert_option", "ON DUPLICATE KEY UPDATE")
 	//gormDB.AutoMigrate(&entity.Session{}, &entity.Address{}, &entity.Application{}, &entity.Category{}, &entity.Job{}, &entity.Company{}, &entity.Jobseeker{}, &entity.Role{})
 	CreateTables(gormDB)
 	// Data Repositories
@@ -151,7 +151,7 @@ func main() {
 	router.DELETE("/api/jobseekers/:id", apiJobSkHandler.DeleteJobseeker)
 
 	// Static file registration
-	router.ServeFiles("/assets/*filepath", http.Dir("ui/asset"))
+	router.ServeFiles("/assets/*filepath", http.Dir("../../ui/asset"))
 	// Start Serving
 	err := http.ListenAndServe(":8181", router)
 	if err != nil {
