@@ -134,12 +134,15 @@ func (jss *JobseekerGormRepositoryIMpl) SetAddress(jsid, addid int) error {
 func (jss *JobseekerGormRepositoryIMpl) JobseekerByEmail(email string) (entity.Jobseeker, error) {
 	var jobseeker entity.Jobseeker
 	var addresses []entity.Address
+	var categories []entity.Category
 	errs := jss.conn.Where("email = ?", email).First(&jobseeker).GetErrors()
 	if len(errs) > 0 {
 		return jobseeker, errs[0]
 	}
 	_ = jss.conn.Model(&jobseeker).Related(&addresses, "Address").GetErrors()
+	_ = jss.conn.Model(&jobseeker).Related(&categories, "Categories").GetErrors()
 	jobseeker.Address = addresses
+	jobseeker.Categories = categories
 	return jobseeker, nil
 }
 func (jss *JobseekerGormRepositoryIMpl) JobseekerByUsername(uname string) (entity.Jobseeker, error) {

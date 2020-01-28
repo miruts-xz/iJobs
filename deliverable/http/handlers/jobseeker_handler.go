@@ -362,6 +362,8 @@ func (jsh *JobseekerHandler) ProfileEdit(w http.ResponseWriter, r *http.Request)
 			ctg, _ := jsh.ctgSrv.Category(catidint)
 			categories = append(categories, ctg)
 		}
+		//C:\Users\miruts\go\src\github.com\miruts\iJobs\deliverable\http
+
 		var password = ""
 		if r.FormValue("newpswd") != "" {
 			profileinfo.Inputs.MinLength("newpswd", 8)
@@ -408,11 +410,15 @@ func (jsh *JobseekerHandler) ProfileEdit(w http.ResponseWriter, r *http.Request)
 		propic, fh, err := r.FormFile("propic")
 		if err == nil {
 			path, err := os.Getwd()
+			fmt.Println(path)
+			path = path[:len(path)-16]
+			fmt.Println(path)
 			if err != nil {
 				fmt.Printf("Error: %v", err)
 				return
 			}
 			path = filepath.Join(path, "ui", "asset", "jsdata", js.Username, "pp")
+			fmt.Println(path)
 			err = os.MkdirAll(path, 0644)
 			if err != nil {
 				fmt.Printf("Error: %v", err)
@@ -432,8 +438,11 @@ func (jsh *JobseekerHandler) ProfileEdit(w http.ResponseWriter, r *http.Request)
 		if err == nil {
 			path, err := os.Getwd()
 			fmt.Println(path)
+			path = path[:len(path)-16]
+			fmt.Println(path)
 			path = filepath.Join(path, "ui", "asset", "jsdata", js.Username, "cv")
 			err = os.MkdirAll(path, 0644)
+			fmt.Println(path)
 			if err != nil {
 				fmt.Printf("Error: %v", err)
 				return

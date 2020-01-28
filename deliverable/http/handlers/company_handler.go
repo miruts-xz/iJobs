@@ -434,11 +434,11 @@ func (uh *CompanyHandler) Signup(w http.ResponseWriter, r *http.Request, ps http
 			Categories: jobCtgs,
 		}
 		// Validate the form contents
-		signUpForm.Inputs.Required("name", "phone", "pswd", "email", "confirm", "shortdesc")
-		signUpForm.Inputs.MatchesPattern("email", form.EmailRX)
-		signUpForm.Inputs.MatchesPattern("phone", form.PhoneRX)
-		signUpForm.Inputs.MinLength("password", 8)
-		signUpForm.Inputs.PasswordMatches("password", "confirmpassword")
+		signUpForm.Inputs.Required("cname", "cphone", "cpswd", "cemail", "cconfirm", "cshortdesc")
+		signUpForm.Inputs.MatchesPattern("cemail", form.EmailRX)
+		signUpForm.Inputs.MatchesPattern("cphone", form.PhoneRX)
+		signUpForm.Inputs.MinLength("cpassword", 8)
+		signUpForm.Inputs.PasswordMatches("cpswd", "cconfirm")
 		signUpForm.Inputs.CSRF = token
 
 		// If there are any errors, redisplay the signup form.
@@ -447,22 +447,22 @@ func (uh *CompanyHandler) Signup(w http.ResponseWriter, r *http.Request, ps http
 			return
 		}
 
-		uExists := uh.cmpSrv.UsernameExists(r.FormValue("username"))
+		uExists := uh.cmpSrv.UsernameExists(r.FormValue("cname"))
 		if uExists {
-			signUpForm.Inputs.VErrors.Add("name", "Name Already Exists")
+			signUpForm.Inputs.VErrors.Add("cname", "Name Already Exists")
 			uh.tmpl.ExecuteTemplate(w, "signInUp.layout", signUpForm.Inputs)
 			return
 		}
 		eExists := uh.jsSrv.EmailExists(r.FormValue("email"))
 		if eExists {
-			signUpForm.Inputs.VErrors.Add("email", "Email Already Exists")
+			signUpForm.Inputs.VErrors.Add("cemail", "Email Already Exists")
 			uh.tmpl.ExecuteTemplate(w, "signInUp.layout", signUpForm.Inputs)
 			return
 		}
 
-		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(r.FormValue("pswd")), 12)
+		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(r.FormValue("cpswd")), 12)
 		if err != nil {
-			signUpForm.Inputs.VErrors.Add("pswd", "Password Could not be stored")
+			signUpForm.Inputs.VErrors.Add("cpswd", "Password Could not be stored")
 			uh.tmpl.ExecuteTemplate(w, "signInUp.layout", signUpForm)
 			return
 		}
@@ -475,26 +475,27 @@ func (uh *CompanyHandler) Signup(w http.ResponseWriter, r *http.Request, ps http
 			return
 		}
 		addr := &entity.Address{
-			Region:    r.FormValue("region"),
-			City:      r.FormValue("city"),
-			SubCity:   r.FormValue("subcity"),
-			LocalName: r.FormValue("localname"),
+			Region:    r.FormValue("cregion"),
+			City:      r.FormValue("ccity"),
+			SubCity:   r.FormValue("csubcity"),
+			LocalName: r.FormValue("clocalname"),
 		}
 		cmp := &entity.Company{
 			Address:     []entity.Address{*addr},
-			CompanyName: r.FormValue("name"),
+			CompanyName: r.FormValue("cname"),
 			Password:    string(hashedPassword),
-			Email:       r.FormValue("email"),
-			Phone:       r.FormValue("phone"),
+			Email:       r.FormValue("cemail"),
+			Phone:       r.FormValue("cphone"),
 			Logo:        r.FormValue("logo"),
-			ShortDesc:   r.FormValue("shortDescr"),
-			DetailInfo:  r.FormValue("detailDescr"),
+			ShortDesc:   r.FormValue("cshortDescr"),
+			DetailInfo:  r.FormValue("cdetailDescr"),
 		}
 		cmp.RoleID = role.ID
 		// todo process and store user entered profile picture
 		propic, fh, err := r.FormFile("logo")
 		if err == nil {
 			path, err := os.Getwd()
+			path = path[:len(path)-16]
 			if err != nil {
 				fmt.Printf("Error: %v", err)
 				return

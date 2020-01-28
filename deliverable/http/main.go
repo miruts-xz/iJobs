@@ -61,7 +61,7 @@ func CreateTables(db *gorm.DB) {
 }
 func main() {
 	// Gorm Database Connection
-	gormDB, err = gorm.Open("postgres", "user=postgres dbname=ijobs_gorm_db_2 password=akuadane sslmode=disable")
+	gormDB, err = gorm.Open("postgres", "user=postgres dbname=ijobs_gorm_db_2 password=postgres sslmode=disable")
 	if errs != nil {
 		fmt.Println(err)
 		return
@@ -72,7 +72,7 @@ func main() {
 
 	//gormDB.Set("gorm:insert_option", "ON DUPLICATE KEY UPDATE")
 	//gormDB.AutoMigrate(&entity.Session{}, &entity.Address{}, &entity.Application{}, &entity.Category{}, &entity.Job{}, &entity.Company{}, &entity.Jobseeker{}, &entity.Role{})
-	CreateTables(gormDB)
+	//CreateTables(gormDB)
 	// Data Repositories
 	//gormDB.AutoMigrate(&entity.Session{})
 	sess := configSess()
@@ -153,7 +153,7 @@ func main() {
 	// Static file registration
 	router.ServeFiles("/assets/*filepath", http.Dir("../../ui/asset"))
 	// Start Serving
-	err := http.ListenAndServe(":8181", router)
+	err := http.ListenAndServe(":80", router)
 	if err != nil {
 		fmt.Printf("server failed: %s", err)
 	}

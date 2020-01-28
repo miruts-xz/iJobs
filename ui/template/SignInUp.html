@@ -54,9 +54,6 @@
                 <div class="form-label-group">
                      <input name="password" type="password" id="inputPassword" value="{{.Inputs.Values.Get "password"}}" class="form-control" placeholder="Password">
                 </div>
-                {{with .Inputs.VErrors.Get "email"}}
-                <label class="text-danger">{{.}}</label>
-                {{end}}
                 <button class="btn btn-lg btn-primary btn-block btn-login text-uppercase font-weight-bold mb-2" type="submit">Sign in</button>
                 
                   </form>
@@ -196,7 +193,7 @@
                                         {{with .Inputs.VErrors.Get "localname"}}
                                             <label class="text-danger">{{.}}</label>
                                         {{end}}
-                                        <input type="text" id="localname" name="localname" class="form-control" placeholder="Local Name *" value="" />
+                                        <input type="text" id="localname" name="localname" class="form-control" placeholder="Local Name *" value="{{.Inputs.Values.Get "localname"}}" />
                                     </div>
                                     <div class="form-group">
                                         <label for="intjobcat">Interested Categories</label>
@@ -212,12 +209,12 @@
                                         {{with .Inputs.VErrors.Get "wrkexp"}}
                                             <label class="text-danger">{{.}}</label>
                                         {{end}}
-                                        <input type="text" name="wrkexp" class="form-control" placeholder="Work experience *" value="" />
+                                        <input type="text" name="wrkexp" class="form-control" placeholder="Work experience *" value="{{.Inputs.Values.Get "wrkexp"}}" />
                                     </div><div class="form-group">
                                         {{with .Inputs.VErrors.Get "age"}}
                                             <label class="text-danger">{{.}}</label>
                                         {{end}}
-                                        <input type="number" name="age" class="form-control" placeholder="Age *" value="" />
+                                        <input type="number" name="age" class="form-control" placeholder="Age *" value="{{.Inputs.Values.Get "age"}}" />
                                     </div>
                                     <div class="form-group">
                                         <label for="empstatus">Employment Status</label>
@@ -249,34 +246,34 @@
                                 <div class="col-md-6">
 
                                     <div class="form-group">
-                                        {{with .Inputs.VErrors.Get "name"}}
+                                        {{with .Inputs.VErrors.Get "cname"}}
                                             <label class="text-danger">{{.}}</label>
                                         {{end}}
-                                        <input type="text" name="name" class="form-control" placeholder="Name *" value="" required/>
+                                        <input type="text" name="cname" class="form-control" placeholder="Name *" value="{{.Inputs.Values.Get "cname"}}" required/>
                                     </div>
                                     <div class="form-group">
-                                        {{with .Inputs.VErrors.Get "email"}}
+                                        {{with .Inputs.VErrors.Get "cemail"}}
                                             <label class="text-danger">{{.}}</label>
                                         {{end}}
-                                        <input type="email" name="email" class="form-control" placeholder="Your Email *" value="" required/>
+                                        <input type="email" name="cemail" class="form-control" placeholder="Your Email *" value="{{.Inputs.Values.Get "cemail"}}" required/>
                                     </div>
                                     <div class="form-group">
-                                        {{with .Inputs.VErrors.Get "phone"}}
+                                        {{with .Inputs.VErrors.Get "cphone"}}
                                             <label class="text-danger">{{.}}</label>
                                         {{end}}
-                                        <input type="text" name="phone" minlength="10" maxlength="10" name="txtEmpPhone" class="form-control" placeholder="Your Phone *" value="" />
+                                        <input type="text" name="cphone" minlength="10" maxlength="10" name="txtEmpPhone" class="form-control" placeholder="Your Phone *" value="{{.Inputs.Values.Get "cphone"}}" />
                                     </div>
                                     <div class="form-group">
-                                        {{with .Inputs.VErrors.Get "pswd"}}
+                                        {{with .Inputs.VErrors.Get "cpswd"}}
                                             <label class="text-danger">{{.}}</label>
                                         {{end}}
-                                        <input type="password" name="pswd" class="form-control"  placeholder="Password *" value="" required/>
+                                        <input type="password" name="cpswd" class="form-control"  placeholder="Password *" value="{{.Inputs.Values.Get "cpswd"}}" required/>
                                     </div>
                                     <div class="form-group">
-                                        {{with .Inputs.VErrors.Get "confirm"}}
+                                        {{with .Inputs.VErrors.Get "cconfirm"}}
                                             <label class="text-danger">{{.}}</label>
                                         {{end}}
-                                        <input type="password" name="confirm" class="form-control"  placeholder="Confirm Password *" value="" required/>
+                                        <input type="password" name="cconfirm" class="form-control"  placeholder="Confirm Password *" value="{{.Inputs.Values.Get "cconfirm"}}" required/>
                                     </div>
                                     <div class="form-group">
                                         {{with .Inputs.VErrors.Get "logo"}}
@@ -289,7 +286,7 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="region">Region</label>
-                                        <select class="form-control" name="region" id="region">
+                                        <select class="form-control" name="cregion" id="region">
                                             {{if .Regions}}
                                                 {{range .Regions}}
                                                     <option value="{{.}}">{{.}}</option>
@@ -300,7 +297,7 @@
                                     </div>
                                     <div class="form-group">
                                         <label for="city">City</label>
-                                        <select class="form-control" name="city" id="city">
+                                        <select class="form-control" name="ccity" id="city">
                                             {{if .Cities}}
                                                 {{range .Cities}}
                                                     <option value="{{.}}">{{.}}</option>
@@ -310,7 +307,7 @@
                                     </div>
                                     <div class="form-group">
                                         <label for="subcity">Sub City</label>
-                                        <select class="form-control" name="subcity" id="subcity">
+                                        <select class="form-control" name="csubcity" id="subcity">
                                             {{if .Subcities}}
                                                 {{range .Subcities}}
                                                     <option value="{{.}}">{{.}}</option>
@@ -320,16 +317,16 @@
 
                                     </div>
                                     <div class="form-group">
-                                        {{with .Inputs.VErrors.Get "detailinfo"}}
+                                        {{with .Inputs.VErrors.Get "cdetailinfo"}}
                                             <label class="text-danger">{{.}}</label>
                                         {{end}}
-                                        <textarea name="detailinfo"class="form-control span6"rows="5"placeholder="Detail information about company"></textarea> 
+                                        <textarea name="cdetailinfo" class="form-control span6"rows="5"placeholder="Detail information about company">{{.Inputs.Values.Get "cdetailinfo"}}</textarea>
                                     </div>
                                     <div class="form-group">
-                                        {{with .Inputs.VErrors.Get "shortdesc"}}
+                                        {{with .Inputs.VErrors.Get "cshortdesc"}}
                                             <label class="text-danger">{{.}}</label>
                                         {{end}}
-                                        <textarea name="shortdesc" class="form-control span6" rows="2" placeholder="Short description about company"></textarea> 
+                                        <textarea name="cshortdesc" class="form-control span6" rows="2" placeholder="Short description about company">{{.Inputs.Values.Get "cshortdesc"}}</textarea>
                                     </div>
                                 </div>
                                     <input type="submit" class="btnRegister"  value="Register"/>
