@@ -67,7 +67,6 @@ func (uh *CompanyHandler) Authenticated(next http.Handler) httprouter.Handle {
 			return
 		}
 		ctx := context.WithValue(r.Context(), ctxUserSessionKey, uh.userSess)
-		ctx = context.WithValue(r.Context(), "params", ps)
 		next.ServeHTTP(w, r.WithContext(ctx))
 	}
 	return fn
@@ -255,7 +254,6 @@ func (ch *CompanyHandler) CompanyJobs(writer http.ResponseWriter, request *http.
 		}
 	}
 }
-
 func AppJs(app entity.Application) (entity.Jobseeker, error) {
 	jsid := app.JobseekerID
 	jobseeker, err := jsSrvc.ApplicationJobseeker(int(jsid))
@@ -265,7 +263,6 @@ func AppJs(app entity.Application) (entity.Jobseeker, error) {
 	}
 	return jobseeker, nil
 }
-
 func AppJob(app entity.Application) (entity.Job, error) {
 	jid := app.JobID
 	job, err := jobSrvc.Job(int(jid))
@@ -275,7 +272,6 @@ func AppJob(app entity.Application) (entity.Job, error) {
 	}
 	return job, nil
 }
-
 func JobCmp(job entity.Job) (entity.Company, error) {
 	cmid := job.CompanyID
 	fmt.Println(cmid)
@@ -360,7 +356,7 @@ func (uh *CompanyHandler) Login(w http.ResponseWriter, r *http.Request, ps httpr
 			return
 		}
 		err = bcrypt.CompareHashAndPassword([]byte(usr.Password), []byte(r.FormValue("password")))
-		if err == bcrypt.ErrMismatchedHashAndPassword {
+		if err != nil {
 			signUpForm.Inputs.VErrors.Add("generic", "Your email address and/or password is wrong")
 			uh.tmpl.ExecuteTemplate(w, "signInUp.layout", signUpForm)
 			return
@@ -368,7 +364,7 @@ func (uh *CompanyHandler) Login(w http.ResponseWriter, r *http.Request, ps httpr
 
 		uh.loggedInUser = &usr
 		claims := rndtoken.Claims(usr.Email, uh.userSess.Expires)
-		sess.Create(claims, uh.userSess.Uuid, uh.userSess.SigningKey, w)
+		sess.Create(claims, uh.userSess.Uuid, int(uh.userSess.Expires), uh.userSess.SigningKey, w)
 		newSess, er := uh.sessSrv.StoreSession(uh.userSess)
 		if len(er) > 0 {
 			signUpForm.Inputs.VErrors.Add("generic", "Failed to store session")

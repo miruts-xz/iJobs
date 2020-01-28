@@ -72,7 +72,7 @@ func main() {
 
 	//gormDB.Set("gorm:insert_option", "ON DUPLICATE KEY UPDATE")
 	//gormDB.AutoMigrate(&entity.Session{}, &entity.Address{}, &entity.Application{}, &entity.Category{}, &entity.Job{}, &entity.Company{}, &entity.Jobseeker{}, &entity.Role{})
-	CreateTables(gormDB)
+	//CreateTables(gormDB)
 	// Data Repositories
 	//gormDB.AutoMigrate(&entity.Session{})
 	sess := configSess()
