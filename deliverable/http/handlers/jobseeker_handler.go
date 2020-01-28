@@ -3,12 +3,20 @@ package handlers
 import (
 	"context"
 	"fmt"
-	"github.com/betsegawlemma/web-prog-go-sample/rtoken"
+	"html/template"
+	"net/http"
+	"net/url"
+	"os"
+	"path/filepath"
+	"strconv"
+	"strings"
+
 	"github.com/julienschmidt/httprouter"
 	"github.com/miruts/iJobs/entity"
 	"github.com/miruts/iJobs/role"
 	"github.com/miruts/iJobs/security/form"
 	"github.com/miruts/iJobs/security/permission"
+	"github.com/miruts/iJobs/security/rndtoken"
 	sess "github.com/miruts/iJobs/security/session"
 	"github.com/miruts/iJobs/usecases/application"
 	"github.com/miruts/iJobs/usecases/company"
@@ -17,13 +25,6 @@ import (
 	"github.com/miruts/iJobs/usecases/session"
 	"github.com/miruts/iJobs/util"
 	"golang.org/x/crypto/bcrypt"
-	"html/template"
-	"net/http"
-	"net/url"
-	"os"
-	"path/filepath"
-	"strconv"
-	"strings"
 )
 
 // JobseekerHandler handles jobseeker related http requests
@@ -137,6 +138,7 @@ func (uh *JobseekerHandler) Authenticated(next http.Handler) httprouter.Handle {
 
 //JobseekerRegister adds a new JobSeeker
 func (jsh *JobseekerHandler) JobseekerRegister(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+
 	err := r.ParseForm()
 	err = r.ParseMultipartForm(1024)
 	if err != nil {
@@ -429,7 +431,7 @@ func (jsh *JobseekerHandler) JobseekerProfile(w http.ResponseWriter, r *http.Req
 
 //ProfileEdit display and edit JobSeekers Profile
 func (jsh *JobseekerHandler) ProfileEdit(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	token, err := rtoken.CSRFToken(jsh.csrfSignKey)
+	token, err := rndtoken.CSRFToken(jsh.csrfSignKey)
 	if err != nil {
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 		return
@@ -732,7 +734,7 @@ func (uh *JobseekerHandler) Authorized(next http.Handler) http.Handler {
 			}
 		}
 		if r.Method == http.MethodPost {
-			ok, err := rtoken.ValidCSRF(r.FormValue("_csrf"), uh.csrfSignKey)
+			ok, err := rndtoken.ValidCSRF(r.FormValue("_csrf"), uh.csrfSignKey)
 			if !ok || (err != nil) {
 				http.Error(w, http.StatusText(http.StatusUnauthorized), http.StatusUnauthorized)
 				return
@@ -744,7 +746,7 @@ func (uh *JobseekerHandler) Authorized(next http.Handler) http.Handler {
 
 // Login hanldes the GET/POST /login requests
 func (uh *JobseekerHandler) Login(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	token, err := rtoken.CSRFToken(uh.csrfSignKey)
+	token, err := rndtoken.CSRFToken(uh.csrfSignKey)
 	if err != nil {
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 	}
@@ -806,7 +808,7 @@ func (uh *JobseekerHandler) Login(w http.ResponseWriter, r *http.Request, ps htt
 			return
 		}
 		uh.loggedInUser = &usr
-		claims := rtoken.Claims(usr.Email, uh.userSess.Expires)
+		claims := rndtoken.Claims(usr.Email, uh.userSess.Expires)
 		sess.Create(claims, uh.userSess.Uuid, uh.userSess.SigningKey, w)
 		newSess, er := uh.sessSrv.StoreSession(uh.userSess)
 		if len(er) > 0 {
@@ -829,7 +831,8 @@ func (uh *JobseekerHandler) Logout(w http.ResponseWriter, r *http.Request) {
 
 // Signup hanldes the GET/POST /signup requests
 func (uh *JobseekerHandler) Signup(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	token, err := rtoken.CSRFToken(uh.csrfSignKey)
+
+	token, err := rndtoken.CSRFToken(uh.csrfSignKey)
 	if err != nil {
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 	}

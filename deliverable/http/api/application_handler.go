@@ -142,6 +142,7 @@ func (appHandler *ApplicationApiHandler) DeleteApp(w http.ResponseWriter, r *htt
 		http.Error(w, http.StatusText(404), 404)
 		return
 	}
+	w.WriteHeader(http.StatusOK)
 	_, err = w.Write(response)
 	if err != nil {
 		fmt.Println(err)
@@ -173,6 +174,7 @@ func (appHandler *ApplicationApiHandler) AddApplication(w http.ResponseWriter, r
 		http.Error(w, http.StatusText(404), 404)
 		return
 	}
+	w.WriteHeader(http.StatusCreated)
 	_, err = w.Write(response)
 	if err != nil {
 		fmt.Println(err)

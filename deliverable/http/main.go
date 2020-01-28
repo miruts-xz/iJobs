@@ -3,7 +3,9 @@ package main
 import (
 	"database/sql"
 	"fmt"
-	"github.com/betsegawlemma/web-prog-go-sample/rtoken"
+
+	"time"
+
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"github.com/julienschmidt/httprouter"
@@ -11,6 +13,7 @@ import (
 	"github.com/miruts/iJobs/entity"
 	repository2 "github.com/miruts/iJobs/role/repository"
 	service2 "github.com/miruts/iJobs/role/service"
+	"github.com/miruts/iJobs/security/rndtoken"
 	apprepo "github.com/miruts/iJobs/usecases/application/repository"
 	appsrv "github.com/miruts/iJobs/usecases/application/service"
 	cmprepo "github.com/miruts/iJobs/usecases/company/repository"
@@ -19,7 +22,6 @@ import (
 	jobsrv "github.com/miruts/iJobs/usecases/job/service"
 	jsrepo "github.com/miruts/iJobs/usecases/jobseeker/repository"
 	jssrv "github.com/miruts/iJobs/usecases/jobseeker/service"
-	"time"
 
 	apijobhandler "github.com/miruts/iJobs/deliverable/http/api"
 
@@ -61,7 +63,7 @@ func CreateTables(db *gorm.DB) {
 }
 func main() {
 	// Gorm Database Connection
-	gormDB, err = gorm.Open("postgres", "user=postgres dbname=ijobs_gorm_db_2 password=postgres sslmode=disable")
+	gormDB, err = gorm.Open("postgres", "user=postgres dbname=ijobs_gorm_db_2 password=akuadane sslmode=disable")
 	if errs != nil {
 		fmt.Println(err)
 		return
@@ -70,13 +72,13 @@ func main() {
 	// Create Gorm Tables
 	// Run Once
 
-	gormDB.Set("gorm:insert_option", "ON DUPLICATE KEY UPDATE")
+	//gormDB.Set("gorm:insert_option", "ON DUPLICATE KEY UPDATE")
 	//gormDB.AutoMigrate(&entity.Session{}, &entity.Address{}, &entity.Application{}, &entity.Category{}, &entity.Job{}, &entity.Company{}, &entity.Jobseeker{}, &entity.Role{})
 	//CreateTables(gormDB)
 	// Data Repositories
 
 	sess := configSess()
-	csrfSignKey := []byte(rtoken.GenerateRandomID(32))
+	csrfSignKey := []byte(rndtoken.GenerateRandomID(32))
 	applicationRepo := apprepo.NewAppGormRepositoryImpl(gormDB)
 	companyRepo := cmprepo.NewCompanyGormRepositoryImpl(gormDB)
 	jobRepo := jobrepo.NewJobGormRepositoryImpl(gormDB)
@@ -159,8 +161,8 @@ func main() {
 }
 func configSess() *entity.Session {
 	tokenExpires := time.Now().Add(time.Minute * 30).Unix()
-	sessionID := rtoken.GenerateRandomID(32)
-	signingString, err := rtoken.GenerateRandomString(32)
+	sessionID := rndtoken.GenerateRandomID(32)
+	signingString, err := rndtoken.GenerateRandomString(32)
 	if err != nil {
 		panic(err)
 	}

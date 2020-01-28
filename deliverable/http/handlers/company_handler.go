@@ -3,12 +3,12 @@ package handlers
 import (
 	"context"
 	"fmt"
-	"github.com/betsegawlemma/web-prog-go-sample/rtoken"
 	"github.com/julienschmidt/httprouter"
 	"github.com/miruts/iJobs/entity"
 	"github.com/miruts/iJobs/role"
 	"github.com/miruts/iJobs/security/form"
 	"github.com/miruts/iJobs/security/permission"
+	"github.com/miruts/iJobs/security/rndtoken"
 	sess "github.com/miruts/iJobs/security/session"
 	"github.com/miruts/iJobs/usecases/application"
 	"github.com/miruts/iJobs/usecases/company"
@@ -94,7 +94,7 @@ func (uh *CompanyHandler) Authorized(next http.Handler) http.Handler {
 			}
 		}
 		if r.Method == http.MethodPost {
-			ok, err := rtoken.ValidCSRF(r.FormValue("_csrf"), uh.csrfSignKey)
+			ok, err := rndtoken.ValidCSRF(r.FormValue("_csrf"), uh.csrfSignKey)
 			if !ok || (err != nil) {
 				http.Error(w, http.StatusText(http.StatusUnauthorized), http.StatusUnauthorized)
 				return
@@ -109,8 +109,8 @@ func (ch *CompanyHandler) CompanyHome(w http.ResponseWriter, r *http.Request) {
 		aid := r.URL.Query().Get("aid")
 		accept := r.URL.Query().Get("accept")
 		if aid != "" {
-			aidint, err := strconv.Atoi(aid)
-			application, err := ch.appSrv.Application(aidint)
+			//aidint, _ := strconv.Atoi(aid)
+			//application, err := ch.appSrv.Application(aidint)
 			switch accept {
 			case "true":
 
@@ -138,7 +138,7 @@ func (ch *CompanyHandler) CompanyHome(w http.ResponseWriter, r *http.Request) {
 	}
 }
 func (ch *CompanyHandler) CompanyPostJob(w http.ResponseWriter, r *http.Request) {
-	token, err := rtoken.CSRFToken(ch.csrfSignKey)
+	token, err := rndtoken.CSRFToken(ch.csrfSignKey)
 	if err != nil {
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 	}
@@ -291,7 +291,7 @@ func (uh *CompanyHandler) loggedIn(r *http.Request) bool {
 
 // Login hanldes the GET/POST /login requests
 func (uh *CompanyHandler) Login(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	token, err := rtoken.CSRFToken(uh.csrfSignKey)
+	token, err := rndtoken.CSRFToken(uh.csrfSignKey)
 	if err != nil {
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 	}
@@ -354,7 +354,7 @@ func (uh *CompanyHandler) Login(w http.ResponseWriter, r *http.Request, ps httpr
 		}
 
 		uh.loggedInUser = &usr
-		claims := rtoken.Claims(usr.Email, uh.userSess.Expires)
+		claims := rndtoken.Claims(usr.Email, uh.userSess.Expires)
 		sess.Create(claims, uh.userSess.Uuid, uh.userSess.SigningKey, w)
 		newSess, er := uh.sessSrv.StoreSession(uh.userSess)
 		if len(er) > 0 {
@@ -377,7 +377,7 @@ func (uh *CompanyHandler) Logout(w http.ResponseWriter, r *http.Request) {
 
 // Signup hanldes the GET/POST /signup requests
 func (uh *CompanyHandler) Signup(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	token, err := rtoken.CSRFToken(uh.csrfSignKey)
+	token, err := rndtoken.CSRFToken(uh.csrfSignKey)
 	if err != nil {
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 	}
