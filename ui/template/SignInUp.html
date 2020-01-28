@@ -86,43 +86,43 @@
                                             {{with .Inputs.VErrors.Get "fname"}}
                                                 <label class="text-danger">{{.}}</label>
                                             {{end}}
-                                            <input type="text" name="fname" class="form-control" placeholder="First Name *" value="" />
+                                            <input type="text" name="fname" class="form-control" placeholder="First Name *" value="{{.Inputs.Values.Get "fname"}}" />
                                         </div>
                                         <div class="form-group">
                                             {{with .Inputs.VErrors.Get "lname"}}
                                                 <label class="text-danger">{{.}}</label>
                                             {{end}}
-                                            <input type="text" name="lname" class="form-control" placeholder="Last Name *" value="" />
+                                            <input type="text" name="lname" class="form-control" placeholder="Last Name *" value="{{.Inputs.Values.Get "fname"}}" />
                                         </div>
                                         <div class="form-group">
                                             {{with .Inputs.VErrors.Get "uname"}}
                                                 <label class="text-danger">{{.}}</label>
                                             {{end}}
-                                            <input type="text" name="uname" class="form-control" placeholder="Username *" value="" required/>
+                                            <input type="text" name="uname" class="form-control" placeholder="Username *" value="{{.Inputs.Values.Get "uname"}}" required/>
                                         </div>
                                         <div class="form-group">
                                             {{with .Inputs.VErrors.Get "email"}}
                                                 <label class="text-danger">{{.}}</label>
                                             {{end}}
-                                            <input type="email" name="email" class="form-control" placeholder="Your Email *" value="" required/>
+                                            <input type="email" name="email" class="form-control" placeholder="Your Email *" value="{{.Inputs.Values.Get "email"}}" required/>
                                         </div>
                                         <div class="form-group">
                                             {{with .Inputs.VErrors.Get "pswd"}}
                                                 <label class="text-danger">{{.}}</label>
                                             {{end}}
-                                            <input type="password"  name="pswd" class="form-control"  placeholder="Password *" value="" />
+                                            <input type="password"  name="pswd" class="form-control"  placeholder="Password *" value="{{.Inputs.Values.Get "pswd"}}" />
                                         </div>
                                         <div class="form-group">
                                             {{with .Inputs.VErrors.Get "pswdconfirm"}}
                                                 <label class="text-danger">{{.}}</label>
                                             {{end}}
-                                            <input type="password" name="pswdconfirm" class="form-control"  placeholder="Confirm Password *" value="" />
+                                            <input type="password" name="pswdconfirm" class="form-control"  placeholder="Confirm Password *" value="{{.Inputs.Values.Get "pswdconfirm"}}" />
                                         </div>
                                         <div class="form-group">
                                             {{with .Inputs.VErrors.Get "phone"}}
                                                 <label class="text-danger">{{.}}</label>
                                             {{end}}
-                                            <input type="text" name="phone" minlength="10" maxlength="10" class="form-control" placeholder="Your Phone *" value="" />
+                                            <input type="text" name="phone" minlength="10" maxlength="10" class="form-control" placeholder="Your Phone *" value="{{.Inputs.Values.Get "phone"}}" />
                                         </div>
                                         <div class="form-group">
                                             <script>

@@ -12,4 +12,5 @@ type IAppService interface {
 	ApplicationsOnJob(jobId int) ([]entity.Application, error)
 	DeleteApplication(id int) (entity.Application, error)
 	ApplicationForCompany(cmid int) ([]entity.Application, error)
+	UpdateApplication(e *entity.Application) (*entity.Application, error)
 }

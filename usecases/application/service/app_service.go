@@ -2,20 +2,20 @@ package service
 
 import (
 	"github.com/miruts/iJobs/entity"
-	"github.com/miruts/iJobs/usecases/application/repository"
+	"github.com/miruts/iJobs/usecases/application"
 	"github.com/miruts/iJobs/usecases/company"
 	"github.com/miruts/iJobs/usecases/job"
 	"github.com/miruts/iJobs/usecases/jobseeker"
 )
 
 type AppService struct {
-	appRepo *repository.AppGormRepositoryImpl
+	appRepo application.IAppRepository
 	jsSrv   jobseeker.JobseekerService
 	jobSrv  job.JobService
 	cmpSrv  company.CompanyService
 }
 
-func NewAppService(appRepo *repository.AppGormRepositoryImpl, jsSrv jobseeker.JobseekerService, jobSrv job.JobService, cmpSrv company.CompanyService) *AppService {
+func NewAppService(appRepo application.IAppRepository, jsSrv jobseeker.JobseekerService, jobSrv job.JobService, cmpSrv company.CompanyService) *AppService {
 	return &AppService{appRepo: appRepo, jsSrv: jsSrv, jobSrv: jobSrv, cmpSrv: cmpSrv}
 }
 
@@ -47,4 +47,7 @@ func (appService *AppService) DeleteApplication(id int) (entity.Application, err
 // ApplicationForCompany retrieves all job-applications for a given company
 func (appService *AppService) ApplicationForCompany(cmid int) ([]entity.Application, error) {
 	return appService.appRepo.ApplicationForCompany(cmid)
+}
+func (appService *AppService) UpdateApplication(e *entity.Application) (*entity.Application, error) {
+	return appService.appRepo.UpdateApplication(e)
 }

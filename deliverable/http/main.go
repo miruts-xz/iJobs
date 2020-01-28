@@ -3,9 +3,6 @@ package main
 import (
 	"database/sql"
 	"fmt"
-
-	"time"
-
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"github.com/julienschmidt/httprouter"
@@ -22,6 +19,7 @@ import (
 	jobsrv "github.com/miruts/iJobs/usecases/job/service"
 	jsrepo "github.com/miruts/iJobs/usecases/jobseeker/repository"
 	jssrv "github.com/miruts/iJobs/usecases/jobseeker/service"
+	"time"
 
 	apijobhandler "github.com/miruts/iJobs/deliverable/http/api"
 
@@ -74,9 +72,9 @@ func main() {
 
 	//gormDB.Set("gorm:insert_option", "ON DUPLICATE KEY UPDATE")
 	//gormDB.AutoMigrate(&entity.Session{}, &entity.Address{}, &entity.Application{}, &entity.Category{}, &entity.Job{}, &entity.Company{}, &entity.Jobseeker{}, &entity.Role{})
-	//CreateTables(gormDB)
+	CreateTables(gormDB)
 	// Data Repositories
-
+	//gormDB.AutoMigrate(&entity.Session{})
 	sess := configSess()
 	csrfSignKey := []byte(rndtoken.GenerateRandomID(32))
 	applicationRepo := apprepo.NewAppGormRepositoryImpl(gormDB)
@@ -100,7 +98,7 @@ func main() {
 	roleSrv := service2.NewRoleService(roleRepo)
 	// Handlers
 	welcomeHandler := handlers.NewWelcomeHandler(tmpl, sessionSrv, jobseekerSrv, companySrv)
-	jobseekerHandler := handlers.NewJobseekerHandler(tmpl, jobseekerSrv, categorySrv, addressSrv, applicationSrv, sessionSrv, sess, roleSrv, csrfSignKey)
+	jh := handlers.NewJobseekerHandler(companySrv, jobSrv, tmpl, jobseekerSrv, categorySrv, addressSrv, applicationSrv, sessionSrv, sess, roleSrv, csrfSignKey)
 	ch := handlers.NewCompanyHandler(tmpl, jobseekerSrv, companySrv, categorySrv, addressSrv, applicationSrv, sessionSrv, jobSrv, sess, roleSrv, csrfSignKey)
 
 	//go util.ClearExpiredSessions(sessionSrv)
@@ -115,11 +113,13 @@ func main() {
 
 	// Welcome SignIn/Up path registration
 	router.GET("/", welcomeHandler.Welcome)
-	router.GET("/login", jobseekerHandler.Signup)
-	router.POST("/login/jobseeker", jobseekerHandler.Login)
+	router.GET("/login", jh.Signup)
+	router.POST("/login/jobseeker", jh.Login)
 	router.POST("/login/company", ch.Login)
-	router.POST("/signup/jobseeker", jobseekerHandler.Signup)
+	router.POST("/signup/jobseeker", jh.Signup)
 	router.POST("/signup/company", ch.Signup)
+	router.GET("/logout/company", ch.Authenticated(http.HandlerFunc(ch.Logout)))
+	router.GET("/logout/jobseeker", jh.Authenticated(http.HandlerFunc(jh.Logout)))
 
 	router.GET("/company/:username/postjob", ch.Authenticated(ch.Authorized(http.HandlerFunc(ch.CompanyPostJob))))
 	router.POST("/company/:username/postjob", ch.Authenticated(ch.Authorized(http.HandlerFunc(ch.CompanyPostJob))))
@@ -127,13 +127,12 @@ func main() {
 	router.GET("/company/:username/home", ch.Authenticated(ch.Authorized(http.HandlerFunc(ch.CompanyHome))))
 
 	// Jobseeker path registration
-	router.GET("/jobseeker/:username/home", jobseekerHandler.Authenticated(jobseekerHandler.Authorized(http.HandlerFunc(jobseekerHandler.JobseekerHome))))
-	router.GET("/jobseeker/:username/apply/:id", jobseekerHandler.JobseekerApply)
-	router.GET("/jobseeker/:username/profile", jobseekerHandler.JobseekerProfile)
-	router.GET("/jobseeker/:username/profile/edit", jobseekerHandler.ProfileEdit)
-	router.POST("/jobseeker/:username/profile/edit", jobseekerHandler.ProfileEdit)
-	router.GET("/jobseeker/:username/appliedjobs", jobseekerHandler.JobseekerAppliedJobs)
-	router.GET("/jobseeker/:username/appliedjobs/:id", jobseekerHandler.JobseekerAppliedJobs)
+	router.GET("/jobseeker/:username/home", jh.Authenticated(jh.Authorized(http.HandlerFunc(jh.JobseekerHome))))
+	router.GET("/jobseeker/:username/apply", jh.Authenticated(jh.Authorized(http.HandlerFunc(jh.JobseekerApply))))
+	router.GET("/jobseeker/:username/profile", jh.Authenticated(jh.Authorized(http.HandlerFunc(jh.JobseekerProfile))))
+	router.GET("/jobseeker/:username/profile/edit", jh.Authenticated(jh.Authorized(http.HandlerFunc(jh.ProfileEdit))))
+	router.POST("/jobseeker/:username/profile/edit", jh.Authenticated(jh.Authorized(http.HandlerFunc(jh.ProfileEdit))))
+	router.GET("/jobseeker/:username/appliedjobs", jh.Authenticated(jh.Authorized(http.HandlerFunc(jh.JobseekerAppliedJobs))))
 
 	//REST Api registration
 	//Job Api Handlers

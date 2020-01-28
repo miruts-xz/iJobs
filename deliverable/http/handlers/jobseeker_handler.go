@@ -42,6 +42,8 @@ type JobseekerHandler struct {
 	addrSrv jobseeker.AddressService
 	appSrv  application.IAppService
 	sessSrv session.SessionService
+	jobSrv  job.JobService
+	cmpSrv  company.CompanyService
 
 	userSess     *entity.Session
 	loggedInUser *entity.Jobseeker
@@ -52,8 +54,13 @@ type contextKey string
 
 var ctxUserSessionKey = contextKey("signed_in_user_session")
 
-func NewJobseekerHandler(tmpl *template.Template, jsSrv jobseeker.JobseekerService, ctgSrv job.CategoryService, addrSrv jobseeker.AddressService, appSrv application.IAppService, sessSrv session.SessionService, userSess *entity.Session, userRole role.RoleService, csrfSignKey []byte) *JobseekerHandler {
-	return &JobseekerHandler{tmpl: tmpl, jsSrv: jsSrv, ctgSrv: ctgSrv, addrSrv: addrSrv, appSrv: appSrv, sessSrv: sessSrv, userSess: userSess, userRole: userRole, csrfSignKey: csrfSignKey}
+func NewJobseekerHandler(cmpSrv company.CompanyService, jobSrv job.JobService, tmpl *template.Template, jsSrv jobseeker.JobseekerService, ctgSrv job.CategoryService, addrSrv jobseeker.AddressService, appSrvcc application.IAppService, sessSrv session.SessionService, userSess *entity.Session, userRole role.RoleService, csrfSignKey []byte) *JobseekerHandler {
+	jsSrvc = jsSrv
+	ctgSrvc = ctgSrv
+	appSrvc = appSrvcc
+	jobSrvc = jobSrv
+	cmpSrvc = cmpSrv
+	return &JobseekerHandler{jobSrv: jobSrv, tmpl: tmpl, jsSrv: jsSrv, ctgSrv: ctgSrv, addrSrv: addrSrv, appSrv: appSrvcc, sessSrv: sessSrv, userSess: userSess, userRole: userRole, csrfSignKey: csrfSignKey}
 }
 
 type RegisterNeed struct {
@@ -129,7 +136,6 @@ func (uh *JobseekerHandler) Authenticated(next http.Handler) httprouter.Handle {
 			return
 		}
 		ctx := context.WithValue(r.Context(), ctxUserSessionKey, uh.userSess)
-		ctx = context.WithValue(r.Context(), "params", ps)
 		//call next middleware with new context
 		next.ServeHTTP(w, r.WithContext(ctx))
 	}
@@ -331,38 +337,46 @@ func (jsh *JobseekerHandler) JobseekerApply(w http.ResponseWriter, r *http.Reque
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 		return
 	}
-	jobid := ps.ByName("id")
-
+	jobid := r.URL.Query().Get("jobid")
 	jobidint, err := strconv.Atoi(jobid)
-	job, err := jobSrvc.Job(jobidint)
+	job, err := jsh.jobSrv.Job(jobidint)
 
 	applyform := form.Input{Values: r.PostForm, VErrors: form.ValidationErrors{}}
 
 	alreadyApplied := jsh.jsSrv.AlreadyApplied(jsh.loggedInUser.ID, job.ID)
 	if alreadyApplied {
 		applyform.VErrors.Add("generic", "Already Applied")
-		jsh.tmpl.ExecuteTemplate(w, "jobseeker.appliedjobs.layout", alreadyApplied)
+		jsh.tmpl.ExecuteTemplate(w, "jobseeker.appliedjobs.layout", applyform)
 		return
 	}
 	appl := entity.Application{Status: "Unreviewed", JobID: job.ID, JobseekerID: jsh.loggedInUser.ID}
 	app, err := jsh.appSrv.Store(&appl)
-	jsh.loggedInUser.Applications = []entity.Application{*app}
-	job.Applications = []entity.Application{*app}
-
-	jsh.loggedInUser, err = jsSrvc.UpdateJobSeeker(jsh.loggedInUser)
-	_, err = jobSrvc.UpdateJob(&job)
+	jsh.loggedInUser.Applications = append(jsh.loggedInUser.Applications, *app)
 	if err != nil {
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 	}
 	http.Redirect(w, r, "/jobseeker/"+jsh.loggedInUser.Username+"/appliedjobs", http.StatusSeeOther)
 	return
 }
+func contains(apps []entity.Application, job entity.Job) bool {
+	for _, a := range apps {
+		if a.JobID == job.ID {
+			return true
+		}
+	}
+	return false
+}
 func (jsh *JobseekerHandler) JobseekerHome(w http.ResponseWriter, r *http.Request) {
-	_ = r.Context().Value("params").(httprouter.Params)
 	if r.Method == "GET" {
 		Ctgs, _ := jsh.ctgSrv.Categories()
 		Apps, _ := jsh.appSrv.UserApplication(int(jsh.loggedInUser.ID))
 		Suggs, _ := jsh.jsSrv.Suggestions(int(jsh.loggedInUser.ID))
+		var sugges []entity.Job
+		for _, s := range Suggs {
+			if !contains(Apps, s) {
+				sugges = append(sugges, s)
+			}
+		}
 		jobseekerhomeinfo := struct {
 			Categories   []entity.Category
 			Applications []entity.Application
@@ -372,19 +386,22 @@ func (jsh *JobseekerHandler) JobseekerHome(w http.ResponseWriter, r *http.Reques
 			Categories:   Ctgs,
 			Applications: Apps,
 
-			Suggestions: Suggs,
+			Suggestions: sugges,
 			Jobseeker:   *jsh.loggedInUser,
 		}
 		err := jsh.tmpl.ExecuteTemplate(w, "jobseeker.layout", jobseekerhomeinfo)
 		if err != nil {
+			w.Header().Set("Status", http.StatusText(http.StatusInternalServerError))
 			http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 			return
+		} else {
+			w.Header().Set("Status", http.StatusText(http.StatusOK))
 		}
 	}
 }
 
 //JobseekerAppliedJobs displays Job ith specified ID or AllJobs Posted in the Category
-func (jsh *JobseekerHandler) JobseekerAppliedJobs(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+func (jsh *JobseekerHandler) JobseekerAppliedJobs(w http.ResponseWriter, r *http.Request) {
 	Appls, _ := jsh.appSrv.UserApplication(int(jsh.loggedInUser.ID))
 	Ctgs, _ := jsh.ctgSrv.Categories()
 
@@ -400,15 +417,15 @@ func (jsh *JobseekerHandler) JobseekerAppliedJobs(w http.ResponseWriter, r *http
 
 	err := jsh.tmpl.ExecuteTemplate(w, "jobseeker.appliedJobs.layout", appliedjobsinfo)
 	if err != nil {
+		fmt.Println(err)
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 		return
 	}
 }
 
 //JobseekerProfile display the JobSeeker profile page
-func (jsh *JobseekerHandler) JobseekerProfile(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+func (jsh *JobseekerHandler) JobseekerProfile(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "GET" {
-
 		Ctgs, err := jsh.ctgSrv.Categories()
 		if err != nil {
 			return
@@ -436,41 +453,42 @@ func (jsh *JobseekerHandler) ProfileEdit(w http.ResponseWriter, r *http.Request,
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 		return
 	}
-	if r.Method == "GET" {
+	jobCtgs, err := jsh.ctgSrv.Categories()
+	Regions := []string{entity.Tigray, entity.Amhara, entity.Sidama, entity.Afar, entity.Somalia, entity.Gambella, entity.Harare, entity.Snnpr, entity.Oromia, entity.Benshangul}
+	Cities := []string{entity.Addis, entity.Mekele, entity.Hawassa, entity.Adamma, entity.Gonder}
+	SubCities := []string{entity.Gulele, entity.Arada, entity.Yeka, entity.Bole, entity.Cherkos, entity.AddisKetema}
+	names := strings.Split(jsh.loggedInUser.Fullname, " ")
+	FName := names[0]
+	var LName string
+	if len(names) > 1 {
+		LName = names[1]
+	}
+	profileinfo := struct {
+		Inputs form.Input
 
-		jobCtgs, err := jsh.ctgSrv.Categories()
-		Regions := []string{entity.Tigray, entity.Amhara, entity.Sidama, entity.Afar, entity.Somalia, entity.Gambella, entity.Harare, entity.Snnpr, entity.Oromia, entity.Benshangul}
-		Cities := []string{entity.Addis, entity.Mekele, entity.Hawassa, entity.Adamma, entity.Gonder}
-		SubCities := []string{entity.Gulele, entity.Arada, entity.Yeka, entity.Bole, entity.Cherkos, entity.AddisKetema}
-		names := strings.Split(jsh.loggedInUser.Fullname, " ")
-		FName := names[0]
-		LName := names[1]
+		Jobseeker  entity.Jobseeker
+		FName      string
+		LName      string
+		Regions    []string
+		Categories []entity.Category
+		SubCities  []string
+		Cities     []string
+	}{
 
-		profileinfo := struct {
+		Inputs: struct {
 			Values  url.Values
 			VErrors form.ValidationErrors
 			CSRF    string
-
-			Jobseeker  entity.Jobseeker
-			FName      string
-			LName      string
-			Regions    []string
-			Categories []entity.Category
-			SubCities  []string
-			Cities     []string
-		}{
-			Values:  nil,
-			VErrors: nil,
-			CSRF:    token,
-
-			Jobseeker:  *jsh.loggedInUser,
-			FName:      FName,
-			LName:      LName,
-			Regions:    Regions,
-			Categories: jobCtgs,
-			SubCities:  SubCities,
-			Cities:     Cities,
-		}
+		}{Values: r.PostForm, VErrors: form.ValidationErrors{}, CSRF: token},
+		Jobseeker:  *jsh.loggedInUser,
+		FName:      FName,
+		LName:      LName,
+		Regions:    Regions,
+		Categories: jobCtgs,
+		SubCities:  SubCities,
+		Cities:     Cities,
+	}
+	if r.Method == "GET" {
 		err = jsh.tmpl.ExecuteTemplate(w, "jobseeker.profile.edit.layout", profileinfo)
 		if err != nil {
 			fmt.Println(err)
@@ -484,46 +502,40 @@ func (jsh *JobseekerHandler) ProfileEdit(w http.ResponseWriter, r *http.Request,
 			http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 			return
 		}
+		profileinfo.Inputs.Required("fname", "lname", "wrkexpr", "email", "uname", "age", "empstatus", "localname")
+		profileinfo.Inputs.MatchesPattern("email", form.EmailRX)
+		profileinfo.Inputs.MatchesPattern("phone", form.PhoneRX)
 
-		updateprofileform := form.Input{Values: r.PostForm, VErrors: form.ValidationErrors{}}
-		updateprofileform.Required("fname", "lname", "email", "pswd", "cnfrmpassword", "cv", "username", "empstatus", "localname")
-		updateprofileform.MatchesPattern("email", form.EmailRX)
-		updateprofileform.MatchesPattern("phone", form.PhoneRX)
-		updateprofileform.MinLength("password", 8)
-		updateprofileform.PasswordMatches("password", "confirmpassword")
-		updateprofileform.CSRF = token
+		profileinfo.Inputs.CSRF = token
 
 		// If there are any errors, redisplay the signup form.
-		if !updateprofileform.Valid() {
-			jsh.tmpl.ExecuteTemplate(w, "signInUp.layout", updateprofileform)
+		if !profileinfo.Inputs.Valid() {
+			jsh.tmpl.ExecuteTemplate(w, "jobseeker.profile.edit.layout", profileinfo)
 			return
 		}
 
-		uExists := jsh.jsSrv.UsernameExists(r.FormValue("phone"))
-		if uExists {
-			updateprofileform.VErrors.Add("phone", "Username Already Exists")
-			jsh.tmpl.ExecuteTemplate(w, "signInUp.layout", updateprofileform)
-			return
+		if jsh.loggedInUser.Username != r.FormValue("uname") {
+			uExists := jsh.jsSrv.UsernameExists(r.FormValue("uname"))
+			if uExists {
+				profileinfo.Inputs.VErrors.Add("uname", "Username Already Exists")
+				jsh.tmpl.ExecuteTemplate(w, "jobseeker.profile.edit.layout", profileinfo)
+				return
+			}
 		}
-		eExists := jsh.jsSrv.EmailExists(r.FormValue("email"))
-		if eExists {
-			updateprofileform.VErrors.Add("email", "Email Already Exists")
-			jsh.tmpl.ExecuteTemplate(w, "signInUp.layout", updateprofileform)
-			return
-		}
-
-		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(r.FormValue("pswd")), 12)
-		if err != nil {
-			updateprofileform.VErrors.Add("password", "Password Could not be stored")
-			jsh.tmpl.ExecuteTemplate(w, "signInUp.layout", updateprofileform)
-			return
+		if jsh.loggedInUser.Email != r.FormValue("email") {
+			eExists := jsh.jsSrv.EmailExists(r.FormValue("email"))
+			if eExists {
+				profileinfo.Inputs.VErrors.Add("email", "Email Already Exists")
+				jsh.tmpl.ExecuteTemplate(w, "jobseeker.profile.edit.layout", profileinfo)
+				return
+			}
 		}
 
 		role, errs := jsh.userRole.RoleByName("JOBSEEKER")
 
 		if len(errs) > 0 {
-			updateprofileform.VErrors.Add("role", "could not assign role to the user")
-			jsh.tmpl.ExecuteTemplate(w, "signInUp.layout", updateprofileform)
+			profileinfo.Inputs.VErrors.Add("role", "could not assign role to the user")
+			jsh.tmpl.ExecuteTemplate(w, "jobseeker.profile.edit.layout", profileinfo)
 			return
 		}
 		addr := &entity.Address{
@@ -540,8 +552,26 @@ func (jsh *JobseekerHandler) ProfileEdit(w http.ResponseWriter, r *http.Request,
 			ctg, _ := jsh.ctgSrv.Category(catidint)
 			categories = append(categories, ctg)
 		}
+		var password = ""
+		if r.FormValue("newpswd") != "" {
+			profileinfo.Inputs.MinLength("newpswd", 8)
+			profileinfo.Inputs.PasswordMatches("newpswd", "pswdconfirm")
+			err = bcrypt.CompareHashAndPassword([]byte(jsh.loggedInUser.Password), []byte(r.FormValue("currpswd")))
+			if err != nil {
+				profileinfo.Inputs.VErrors.Add("currpswd", "Password incorrect")
+				jsh.tmpl.ExecuteTemplate(w, "jobseeker.profile.edit.layout", profileinfo)
+				return
+			}
+			hashedPassword, err := bcrypt.GenerateFromPassword([]byte(r.FormValue("newpswd")), 12)
+			if err != nil {
+				profileinfo.Inputs.VErrors.Add("newpswd", "Password Could not be stored")
+				jsh.tmpl.ExecuteTemplate(w, "jobseeker.profile.edit.layout", profileinfo)
+				return
+			}
+			password = string(hashedPassword)
+		}
 		ageint, err := strconv.Atoi(r.FormValue("age"))
-		wrkint, err := strconv.Atoi(r.FormValue("wrkexp"))
+		wrkint, err := strconv.Atoi(r.FormValue("wrkexpr"))
 
 		js := &entity.Jobseeker{
 			Address:        []entity.Address{*addr},
@@ -550,9 +580,8 @@ func (jsh *JobseekerHandler) ProfileEdit(w http.ResponseWriter, r *http.Request,
 			Age:            uint(ageint),
 			Phone:          r.FormValue("phone"),
 			WorkExperience: wrkint,
-			Username:       r.FormValue("username"),
-			Fullname:       r.FormValue("fname") + r.FormValue("lname"),
-			Password:       string(hashedPassword),
+			Username:       r.FormValue("uname"),
+			Fullname:       r.FormValue("fname") + " " + r.FormValue("lname"),
 			Email:          r.FormValue("email"),
 			Portfolio:      r.FormValue("portf"),
 			Gender:         r.FormValue("gender"),
@@ -560,7 +589,11 @@ func (jsh *JobseekerHandler) ProfileEdit(w http.ResponseWriter, r *http.Request,
 		}
 		js.ID = jsh.loggedInUser.ID
 		js.RoleID = role.ID
-
+		if password == "" {
+			js.Password = jsh.loggedInUser.Password
+		} else {
+			js.Password = password
+		}
 		// todo process and store user entered profile picture
 		propic, fh, err := r.FormFile("propic")
 		if err == nil {
@@ -604,7 +637,7 @@ func (jsh *JobseekerHandler) ProfileEdit(w http.ResponseWriter, r *http.Request,
 		} else {
 			js.CV = jsh.loggedInUser.CV
 		}
-		jsh.loggedInUser, err = jsh.jsSrv.StoreJobSeeker(js)
+		jsh.loggedInUser, err = jsh.jsSrv.UpdateJobSeeker(js)
 		if err != nil {
 			http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 			return
@@ -644,19 +677,20 @@ func AppGetJob(app entity.Application) (entity.Job, error) {
 }
 func AppGetCmp(app entity.Application) (entity.Company, error) {
 	jb, err := jobSrvc.Job(int(app.JobID))
-	fmt.Println(app.JobID)
 	var cmp entity.Company
-	fmt.Println("AppGetCmp")
-	fmt.Println(jb.CompanyID)
-	if err != nil {
-		return cmp, err
-	}
-
-	cmp, err = cmpSrvc.Company(int(jb.CompanyID))
-	if err != nil {
-		return cmp, err
+	if err == nil {
+		fmt.Println(jb.CompanyID)
+		if err != nil {
+			return cmp, err
+		}
+		cmp, err = cmpSrvc.Company(int(jb.CompanyID))
+		if err != nil {
+			return cmp, err
+		}
+		return cmp, nil
 	}
 	return cmp, nil
+
 }
 func AppGetLocation(app entity.Application) (entity.Address, error) {
 	var addr entity.Address
@@ -802,7 +836,7 @@ func (uh *JobseekerHandler) Login(w http.ResponseWriter, r *http.Request, ps htt
 			return
 		}
 		err = bcrypt.CompareHashAndPassword([]byte(usr.Password), []byte(r.FormValue("password")))
-		if err == bcrypt.ErrMismatchedHashAndPassword {
+		if err != nil {
 			signUpForm.Inputs.VErrors.Add("generic", "Your email address or password is wrong")
 			uh.tmpl.ExecuteTemplate(w, "signInUp.layout", signUpForm)
 			return
@@ -955,7 +989,7 @@ func (uh *JobseekerHandler) Signup(w http.ResponseWriter, r *http.Request, ps ht
 			Phone:          r.FormValue("phone"),
 			WorkExperience: wrkint,
 			Username:       r.FormValue("uname"),
-			Fullname:       r.FormValue("fname") + r.FormValue("lname"),
+			Fullname:       r.FormValue("fname") + " " + r.FormValue("lname"),
 			Password:       string(hashedPassword),
 			Email:          r.FormValue("email"),
 			Profile:        r.FormValue("propic"),

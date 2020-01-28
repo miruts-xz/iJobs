@@ -101,3 +101,11 @@ func (agr *AppGormRepositoryImpl) ApplicationForCompany(cmid int) ([]entity.Appl
 	}
 	return tobereturned, nil
 }
+func (agr *AppGormRepositoryImpl) UpdateApplication(e *entity.Application) (*entity.Application, error) {
+	appl := e
+	errs := agr.conn.Save(appl).GetErrors()
+	if len(errs) > 0 {
+		return appl, errs[0]
+	}
+	return appl, nil
+}

@@ -44,6 +44,7 @@
     }
   </script>
   <form class="form"  action="/jobseeker/{{.Jobseeker.Username}}/profile/edit" method="post" enctype="multipart/form-data">
+    <input type="hidden" name="_csrf" value="{{.Inputs.CSRF}}">
   <div class="col">
     <div class="row">
       <div class="col mb-3">
@@ -83,24 +84,36 @@
                           <div class="col">
                             <div class="form-group">
                               <label>First Name</label>
+                              {{with .Inputs.VErrors.Get "fname"}}
+                                <label class="text-danger">{{.}}</label>
+                              {{end}}
                               <input class="form-control" type="text" name="fname" value="{{.FName}}">
                             </div>
                           </div>
                           <div class="col">
                             <div class="form-group">
                               <label>Last name</label>
+                              {{with .Inputs.VErrors.Get "lname"}}
+                                <label class="text-danger">{{.}}</label>
+                              {{end}}
                               <input class="form-control" type="text" name="lname" value="{{.LName}}">
                             </div>
                           </div>
 						  <div class="col">
                             <div class="form-group">
                               <label>Username</label>
+                              {{with .Inputs.VErrors.Get "uname"}}
+                                <label class="text-danger">{{.}}</label>
+                              {{end}}
                               <input class="form-control" type="text" name="uname"  value="{{.Jobseeker.Username}}">
                             </div>
                           </div>
 						  <div class="col">
                             <div class="form-group">
                               <label>Age</label>
+                              {{with .Inputs.VErrors.Get "age"}}
+                                <label class="text-danger">{{.}}</label>
+                              {{end}}
                               <input class="form-control" type="text" name="age" value={{.Jobseeker.Age}}>
                             </div>
                           </div><div class="col">
@@ -117,7 +130,27 @@
                           <div class="col">
                             <div class="form-group">
                               <label>Email</label>
+                              {{with .Inputs.VErrors.Get "email"}}
+                                <label class="text-danger">{{.}}</label>
+                              {{end}}
                               <input class="form-control" type="text" placeholder="user@example.com" name="email" value="{{.Jobseeker.Email}}">
+                            </div>
+                            <div class="form-group">
+                              <label>Phone</label>
+                              {{with .Inputs.VErrors.Get "phone"}}
+                                <label class="text-danger">{{.}}</label>
+                              {{end}}
+                              <input class="form-control" type="text" placeholder="user@example.com" name="phone" value="{{.Jobseeker.Phone}}">
+                            </div>
+                            <div class="form-group">
+                              <label>Employment Status</label>
+                              {{with .Inputs.VErrors.Get "empstatus"}}
+                                <label class="text-danger">{{.}}</label>
+                              {{end}}
+                              <select name="empstatus" id="empstatus">
+                                <option {{if eq .Jobseeker.EmpStatus "employed"}}selected{{end}} value="employeed">Employed</option>
+                                <option {{if eq .Jobseeker.EmpStatus "unemployed"}}selected{{end}} value="unemployeed">Un Employed</option>
+                              </select>
                             </div>
                           </div>
                         </div>
@@ -125,6 +158,9 @@
                           <div class="col">
                             <div class="form-group">
                               <label>work experience</label>
+                              {{with .Inputs.VErrors.Get "wrkexpr"}}
+                                <label class="text-danger">{{.}}</label>
+                              {{end}}
                               <input class="form-control" type="text" placeholder="3 years" name="wrkexpr" value="{{.Jobseeker.WorkExperience}}">
                             </div>
                           </div>
@@ -141,7 +177,7 @@
                           <div class="col mb-3">
                             <div class="form-group">
                               <label>Cv</label>
-                              <input type="file" class="form-control" name="cv" value="">
+                              <input type="file" class="form-control" name="cv" value="{{.Jobseeker.CV}}">
                             </div>
                           </div>
                         </div>
@@ -155,6 +191,9 @@
                           <div class="col">
                             <div class="form-group">
                               <label>Current Password</label>
+                              {{with .Inputs.VErrors.Get "currpswd"}}
+                                <label class="text-danger">{{.}}</label>
+                              {{end}}
                               <input class="form-control" type="password" placeholder="••••••" name="currpswd">
                             </div>
                           </div>
@@ -163,6 +202,9 @@
                           <div class="col">
                             <div class="form-group">
                               <label>New Password</label>
+                              {{with .Inputs.VErrors.Get "newpswd"}}
+                                <label class="text-danger">{{.}}</label>
+                              {{end}}
                               <input class="form-control" type="password" placeholder="••••••" name="newpswd">
                             </div>
                           </div>
@@ -171,6 +213,9 @@
                           <div class="col">
                             <div class="form-group">
                               <label>Confirm <span class="d-none d-xl-inline">Password</span></label>
+                              {{with .Inputs.VErrors.Get "pswdconfirm"}}
+                                <label class="text-danger">{{.}}</label>
+                              {{end}}
                               <input class="form-control" type="password" name="pswdconfirm" placeholder="••••••"></div>
                           </div>
                         </div>
@@ -181,62 +226,34 @@
                                 <div class="form-group">
                                   <label for="intjobcat">Categories</label>
                                   <select class="form-control" name="intjobcat" id="intjobcat" multiple>
-                                    {{$js := .Jobseeker}}
-                                    {{range $normcat := .Categories}}
-                                    {{$set := false}}
-                                      {{ range $jscat := $js.Categories}}
-                                        {{if $jscat eq $normcat}}
-                                          {{$set := true}}
-                                          <option value="{{$normcat.Name}}" selected>{{$normcat.Name}}</option>
-                                        {{end}}
-                                      {{end}}
-                                      {{if not $set}}
-                                        <option value="{{$normcat.Name}}">{{$normcat.Name}}</option>
-                                      {{end}}
+                                    {{$jscateg := .Jobseeker.Categories}}
+                                    {{range .Categories}}
+                                    {{$categ := .}}
+                                      <option {{range $jscateg}}{{if eq .Name $categ.Name}} selected{{end}}{{end}} value="{{.ID}}">{{.Name}}</option>
                                     {{end}}
                                   </select>
                                   <label for="region">Region</label>
                                   <select class="form-control" name="region" id="region">
-                                    {{$reg := "Tigray"}}
-                                    {{range .Jobseeker.Address}}
-                                      {{$reg := .Region}}
-                                    {{end}}
+                                    {{$jsaddr := .Jobseeker.Address}}
                                     {{range .Regions}}
-                                      {{if eq $reg .}}
-                                        <option value="{{.}}" selected></option>
-                                      {{else}}
-                                        <option value="{{.}}">{{.}}</option>
-                                      {{end}}
+                                    {{$reg := .}}
+                                    <option {{range $jsaddr}}{{if eq .Region $reg}} selected{{end}}{{end}} value="{{.}}">{{.}}</option>
                                     {{end}}
                                   </select>
                                   <label for="city">City</label>
                                   <select class="form-control" name="city" id="city">
-                                    {{$city := "Addis Ababa"}}
-                                    {{range .Jobseeker.Address}}
-                                      {{$city := .City}}
-                                    {{end}}
                                     {{range .Cities}}
-                                      {{if eq $city .}}
-                                        <option value="{{.}}" selected></option>
-                                      {{else}}
-                                        <option value="{{.}}">{{.}}</option>
-                                      {{end}}
+                                    {{$city := .}}
+                                    <option {{range $jsaddr}}{{if eq .City $city}} selected{{end}}{{end}} value="{{.}}">{{.}}</option>
                                     {{end}}
                                   </select>
                                   <label for="subcity">Sub City</label>
                                   <select class="form-control" name="subcity" id="subcity">
-                                    {{$subcity := "Addis Ababa"}}
-                                    {{range .Jobseeker.Address}}
-                                      {{$subcity := .City}}
-                                    {{end}}
                                     {{range .SubCities}}
-                                      {{if eq $subcity  .}}
-                                        <option value="{{.}}" selected></option>
-                                      {{else}}
-                                        <option value="{{.}}">{{.}}</option>
-                                      {{end}}
+                                    {{$subcity := .}}
+                                    <option {{range $jsaddr}}{{if eq .SubCity $subcity}}selected {{end}}{{end}} value="{{.}}">{{.}}</option>
                                     {{end}}
-                                  </select>
+                                      </select>
                                 </div>
                               </div>
                             </div>
@@ -245,8 +262,11 @@
                         <div class="row">
                           <div class="col">
                             <div class="form-group">
-                              <label>Confirm <span class="d-none d-xl-inline">Local Name</span></label>
-                              <input class="form-control" type="text" name="localname" value="{{range .Jobseeker.Address}}{{.LocalName}}{{end}}"></div>
+                              {{with .Inputs.VErrors.Get "localname"}}
+                                <label class="text-danger">{{.}}</label>
+                              {{end}}
+                              <label><span class="d-none d-xl-inline">Local Name</span></label>
+                              <input class="form-control" type="text" name="localname" value="{{with .Jobseeker.Address}}{{$add := index . 0}}{{$add.LocalName}}{{end}}"/></div>
                           </div>
                         </div>
                     <div class="row">
@@ -254,31 +274,13 @@
                         <button class="btn btn-success" type="submit">Save Changes</button>
                       </div>
                     </div>
-
-
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-
-      <div clas_s="col-12 col-md-3 mb-3">
-        <div class="card mb-3">
-          <div class="m-5 card-body">
-            <div class="px-xl-3">
-              <button class="btn btn-block btn-success">
-                <i class="fa fa-sign-out"></i>
-                <span>Logout</span>
-              </button>
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </div>
-      </div>
-  </div>
+        </div></div></div>
   </div>
   </form>
 </div>

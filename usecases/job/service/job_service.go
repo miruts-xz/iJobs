@@ -4,17 +4,16 @@ import (
 	"github.com/miruts/iJobs/entity"
 	"github.com/miruts/iJobs/usecases/company"
 	"github.com/miruts/iJobs/usecases/job"
-	"github.com/miruts/iJobs/usecases/job/repository"
 )
 
 // JobServices Implements JobService Interface
 type JobServices struct {
-	handler *repository.JobGormRepositoryImpl
+	handler job.JobRepository
 	ctgSrv  job.CategoryService
 }
 
 // NewJobServices creates new JobServices
-func NewJobServices(handler *repository.JobGormRepositoryImpl, ctgSrv job.CategoryService) *JobServices {
+func NewJobServices(handler job.JobRepository, ctgSrv job.CategoryService) *JobServices {
 	return &JobServices{handler: handler, ctgSrv: ctgSrv}
 }
 

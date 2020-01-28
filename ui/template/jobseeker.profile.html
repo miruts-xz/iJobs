@@ -76,11 +76,8 @@
         <h6>{{.Jobseeker.Age}}</h6>
         <h6>{{.Jobseeker.Gender}}</h6>
         <h6>
-          {{with .Jobseeker}}
-            {{range .Address}}
-              {{.LocalName}}, {{.SubCity}}, {{.City}}, {{.Region}}
-            {{end}}
-          {{end}}
+         {{with .Jobseeker.Address}}{{$add := index . 0}}{{$add.LocalName}}, {{$add.SubCity}}, {{$add.City}}, {{$add.Region}}{{end}}
+
         </h6>
         <hr>
       </div>

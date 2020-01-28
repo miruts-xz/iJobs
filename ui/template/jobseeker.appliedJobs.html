@@ -10,146 +10,98 @@
     <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap.min.css">
 	<link rel="stylesheet" type="text/css" href="/assets/css/customCss.css">
 	<link rel="stylesheet" type="text/css" href="/assets/css/fontawesome.css">
+    <style>
+        .vertical-menu {
+            width: 100%;
+        }
+
+        .vertical-menu a {
+            background-color: #eee;
+            color: black;
+            display: block;
+            width: 100%;
+            padding: 12px;
+            text-decoration: none;
+        }
+
+        .vertical-menu a:hover {
+            background-color: #ccc;
+        }
+
+        .vertical-menu a.active {
+            background-color: #4CAF50;
+            color: white;
+        }
+    </style>
 </head>
 <body>
     {{ template "jobseeker.navbar" . }}
 	{{ template "jobseeker.appliedJobs.content" . }}
     {{ template "footer" . }}
     <!-- js -->
-    <script defer src="/assets/js/fontawesome.js"></script>
+    <script src="/assets/js/jquery-3.4.1.min.js"></script>
     <script src="/assets/js/popper.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script defer src="/assets/js/fontawesome.js"></script>
 </body>
 </html>
 {{end}}
 
 {{define "jobseeker.appliedJobs.content"}}
-<div class="container-fluid " style="margin-left: 5%;">
-    <div class="row no-gutters">
-        <div class="d-none d-md-flex col-md-6 col-lg-6">
-            <div class="card text-black mb-3 catagories-card">
-                  <div class="card-header">Categories</div>
-                      <div class="card-body">
-                          {{$uname := .Jobseeker.Username}}
-                          {{if .Categories}}
-                              {{range .Categories}}
-                                  <img src="/assets/img/categories/{{.Image}}" alt="Category Image">
-                                  <a  href="/jobseeker/{{$uname}}/appliedjobs/{{.ID}}" class="text-dark btn"><h6 class="card-text">{{.Name}}</h6></a>
-                                  <hr>
-                              {{end}}
-                          {{end}}
-                     </div>
-            </div>
-        </div>
+    <div class="container" style="min-height: 700px">
+        <div class="container row align-content-between" >
+            <div class="col-3">
 
-<div class="col-md-8 col-lg-6 border-left">
-<div class="jobs-card d-flex">
-<div class="container">
-    <div class="row-fluid no-gutters">
-
-        {{$cats := .Categories}}
-            {{if .Applications}}
-                {{range .Applications}}
-                    <div class="card mb-3 " style="max-width: 540px;">
+                <h3 class="card-header">Applied JOBS</h3>
+                <div class="vertical-menu card">
+                    <script>
+                        function makeMeActive(id) {
+                            $(".active").removeClass("active");
+                            $(".displayed").css("display", "none");
+                            $("#"+id).addClass("active");
+                            $("."+id).css("display", "block");
+                            $("."+id).addClass("displayed");
+                        }
+                    </script>
+                    {{range .Applications}}
                         {{$cmp := . | appGetCmp}}
                         {{$job := . | appGetJob}}
+                        <a id="{{.ID}}" href="#" onclick="makeMeActive({{.ID}})">{{$job.Name}}</a>
+                    {{end}}
+                </div>
+            </div>
 
-                        <div class="row no-gutters">
-                            <div class="col-md-2">
-                                    <img src="/assets/cmpdata/{{$cmp.CompanyName}}/logo/{{$cmp.Logo}}" class="card-img" alt="comp-logo" max-width="50" height="50" style="margin-top: 20%;">
-                            </div>
-                            <div class="col-md-10">
-                                <div class="card-body">
-                                    <h5 class="card-title" style="margin-bottom: -1%">{{$job.Name}}</h5>
-                                    <div style="display: inline-flex;">
-                                        <h6 class="card-subitle text-muted" style="margin-right: 100px;">{{$cmp.CompanyName}}</h6>
-                                        <p class="card-text" style="margin-right: 10px;"><small class="text-muted">{{.Status}}</small></p>
-                                        <p class="card-text" style="margin-right: 10px;"><small class="text-muted">{{.Response}}</small></p>
-                                    </div>
-                                 </div>
-                            </div>
-                        </div>
+            <div class="col-8">
+                <h3 class="card-header">Application Details</h3>
+                {{range .Applications}}
+                    {{$cmp := . | appGetCmp}}
+                    {{$job := . | appGetJob}}
+                    <div class="{{.ID}} card" id="{{$job.Name}}" class="container-fluid card vertical-menu" style="display: none" >
+                        <label class="font-weight-bold" style="margin: 10px 5px">Job Name</label>
+                        <span class="">{{$job.Name}}</span><br>
+                        <label class="font-weight-bold" style="margin: 10px 5px">Company Name</label>
+                        <span class="">{{$cmp.CompanyName}}</span><br>
+                        <label class="font-weight-bold text-left" style="margin: 10px 5px">Salary</label>
+                        <span class="">{{$job.Salary}}</span><br>
+                        <label class="font-weight-bold text-left" style="margin: 10px 5px">Description</label>
+                        <span class="">{{$job.Description}}</span><br>
+                        <label class="font-weight-bold text-left" style="margin: 10px 5px">Status</label>
+                        <span class="">{{.Status}}</span><br>
+                        {{if eq .Response "accepted"}}
+                            <label class="font-weight-bold text-left" style="margin: 10px 5px">Response</label>
+                            <span class="text-success">{{.Response}}</span><br>
+                        {{else}}
+                            {{if eq .Response "rejected" }}
+                                <label class="font-weight-bold text-left" style="margin: 10px 5px">Response</label>
+                                <span class="text-danger">{{.Response}}</span><br>
+                            {{else}}
+                                <label class="font-weight-bold text-left" style="margin: 10px 5px">Response</label>
+                                <span class="">{{.Response}}</span><br>
+                            {{end}}
+                        {{end}}
                     </div>
                 {{end}}
-            {{end}}
-        <div class="card mb-3" style="max-width: 540px;">
-              <div class="row no-gutters">
-                    <div class="col-md-2">
-                      <img src="/assets/img/images.png" class="card-img" alt="comp-logo" max-width="50" height="50" style="margin-top: 20%;">
-                 </div>
-                <div class="col-md-10">
-                      <div class="card-body">
-                        <h5 class="card-title" style="margin-bottom: -1%;">Web Developer</h5>
-                        <div style="display: inline-flex;">
-                            <h6 class="card-subitle text-muted" style="margin-right: 100px;">Company name</h6>
-                            <p class="card-text" style="margin-right: 10px;"><small class="text-muted">Status</small></p>
-                            <p class="card-text" style="margin-right: 10px;"><small class="text-muted">Response</small></p>
-                        </div>
-                      </div>
-                </div>
-              </div>
+            </div>
         </div>
-
-        <div class="card mb-3" style="max-width: 540px;">
-              <div class="row no-gutters">
-                    <div class="col-md-2">
-                      <img src="/assets/img/images.png" class="card-img" alt="comp-logo" max-width="50" height="50" style="margin-top: 20%;">
-                 </div>
-                <div class="col-md-10">
-                      <div class="card-body">
-                        <h5 class="card-title" style="margin-bottom: -1%;">Web Developer</h5>
-                        <div style="display: inline-flex;">
-                            <h6 class="card-subitle text-muted" style="margin-right: 100px;">Company name</h6>
-                            <p class="card-text" style="margin-right: 10px;"><small class="text-muted">Status</small></p>
-                            <p class="card-text" style="margin-right: 10px;"><small class="text-muted">Response</small></p>
-                        </div>
-                      </div>
-                </div>
-              </div>
-        </div>
-
-        <div class="card mb-3" style="max-width: 540px;">
-              <div class="row no-gutters">
-                    <div class="col-md-2">
-                      <img src="/assets/img/images.png" class="card-img" alt="comp-logo" max-width="50" height="50" style="margin-top: 20%;">
-                 </div>
-                <div class="col-md-10">
-                      <div class="card-body">
-                        <h5 class="card-title" style="margin-bottom: -1%;">Web Developer</h5>
-                        <div style="display: inline-flex;">
-                            <h6 class="card-subitle text-muted" style="margin-right: 100px;">Company name</h6>
-                            <p class="card-text" style="margin-right: 10px;"><small class="text-muted">Status</small></p>
-                            <p class="card-text" style="margin-right: 10px;"><small class="text-muted">Response</small></p>
-                        </div>
-                      </div>
-                </div>
-              </div>
-        </div>
-
-
-        <div class="card mb-3" style="max-width: 540px;">
-              <div class="row no-gutters">
-                    <div class="col-md-2">
-                      <img src="/assets/img/images.png" class="card-img" alt="comp-logo" max-width="50" height="50" style="margin-top: 20%;">
-                 </div>
-                <div class="col-md-10">
-                      <div class="card-body">
-                        <h5 class="card-title" style="margin-bottom: -1%;">Web Developer</h5>
-                        <div style="display: inline-flex;">
-                            <h6 class="card-subitle text-muted" style="margin-right: 100px;">Company name</h6>
-                            <p class="card-text" style="margin-right: 10px;"><small class="text-muted">Status</small></p>
-                            <p class="card-text" style="margin-right: 10px;"><small class="text-muted">Response</small></p>
-                        </div>
-                      </div>
-                </div>
-              </div>
-          </div>
-
-      </div>
-</div>
-    
-</div>
-</div>
-</div>
-
-</div>
+    </div>
 {{end}}

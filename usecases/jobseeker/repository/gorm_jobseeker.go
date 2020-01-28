@@ -133,10 +133,13 @@ func (jss *JobseekerGormRepositoryIMpl) SetAddress(jsid, addid int) error {
 }
 func (jss *JobseekerGormRepositoryIMpl) JobseekerByEmail(email string) (entity.Jobseeker, error) {
 	var jobseeker entity.Jobseeker
+	var addresses []entity.Address
 	errs := jss.conn.Where("email = ?", email).First(&jobseeker).GetErrors()
 	if len(errs) > 0 {
 		return jobseeker, errs[0]
 	}
+	_ = jss.conn.Model(&jobseeker).Related(&addresses, "Address").GetErrors()
+	jobseeker.Address = addresses
 	return jobseeker, nil
 }
 func (jss *JobseekerGormRepositoryIMpl) JobseekerByUsername(uname string) (entity.Jobseeker, error) {
@@ -193,7 +196,7 @@ func (jss *JobseekerGormRepositoryIMpl) EmailExists(email string) bool {
 }
 func (jss *JobseekerGormRepositoryIMpl) AlreadyApplied(id uint, id2 uint) bool {
 	application := entity.Application{}
-	errs := jss.conn.Find(&application, "jobseeker_id=? and job_id=?", id, id2).GetErrors()
+	errs := jss.conn.First(&application, "jobseeker_id=? and job_id=?", id, id2).GetErrors()
 	if len(errs) > 0 {
 		return false
 	}

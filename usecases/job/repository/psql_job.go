@@ -3,6 +3,7 @@ package repository
 import (
 	"database/sql"
 	"errors"
+	"github.com/miruts/iJobs/usecases/company"
 
 	"github.com/miruts/iJobs/entity"
 	"github.com/miruts/iJobs/usecases/job"
@@ -112,13 +113,16 @@ func (jobRepo *JobRepository) DeleteJob(id int) (entity.Job, error) {
 }
 
 //Adds a job to the database
-func (jobRepo *JobRepository) StoreJob(job *entity.Job) error {
+func (jobRepo *JobRepository) StoreJob(job *entity.Job) (*entity.Job, error) {
 
 	query := "INSERT INTO jobs (name,id,salary,required_num,id,deadline,description,job_time) values ($1,$2,$3,$4,$5,$6,$7,$8);"
 	_, err := jobRepo.conn.Exec(query, job.Name, job.CompanyID, job.Salary, job.RequiredNum, job.Categories, job.Deadline, job.Description, job.JobTime)
 
 	if err != nil {
-		return errors.New("Unable to create job")
+		return &entity.Job{}, errors.New("Unable to create job")
 	}
-	return nil
+	return &entity.Job{}, nil
+}
+func (jobRepo *JobRepository) CompanyJobs(cmpSrv company.CompanyService, cm_id int) ([]entity.Job, error) {
+	return []entity.Job{entity.Jobmock1, entity.Jobmock2}, nil
 }

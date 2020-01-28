@@ -73,9 +73,11 @@
                                     {{if eq .Status "reviewed"}}
                                         <div class="card-body">
                                             <h5 class="card-subtitle mb-2 text-muted">{{ $jn := $job.Name}}{{$jn}}</h5>
-                                            <h6 class="card-subtitle mb-2 text-muted">{{ $add := $cmp.Address }}{{$add.LocalName}} {{$add.SubCity}}, {{$add.City}}, {{$add.Region}}</h6>
+                                            {{if $cmp.Address}}
+                                            <h6 class="card-subtitle mb-2 text-muted">{{ $add := index $cmp.Address 0 }}{{$add.LocalName}} {{$add.SubCity}}, {{$add.City}}, {{$add.Region}}</h6>
+                                            {{end}}
                                             <p class="text-info" class="card-text">{{.Status}}</p>
-                                            <a href="/jobseeker/{{$js.Username}}/appliedjobs/{{.ID}}" class="btn btn-primary">View Response</a>
+                                            <a href="/jobseeker/{{$js.Username}}/appliedjobs?jobid={{.ID}}" class="btn btn-primary">View Response</a>
                                         </div>
                                     {{end}}
                                 {{end}}
@@ -112,7 +114,7 @@
                                 <h6 class="card-subtitle mb-2 text-muted">{{$company.CompanyName}}</h6>
                                 <h6 class="card-subtitle mb-2 text-muted">{{range $company.Address}}{{.LocalName}}, {{.SubCity}}, {{.City}}, {{.Region}}{{end}}</h6>
                                 <p class="card-text">{{.Description}}</p>
-                                <a href="/jobseeker/{{$js.Username}}/apply/{{.ID}}" class="btn btn-primary">Apply</a>
+                                <a href="/jobseeker/{{$js.Username}}/apply?jobid={{.ID}}" class="btn btn-primary">Apply</a>
                             </div>
                     {{end}}
                     <div class="card-body">
