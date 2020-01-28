@@ -133,6 +133,7 @@ func (jsh *JobseekerHandler) DeleteJobseeker(w http.ResponseWriter, r *http.Requ
 		http.Error(w, http.StatusText(404), 404)
 		return
 	}
+	w.WriteHeader(http.StatusOK)
 	_, err = w.Write(response)
 	if err != nil {
 		fmt.Println(err)
@@ -161,6 +162,7 @@ func (jsh *JobseekerHandler) AddJobseeker(w http.ResponseWriter, r *http.Request
 		http.Error(w, http.StatusText(404), 404)
 		return
 	}
+	w.WriteHeader(http.StatusCreated)
 	_, err = w.Write(response)
 	if err != nil {
 		fmt.Println(err)
