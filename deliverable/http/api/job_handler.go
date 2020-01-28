@@ -130,13 +130,14 @@ func (jobHander *JobApiHandler) DeleteJob(w http.ResponseWriter, r *http.Request
 		http.Error(w, http.StatusText(404), 404)
 		return
 	}
-	_, err = jobHander.jobService.DeleteJob(idint)
+	job, err := jobHander.jobService.DeleteJob(idint)
 	if err != nil {
 		fmt.Println(err)
 		http.Error(w, http.StatusText(404), 404)
 		return
 	}
-	w.WriteHeader(http.StatusNoContent)
+	response, err := json.Marshal(job)
+	w.Write(response)
 	return
 }
 

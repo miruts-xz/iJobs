@@ -22,7 +22,7 @@ func (j JobseekerMockRepository) JobSeeker(id int) (entity.Jobseeker, error) {
 	} else if id == 1 {
 		return entity.Jobseekermock2, nil
 	}
-	return entity.Jobseeker{}, nil
+	return entity.Jobseekermock1, nil
 }
 
 func (j JobseekerMockRepository) UpdateJobSeeker(js *entity.Jobseeker) (*entity.Jobseeker, error) {

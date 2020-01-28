@@ -63,6 +63,7 @@ func (uh *CompanyHandler) Authenticated(next http.Handler) httprouter.Handle {
 	fn := func(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 		ok := uh.loggedIn(r)
 		if !ok {
+			w.Header().Set("Status", http.StatusText(http.StatusSeeOther))
 			http.Redirect(w, r, "/login", http.StatusSeeOther)
 			return
 		}
@@ -76,11 +77,13 @@ func (uh *CompanyHandler) Authenticated(next http.Handler) httprouter.Handle {
 func (uh *CompanyHandler) Authorized(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if uh.loggedInUser == nil {
+			w.Header().Set("Status", http.StatusText(http.StatusUnauthorized))
 			http.Error(w, http.StatusText(http.StatusUnauthorized), http.StatusUnauthorized)
 			return
 		}
 		roles, errs := uh.cmpSrv.UserRoles(uh.loggedInUser)
 		if len(errs) > 0 {
+			w.Header().Set("Status", http.StatusText(http.StatusUnauthorized))
 			http.Error(w, http.StatusText(http.StatusUnauthorized), http.StatusUnauthorized)
 			return
 		}
@@ -88,6 +91,7 @@ func (uh *CompanyHandler) Authorized(next http.Handler) http.Handler {
 		for _, role := range roles {
 			permitted := permission.HasPermission(r.URL.Path, role.Name, r.Method)
 			if !permitted {
+				w.Header().Set("Status", http.StatusText(http.StatusUnauthorized))
 				http.Error(w, http.StatusText(http.StatusUnauthorized), http.StatusUnauthorized)
 				return
 			}
@@ -95,6 +99,7 @@ func (uh *CompanyHandler) Authorized(next http.Handler) http.Handler {
 		if r.Method == http.MethodPost {
 			ok, err := rndtoken.ValidCSRF(r.FormValue("_csrf"), uh.csrfSignKey)
 			if !ok || (err != nil) {
+				w.Header().Set("Status", http.StatusText(http.StatusUnauthorized))
 				http.Error(w, http.StatusText(http.StatusUnauthorized), http.StatusUnauthorized)
 				return
 			}
@@ -143,7 +148,7 @@ func (ch *CompanyHandler) CompanyHome(w http.ResponseWriter, r *http.Request) {
 
 		err = ch.tmpl.ExecuteTemplate(w, "company.home.layout", cmpneeds)
 		if err != nil {
-			fmt.Println(err)
+			w.Header().Set("Status", http.StatusText(http.StatusInternalServerError))
 			http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 			return
 		}
@@ -224,6 +229,7 @@ func (ch *CompanyHandler) CompanyPostJob(w http.ResponseWriter, r *http.Request)
 		ch.loggedInUser.Jobs = append(ch.loggedInUser.Jobs, *updatejb)
 		ch.loggedInUser, err = ch.cmpSrv.UpdateCompany(ch.loggedInUser)
 		if err != nil {
+			w.Header().Set("Status", http.StatusText(http.StatusInternalServerError))
 			http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 			return
 		}
@@ -302,6 +308,7 @@ func (uh *CompanyHandler) loggedIn(r *http.Request) bool {
 func (uh *CompanyHandler) Login(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	token, err := rndtoken.CSRFToken(uh.csrfSignKey)
 	if err != nil {
+		w.Header().Set("Status", http.StatusText(http.StatusInternalServerError))
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 	}
 	if r.Method == http.MethodGet {
@@ -316,6 +323,7 @@ func (uh *CompanyHandler) Login(w http.ResponseWriter, r *http.Request, ps httpr
 		}
 		err := uh.tmpl.ExecuteTemplate(w, "signInUp.layout", loginForm)
 		if err != nil {
+			w.Header().Set("Status", http.StatusText(http.StatusInternalServerError))
 			http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 			return
 		}
@@ -325,6 +333,7 @@ func (uh *CompanyHandler) Login(w http.ResponseWriter, r *http.Request, ps httpr
 		// Parse the form data
 		err := r.ParseForm()
 		if err != nil {
+			w.Header().Set("Status", http.StatusText(http.StatusBadRequest))
 			http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 			return
 		}
@@ -372,6 +381,7 @@ func (uh *CompanyHandler) Login(w http.ResponseWriter, r *http.Request, ps httpr
 			return
 		}
 		uh.userSess = newSess
+		w.Header().Set("Status", http.StatusText(http.StatusSeeOther))
 		http.Redirect(w, r, "/company/"+usr.CompanyName+"/home", http.StatusSeeOther)
 	}
 }
@@ -379,6 +389,10 @@ func (uh *CompanyHandler) Login(w http.ResponseWriter, r *http.Request, ps httpr
 // Logout hanldes the POST /logout requests
 func (uh *CompanyHandler) Logout(w http.ResponseWriter, r *http.Request) {
 	userSess, _ := r.Context().Value(ctxUserSessionKey).(*entity.Session)
+	if userSess == nil {
+		w.Header().Set("Status", http.StatusText(http.StatusExpectationFailed))
+		return
+	}
 	sess.Remove(userSess.Uuid, w)
 	uh.sessSrv.DeleteSession(userSess.Uuid)
 	http.Redirect(w, r, "/login", http.StatusSeeOther)

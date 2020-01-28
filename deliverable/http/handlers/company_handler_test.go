@@ -20,7 +20,7 @@ import (
 	"testing"
 )
 
-func TestJobseekerHandler_CompanyHome(test *testing.T) {
+func TestCompanyHandler_CompanyHome(test *testing.T) {
 	jsmockrepo := repository.NewJobseekerMockRepository()
 	jobmockrepo := repository2.NewJobMockRepository()
 	cmpmockrepo := repository3.NewCompanyMockRepository()
@@ -47,79 +47,84 @@ func TestJobseekerHandler_CompanyHome(test *testing.T) {
 	tmplfake := template.Must(template.New("fake").Funcs(funcMaps).ParseGlob("*.html"))
 
 	jsmockhandler := NewJobseekerHandler(cmpmocksrv, jobmocksrv, tmpl, jsmocksrv, categmockserv, addmockserv, appmockserv, sessmockserv, &entity.Sessionmock1, rolemockserv, []byte("mysigning key"))
-	jsmockhandlerfake := NewJobseekerHandler(cmpmocksrv, jobmocksrv, tmplfake, jsmocksrv, categmockserv, addmockserv, appmockserv, sessmockserv, &entity.Sessionmock1, rolemockserv, []byte("mysigning key"))
+	_ = NewJobseekerHandler(cmpmocksrv, jobmocksrv, tmplfake, jsmocksrv, categmockserv, addmockserv, appmockserv, sessmockserv, &entity.Sessionmock1, rolemockserv, []byte("mysigning key"))
 	cmpmockhandler := NewCompanyHandler(tmpl, jsmocksrv, cmpmocksrv, categmockserv, addmockserv, appmockserv, sessmockserv, jobmocksrv, &entity.Sessionmock1, rolemockserv, []byte("mysigning key"))
 	cmpmockhandlerfake := NewCompanyHandler(tmplfake, jsmocksrv, cmpmocksrv, categmockserv, addmockserv, appmockserv, sessmockserv, jobmocksrv, &entity.Sessionmock1, rolemockserv, []byte("mysigning key"))
 
 	jsmockhandler.loggedInUser = &entity.Jobseekermock1
 	cmpmockhandler.loggedInUser = &entity.Companymock1
 	cmpmockhandlerfake.loggedInUser = &entity.Companymock2
-	jsmockhandlerfake.loggedInUser = &entity.Jobseekermock2
 
 	tests := []struct {
 		Name   string
-		jsmock *JobseekerHandler
+		jsmock *CompanyHandler
 		method string
 		path   string
 		wanted string
-	}{{Name: "JobseekerApplyGET", jsmock: jsmockhandlerfake, wanted: http.StatusText(http.StatusSeeOther), method: "GET", path: "/jobseeker/{name}/apply"},
-		{Name: "JobseekerApplyGET", jsmock: jsmockhandler, wanted: http.StatusText(http.StatusSeeOther), method: "GET", path: "/jobseeker/{name}/apply"},
-		{Name: "JobseekerHomeGET", jsmock: jsmockhandlerfake, wanted: http.StatusText(http.StatusInternalServerError), method: "GET", path: "/jobseeker/{name}/home"},
-		{Name: "JobseekerHomeGET", jsmock: jsmockhandler, wanted: http.StatusText(http.StatusOK), method: "GET", path: "/jobseeker/{name}/home"},
-		{Name: "JobseekerHomePOST", jsmock: jsmockhandlerfake, wanted: http.StatusText(http.StatusBadGateway), method: "POST", path: "/jobseeker/{name}/home"},
-		{Name: "JobseekerHomePOST", jsmock: jsmockhandler, wanted: http.StatusText(http.StatusBadGateway), method: "POST", path: "/jobseeker/{name}/home"},
-		{Name: "JobseekerAppliedJobsGET", jsmock: jsmockhandlerfake, wanted: http.StatusText(http.StatusInternalServerError), method: "GET", path: "/jobseeker/{name}/appliedjbos"},
-		{Name: "JobseekerAppliedJobsGET", jsmock: jsmockhandler, wanted: http.StatusText(http.StatusOK), method: "GET", path: "/jobseeker/{name}/appliedjobs"},
-		{Name: "JobseekerProfileGET", jsmock: jsmockhandlerfake, wanted: http.StatusText(http.StatusInternalServerError), method: "GET", path: "/jobseeker/{name}/profile"},
-		{Name: "JobseekerProfileGET", jsmock: jsmockhandler, wanted: http.StatusText(http.StatusOK), method: "GET", path: "/jobseeker/{name}/profile"},
-
-		{Name: "JobseekerProfilePOST", jsmock: jsmockhandlerfake, wanted: http.StatusText(http.StatusOK), method: "POST", path: "/jobseeker/{name}/profile/edit"},
-		{Name: "JobseekerProfilePOST", jsmock: jsmockhandler, wanted: http.StatusText(http.StatusOK), method: "POST", path: "/jobseeker/{name}/profile/edit"},
-		{Name: "JobseekerLogout", jsmock: jsmockhandler, wanted: http.StatusText(http.StatusOK), method: "GET", path: "/logout/jobseeker"},
-		{Name: "JobseekerSignupGET", jsmock: jsmockhandlerfake, wanted: http.StatusText(http.StatusOK), method: "GET", path: "/signup/company"},
-		{Name: "JobseekerSignupGET", jsmock: jsmockhandler, wanted: http.StatusText(http.StatusOK), method: "GET", path: "/signup/company"},
-		{Name: "JobseekerSignupPOST", jsmock: jsmockhandlerfake, wanted: http.StatusText(http.StatusOK), method: "POST", path: "/signup/company"},
-		{Name: "JobseekerSignupPOST", jsmock: jsmockhandler, wanted: http.StatusText(http.StatusOK), method: "POST", path: "/signup/company"}}
+	}{{Name: "CompanyHomeGET", jsmock: cmpmockhandlerfake, wanted: http.StatusText(http.StatusInternalServerError), method: "GET", path: "/company/{name}/home"},
+		{Name: "CompanyHomeGET", jsmock: cmpmockhandler, wanted: http.StatusText(http.StatusOK), method: "GET", path: "/company/{name}/home"},
+		{Name: "CompanyHomePOST", jsmock: cmpmockhandlerfake, wanted: http.StatusText(http.StatusOK), method: "POST", path: "/company/{name}/home"},
+		{Name: "CompanyHomePOST", jsmock: cmpmockhandler, wanted: http.StatusText(http.StatusOK), method: "POST", path: "/company/{name}/home"},
+		{Name: "CompanyPostJobGET", jsmock: cmpmockhandlerfake, wanted: http.StatusText(http.StatusInternalServerError), method: "GET", path: "/company/{name}/home"},
+		{Name: "CompanyPostJobGET", jsmock: cmpmockhandler, wanted: http.StatusText(http.StatusOK), method: "GET", path: "/company/{name}/home"},
+		{Name: "CompanyPostJobPOST", jsmock: cmpmockhandlerfake, wanted: http.StatusText(http.StatusSeeOther), method: "POST", path: "/company/{name}/home"},
+		{Name: "CompanyPostJobPOST", jsmock: cmpmockhandler, wanted: http.StatusText(http.StatusOK), method: "POST", path: "/company/{name}/home"},
+		{Name: "CompanyJobsGET", jsmock: cmpmockhandlerfake, wanted: http.StatusText(http.StatusBadRequest), method: "GET", path: "/company/{name}/name"},
+		{Name: "CompanyJobsGET", jsmock: cmpmockhandler, wanted: http.StatusText(http.StatusOK), method: "GET", path: "/company/{name}/name"},
+		{Name: "CompanyLoginGET", jsmock: cmpmockhandlerfake, wanted: http.StatusText(http.StatusInternalServerError), method: "GET", path: "/login"},
+		{Name: "CompanyLoginGET", jsmock: cmpmockhandler, wanted: http.StatusText(http.StatusOK), method: "GET", path: "/login"},
+		{Name: "CompanyLoginPOST", jsmock: cmpmockhandlerfake, wanted: http.StatusText(http.StatusOK), method: "POST", path: "/company/login"},
+		{Name: "CompanyLoginPOST", jsmock: cmpmockhandler, wanted: http.StatusText(http.StatusOK), method: "POST", path: "/company/login"},
+		{Name: "CompanyLogout", jsmock: cmpmockhandlerfake, wanted: http.StatusText(http.StatusOK), method: "GET", path: "/logout/compnay"},
+		{Name: "CompanyLogout", jsmock: cmpmockhandler, wanted: http.StatusText(http.StatusOK), method: "GET", path: "/logout/compnay"},
+		{Name: "CompanySignupGET", jsmock: cmpmockhandlerfake, wanted: http.StatusText(http.StatusOK), method: "GET", path: "/signup/company"},
+		{Name: "CompanySignupGET", jsmock: cmpmockhandler, wanted: http.StatusText(http.StatusOK), method: "GET", path: "/signup/company"},
+		{Name: "CompanySignupPOST", jsmock: cmpmockhandlerfake, wanted: http.StatusText(http.StatusOK), method: "POST", path: "/signup/company"},
+		{Name: "CompanySignupPOST", jsmock: cmpmockhandler, wanted: http.StatusText(http.StatusOK), method: "POST", path: "/signup/company"}}
 	for _, tst := range tests {
 		test.Run(tst.Name, func(t *testing.T) {
 			httprec := httptest.NewRecorder()
 
 			switch tst.Name {
-			case "JobseekerApplyGET":
+			case "CompanyHomeGET":
 				req := httptest.NewRequest(tst.method, tst.path, nil)
-				tst.jsmock.JobseekerApply(httprec, req)
+				tst.jsmock.CompanyHome(httprec, req)
 				break
-			case "JobseekerHomeGET":
+			case "CompanyHomePOST":
 				req := httptest.NewRequest(tst.method, tst.path, nil)
-				tst.jsmock.JobseekerHome(httprec, req)
+				tst.jsmock.CompanyHome(httprec, req)
 				break
-			case "JobseekerHomePOST":
+			case "CompanyPostJobGET":
 				req := httptest.NewRequest(tst.method, tst.path, nil)
-				tst.jsmock.JobseekerHome(httprec, req)
+				tst.jsmock.CompanyPostJob(httprec, req)
 				break
-			case "JobseekerAppliedJobsGET":
+			case "CompanyPostJobPOST":
 				req := httptest.NewRequest(tst.method, tst.path, nil)
-				tst.jsmock.JobseekerAppliedJobs(httprec, req)
+				tst.jsmock.CompanyPostJob(httprec, req)
 				break
-			case "JobseekerProfileGET":
+			case "CompanyJobsGET":
 				req := httptest.NewRequest(tst.method, tst.path, nil)
-				tst.jsmock.JobseekerProfile(httprec, req)
+				tst.jsmock.CompanyJobs(httprec, req)
 				break
-			case "JobseekerProfilePOST":
+			case "CompanyLoginGET":
 				req := httptest.NewRequest(tst.method, tst.path, nil)
-				tst.jsmock.JobseekerProfile(httprec, req)
+				tst.jsmock.Login(httprec, req, httprouter.Params{})
 				break
-			case "JobseekerLogout":
+			case "CompanyLoginPOST":
+				req := httptest.NewRequest(tst.method, tst.path, nil)
+				tst.jsmock.Login(httprec, req, httprouter.Params{})
+				break
+			case "CompanyLogout":
 				req := httptest.NewRequest(tst.method, tst.path, nil)
 				tst.jsmock.Logout(httprec, req)
 				break
-			case "JobseekerSignupGET":
+			case "CompanySignupGET":
 				req := httptest.NewRequest(tst.method, tst.path, nil)
 				tst.jsmock.Signup(httprec, req, httprouter.Params{})
 				break
-			case "JobseekerSignupPOST":
+			case "CompanySignupPOST":
 				req := httptest.NewRequest(tst.method, tst.path, nil)
-				tst.jsmock.Signup(httprec, req, httprouter.Params{})
+				tst.jsmock.Signup(httprec, req, nil)
 				break
 			}
 			resp := httprec.Result()

@@ -3,8 +3,8 @@ package session
 import (
 	"errors"
 	"fmt"
-	"github.com/miruts/iJobs/security/rndtoken"
 	"github.com/dgrijalva/jwt-go"
+	"github.com/miruts/iJobs/security/rndtoken"
 	"net/http"
 	"time"
 )
@@ -38,6 +38,15 @@ func Valid(cookieValue string, signingKey []byte) (bool, error) {
 
 // Remove expires existing session
 func Remove(sessionID string, w http.ResponseWriter) {
+	c := http.Cookie{
+		Name:    sessionID,
+		MaxAge:  -1,
+		Expires: time.Now().Add(-100 * time.Hour),
+		Path:    "/",
+	}
+	http.SetCookie(w, &c)
+}
+func RemoveMock(sessionID string, w http.ResponseWriter) {
 	c := http.Cookie{
 		Name:    sessionID,
 		MaxAge:  -1,

@@ -22,7 +22,7 @@ func (j *JobMockRepository) JobsOfCategory(ctgSrv job.CategoryService, catid int
 }
 
 func (j *JobMockRepository) Job(id int) (entity.Job, error) {
-	panic("implement me")
+	return entity.Jobmock1, nil
 }
 
 func (j *JobMockRepository) UpdateJob(job *entity.Job) (*entity.Job, error) {
@@ -34,9 +34,9 @@ func (j *JobMockRepository) DeleteJob(id int) (entity.Job, error) {
 }
 
 func (j *JobMockRepository) StoreJob(job *entity.Job) (*entity.Job, error) {
-	panic("implement me")
+	return job, nil
 }
 
 func (j *JobMockRepository) CompanyJobs(cmpSrv company.CompanyService, cmid int) ([]entity.Job, error) {
-	panic("implement me")
+	return []entity.Job{entity.Jobmock1, entity.Jobmock2}, nil
 }

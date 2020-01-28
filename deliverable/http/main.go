@@ -138,17 +138,29 @@ func main() {
 	//Job Api Handlers
 	router.GET("/api/jobs", apiJobHandler.Jobs)
 	router.GET("/api/jobs/:id", apiJobHandler.Job)
-	router.POST("/api/jobs/", apiJobHandler.AddJob)
+	router.POST("/api/jobs", apiJobHandler.AddJob)
 	router.PUT("/api/jobs/:id", apiJobHandler.UpdateJob)
 	router.DELETE("/api/jobs/:id", apiJobHandler.DeleteJob)
 
 	//JobSeeker Api Handler
 
-	router.GET("/api/jobseeker", apiJobSkHandler.Jobseekers)
+	router.GET("/api/jobseekers", apiJobSkHandler.Jobseekers)
 	router.GET("/api/jobseekers/:id", apiJobSkHandler.Jobseeker)
-	router.POST("/api/jobseekers/", apiJobSkHandler.AddJobseeker)
+	router.POST("/api/jobseekers", apiJobSkHandler.AddJobseeker)
 	router.PUT("/api/jobseekers/:id", apiJobSkHandler.UpdateJobseeker)
 	router.DELETE("/api/jobseekers/:id", apiJobSkHandler.DeleteJobseeker)
+
+	router.GET("/api/applications", apiJobSkHandler.Jobseekers)
+	router.GET("/api/applications/:id", apiJobSkHandler.Jobseeker)
+	router.POST("/api/applications", apiJobSkHandler.AddJobseeker)
+	router.PUT("/api/applications/:id", apiJobSkHandler.UpdateJobseeker)
+	router.DELETE("/api/applications/:id", apiJobSkHandler.DeleteJobseeker)
+
+	router.GET("/api/companies", apiJobSkHandler.Jobseekers)
+	router.GET("/api/companies/:id", apiJobSkHandler.Jobseeker)
+	router.POST("/api/companies", apiJobSkHandler.AddJobseeker)
+	router.PUT("/api/companies/:id", apiJobSkHandler.UpdateJobseeker)
+	router.DELETE("/api/companies/:id", apiJobSkHandler.DeleteJobseeker)
 
 	// Static file registration
 	router.ServeFiles("/assets/*filepath", http.Dir("../../ui/asset"))

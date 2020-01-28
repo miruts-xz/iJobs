@@ -206,7 +206,11 @@ func (jsh *JobseekerHandler) JobseekerHome(w http.ResponseWriter, r *http.Reques
 			return
 		} else {
 			w.Header().Set("Status", http.StatusText(http.StatusOK))
+			return
 		}
+	} else if r.Method == "POST" {
+		w.WriteHeader(http.StatusBadGateway)
+		return
 	}
 }
 
@@ -227,7 +231,7 @@ func (jsh *JobseekerHandler) JobseekerAppliedJobs(w http.ResponseWriter, r *http
 
 	err := jsh.tmpl.ExecuteTemplate(w, "jobseeker.appliedJobs.layout", appliedjobsinfo)
 	if err != nil {
-		fmt.Println(err)
+		w.WriteHeader(http.StatusInternalServerError)
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 		return
 	}
@@ -677,8 +681,13 @@ func (uh *JobseekerHandler) Login(w http.ResponseWriter, r *http.Request, ps htt
 // Logout hanldes the POST /logout requests
 func (uh *JobseekerHandler) Logout(w http.ResponseWriter, r *http.Request) {
 	userSess, _ := r.Context().Value(ctxUserSessionKey).(*entity.Session)
+	if userSess == nil {
+		w.Header().Set("Status", http.StatusText(http.StatusExpectationFailed))
+		return
+	}
 	sess.Remove(userSess.Uuid, w)
 	uh.sessSrv.DeleteSession(userSess.Uuid)
+	w.Header().Set("Status", http.StatusText(http.StatusSeeOther))
 	http.Redirect(w, r, "/login", http.StatusSeeOther)
 }
 
@@ -821,6 +830,7 @@ func (uh *JobseekerHandler) Signup(w http.ResponseWriter, r *http.Request, ps ht
 		propic, fh, err := r.FormFile("propic")
 		if err == nil {
 			path, err := os.Getwd()
+			path = path[:len(path)-16]
 			if err != nil {
 				fmt.Printf("Error: %v", err)
 				return
@@ -844,6 +854,7 @@ func (uh *JobseekerHandler) Signup(w http.ResponseWriter, r *http.Request, ps ht
 		cv, fh, err := r.FormFile("cv")
 		if err == nil {
 			path, err := os.Getwd()
+			path = path[:len(path)-16]
 			fmt.Println(path)
 			path = filepath.Join(path, "ui", "asset", "jsdata", js.Username, "cv")
 			err = os.MkdirAll(path, 0644)

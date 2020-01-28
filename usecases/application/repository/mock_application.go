@@ -14,7 +14,7 @@ func NewApplicationMockRepository() *ApplicationMockRepository {
 }
 
 func (a ApplicationMockRepository) Store(app *entity.Application) (*entity.Application, error) {
-	panic("implement me")
+	return &entity.Applicatiomock1, nil
 }
 
 func (a ApplicationMockRepository) Application(id int) (entity.Application, error) {
@@ -34,7 +34,7 @@ func (a ApplicationMockRepository) DeleteApplication(id int) (entity.Application
 }
 
 func (a ApplicationMockRepository) ApplicationForCompany(cmid int) ([]entity.Application, error) {
-	panic("implement me")
+	return []entity.Application{entity.Applicatiomock1, entity.Applicatiomock2}, nil
 }
 
 func (a ApplicationMockRepository) UpdateApplication(e *entity.Application) (*entity.Application, error) {
