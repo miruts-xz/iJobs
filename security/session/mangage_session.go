@@ -3,8 +3,8 @@ package session
 import (
 	"errors"
 	"fmt"
-	"github.com/miruts/iJobs/security/rndtoken"
 	"github.com/dgrijalva/jwt-go"
+	"github.com/miruts/iJobs/security/rndtoken"
 	"net/http"
 	"time"
 )
