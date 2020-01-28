@@ -1,7 +1,6 @@
 package service
 
 import (
-	"fmt"
 	"github.com/miruts/iJobs/entity"
 	"github.com/miruts/iJobs/usecases/job"
 	"github.com/miruts/iJobs/usecases/jobseeker"
@@ -48,21 +47,17 @@ func (jss *JobseekerServiceImpl) Suggestions(id int) ([]entity.Job, error) {
 	ctgs, err := jss.jsRepo.JsCategories(id)
 	var alljobs []entity.Job
 	if err != nil {
-		fmt.Printf("Error: %v", err)
 		return nil, err
 	}
 	for _, ctg := range ctgs {
 		categjobs, err := jss.jobService.JobsOfCategory(int(ctg.ID))
 		if err != nil {
-			fmt.Printf("Error: %v", err)
 			return alljobs, err
 		}
 		for _, ctg := range categjobs {
 			alljobs = append(alljobs, ctg)
 		}
 	}
-	fmt.Println("Suggestions")
-	fmt.Println(alljobs)
 	return alljobs, nil
 }
 

@@ -72,9 +72,9 @@ func main() {
 
 	gormDB.Set("gorm:insert_option", "ON DUPLICATE KEY UPDATE")
 	//gormDB.AutoMigrate(&entity.Session{}, &entity.Address{}, &entity.Application{}, &entity.Category{}, &entity.Job{}, &entity.Company{}, &entity.Jobseeker{}, &entity.Role{})
-	//CreateTables(gormDB)
+	CreateTables(gormDB)
 	// Data Repositories
-
+	//gormDB.AutoMigrate(&entity.Session{})
 	sess := configSess()
 	csrfSignKey := []byte(rndtoken.GenerateRandomID(32))
 	applicationRepo := apprepo.NewAppGormRepositoryImpl(gormDB)
@@ -118,6 +118,8 @@ func main() {
 	router.POST("/login/company", ch.Login)
 	router.POST("/signup/jobseeker", jh.Signup)
 	router.POST("/signup/company", ch.Signup)
+	router.GET("/logout/company", ch.Authenticated(http.HandlerFunc(ch.Logout)))
+	router.GET("/logout/jobseeker", jh.Authenticated(http.HandlerFunc(jh.Logout)))
 
 	router.GET("/company/:username/postjob", ch.Authenticated(ch.Authorized(http.HandlerFunc(ch.CompanyPostJob))))
 	router.POST("/company/:username/postjob", ch.Authenticated(ch.Authorized(http.HandlerFunc(ch.CompanyPostJob))))
