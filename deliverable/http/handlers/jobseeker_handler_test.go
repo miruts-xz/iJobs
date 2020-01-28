@@ -51,6 +51,7 @@ func TestJobseekerHandler_JobseekerHome(test *testing.T) {
 		wanted string
 	}{{Name: "Status Ok", jsmock: jsmockhandler, wanted: http.StatusText(http.StatusOK)},
 		{Name: "Status Error", jsmock: jsmockhandler, wanted: http.StatusText(http.StatusInternalServerError)}}
+
 	for _, tst := range tests {
 		test.Run(tst.Name, func(t *testing.T) {
 			httprec := httptest.NewRecorder()
